@@ -1,9 +1,9 @@
 # think-twice: product requirements
 
-**Status:** DRAFT v0.7.1 (2026-10-18). Owner decisions D0–D42 are included (see [decisions.md](decisions.md)). The
-feature discussion closes when a Codex check of the latest version finds no High-severity consistency or ambiguity
-issue; **no implementation until then.** Current work and its status are in [progress.md](progress.md).
-**Authority:** once approved, this file is the single source of truth for what gets built. See
+**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D43 are included (see
+[decisions.md](decisions.md)). The feature discussion closed when Codex found no High-severity consistency or
+ambiguity issue (v0.7.1). Current work and its status are in [progress.md](progress.md).
+**Authority:** this file is the single source of truth for what gets built. Every change cites a decision entry. See
 [Change control](#9-change-control-how-this-project-stays-on-goal).
 
 ---
@@ -101,7 +101,7 @@ situation adds one extra check (FR-3).**
 | FR-0.5 | When the phase is unclear, it asks **one** question about my state, not about phases: "Have you formed a view yet?", not "Which phase are you in?" When the situation is unclear, it applies none. The core already covers the four questions. |
 | FR-0.6 | The phase and situation can change within one session, and the tool follows. For example, a check before acting can reopen my reasoning. When I say I'm reconsidering a conclusion, it switches to during, or to before if there is no earlier conversation. |
 | FR-0.7 | No vocabulary is required of me. Phase and situation names exist only inside the tool and its documentation. |
-| FR-0.8 | **Material it can't read.** If a file is missing or unreadable, a URL fails to load, or the content is in a form it can't handle, it says so plainly, says what (if anything) it could read, and asks me to paste the material. It never reviews material it could not read. If the material is too long to review whole, it says which part it reviewed (QR-12). |
+| FR-0.8 | **Material it can't read.** If a file is missing or unreadable, a URL fails to load, or the content is in a form it can't handle, it says so plainly, says what (if anything) it could read, and asks me to paste the material. It never reviews material it could not read. If the material is too long to review whole, it says which part it reviewed (QR-12). A URL that redirects is followed only within the same site; otherwise it says so and asks (QR-10). |
 
 ### FR-1 The core: identical in every phase
 
@@ -174,7 +174,7 @@ Two boundaries apply to every lens:
 | --- | --- |
 | FR-5.1 | One Markdown journal file at a **fixed default location outside any repository**: `~/.think-twice/think-twice-journal.md`. I can name a different path when I save. There is no lasting setting in v1.0, because there is no memory across sessions. |
 | FR-5.2 | An entry is written **only when I ask** in that session. It contains: the date, the situation in one line, a **situation field** (`S1`–`S6`, `none`, or `other: ___`), the pattern that showed up, the method used (if any), the practice for next time, and what changed in my thinking, in my words. |
-| FR-5.3 | **Saving takes four steps:** (1) it shows me the entry; (2) I edit or confirm it, and nothing is written before I confirm; (3) it appends the entry, creating the file and folder if needed, and never changes or removes earlier entries; (4) it tells me where it saved, or says plainly that saving failed and leaves the entry in the conversation so I can save it myself. Appending is not reading: it does not analyse past entries (FR-5.4). Personal details stay out unless I put them in. |
+| FR-5.3 | **Saving takes four steps:** (1) it shows me the entry; (2) I edit or confirm it, and nothing is written before I confirm; (3) it appends the entry, creating the file and folder if needed, and never changes or removes earlier entries; (4) it tells me where it saved, or says plainly that saving failed and leaves the entry in the conversation so I can save it myself. It does not retry on its own; I can ask it to try again. Appending is not reading: it does not analyse past entries (FR-5.4). Personal details stay out unless I put them in. |
 | FR-5.4 | It reads past entries **only when I ask**: for example, "what patterns keep coming up?" Then it summarises recurring patterns with one practice for each, and cites the entries' dates. |
 | FR-5.5 | It never reads or writes the journal on its own initiative. |
 | FR-5.6 | It **offers** to save, in one line, only at the end of a review that produced a lesson. It never offers at a during checkpoint or in the before phase. Declining or ignoring the offer saves nothing. |
@@ -476,7 +476,7 @@ ships the method cards and glossary entries its own tests need; no card is writt
 
 | # | Question |
 | --- | --- |
-| — | Codex check of the latest version. Status in [progress.md](progress.md). |
+| — | None. Known test-level gaps are tracked in [progress.md](progress.md) and settled in slice 1. |
 
 ---
 

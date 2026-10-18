@@ -6,7 +6,7 @@ A Claude Code plugin that helps you examine your own thinking before, during and
 something: Is my reasoning sound? Am I thinking independently? What am I overlooking? What other perspectives should
 I consider?
 
-**Status:** requirements draft. See [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md). Nothing is built yet.
+**Status:** requirements approved (v1.0). See [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md). Nothing is built yet.
 
 ## About the name
 
