@@ -1,0 +1,9 @@
+.DS_Store
+.local/
+.env
+*.log
+.tokenize/
+
+# Private: think-twice journal entries must never be committed (FR-5.7)
+.think-twice/
+think-twice-journal*.md
