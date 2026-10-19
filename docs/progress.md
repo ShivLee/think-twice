@@ -27,6 +27,8 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   NEEDS REVISION, 1 High and 5 Medium findings. All six fixed: every test assigned to a slice gate, the omission
   pass placed in slice 6, D45 checkpoints in slices 6 and 7, IDs on every task, stronger done-when for T1.6–T1.8,
   and a plan review before each later slice. Owner chose no re-check.
+- 2026-10-18: committed `f7795fa` (D44, D45) and `c6e4471` (plan.md, progress.md, `.gitignore`, HANDOFF.md);
+  pushed `main` to `origin`. HANDOFF.md rewritten for this session.
 - Nothing is built yet. No test has been written or run.
 
 ## Slice 1 status
@@ -36,6 +38,9 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.1 Eval privacy | `.gitignore` done; `--no-publish` applies from the first run |
 | T1.2 Probe P-1 | **Next** |
 | T1.3–T1.12 | Waiting |
+
+The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
+[plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
 
 ## Waiting on the owner
 
