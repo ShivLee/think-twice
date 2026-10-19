@@ -1,6 +1,6 @@
 # think-twice: product requirements
 
-**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D43 are included (see
+**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D45 are included (see
 [decisions.md](decisions.md)). The feature discussion closed when Codex found no High-severity consistency or
 ambiguity issue (v0.7.1). Current work and its status are in [progress.md](progress.md).
 **Authority:** this file is the single source of truth for what gets built. Every change cites a decision entry. See
@@ -383,7 +383,7 @@ apply to it.
 | --- | --- | --- |
 | **SC-1 Behaviour** | All acceptance tests and release checks | Each auto test passes in ≥2 of 3 runs; no critical failure in any run; every manual test passes (run once, re-run once on failure); every release check passes |
 | **SC-2 Added value** | With vs without the plugin (`--ablation with-without`) on AT-04, AT-06, AT-08, AT-09, AT-10, AT-14, AT-18, AT-S1, AT-S2, AT-S5 (10 tests) | On **each** of the 10, the plugin passes ≥2 of 3 runs. On **at least 7** of the 10, plain Claude passes ≤1 of 3. On AT-07 and AT-19, the plugin passes at least as many runs as plain Claude. **Fair baseline (D39):** the plain-Claude run gets the same material and the words I would naturally type without the plugin; each case states that wording, which contains no coaching cue. A case with several prompts passes a run only if every prompt passes. SC-2 therefore measures value over my **ordinary** use of Claude, not over a Claude that has been asked to coach. |
-| **SC-3 Real use** (decides 1.0.0) | I use it on ≥10 real situations over about 3 weeks, covering all three phases. For each, I log: what it surfaced, whether my conclusion, confidence or plan changed, whether it pushed its own view, whether it recognised where I was, whether I applied a practice from an earlier lesson without being prompted, and minutes spent | ≥6 of 10 surfaced something I valued; 0 pushed its own view; phase and situation right, or corrected in one word, in ≥9 of 10; median during checkpoint ≤2 minutes; **in ≥3 of the 10, I applied a practice from an earlier lesson without being prompted** (G5; evidence in the real-use log) |
+| **SC-3 Real use** (decides 1.0.0) | I use it on ≥10 real situations over about 3 weeks, covering all three phases. For each, I log: what it surfaced, whether my conclusion, confidence or plan changed, whether it pushed its own view, whether it recognised where I was, whether I applied a practice from an earlier lesson without being prompted, and minutes spent | ≥6 of 10 surfaced something I valued; 0 pushed its own view; phase and situation right, or corrected in one word, in ≥9 of 10; median during checkpoint ≤2 minutes; **in ≥3 of the 10, I applied a practice from an earlier lesson without being prompted** (G5; evidence in the real-use log). **Counting (D45):** starts when slice 6 passes its tests; every real situation in the period counts; a material change restarts the period |
 | **SC-4 Release quality** | Packaging | Validation script passes (including RC-01–RC-06); in a fresh session, adding the marketplace (`/plugin marketplace add ShivLee/think-twice`), installing the plugin from it and running `/think-twice:pause` all succeed; README (including the D16 note on Mauboussin's *Think Twice*), LICENSE (MIT), CHANGELOG and version in place |
 
 SC-2 measures **behaviour**, not knowledge. book-experts asked whether the book made Claude's *answers* better. Here
@@ -450,7 +450,8 @@ Card review records are kept next to each card, as a short block that contains n
 
 ### Implementation order
 
-Each slice ends with its tests passing **and** the owner using it once on something real. A slice is split into
+Each slice ends with its tests passing **and** the owner using it once on something real (slice 1, which builds no
+product feature, ends with an owner test review instead; D44). A slice is split into
 tasks that each fit one session, serve named IDs and end with named tests passing (section 9, rule 9). Each slice
 ships the method cards and glossary entries its own tests need; no card is written ahead of the slice that needs it.
 
@@ -506,7 +507,7 @@ ships the method cards and glossary entries its own tests need; no card is writt
 9. **Traceable plan.** The implementation plan lists tasks, each with "serves IDs …; done when tests … pass". Codex
    reviews the plan against this file before implementation starts.
 10. **Slices, each used for real.** Work follows the implementation order in section 8. A slice is done only when its
-    tests pass and the owner has used it once on something real.
+    tests pass and the owner has used it once on something real (for slice 1, an owner test review; D44).
 11. **Warning signs, checked at each slice.** These are: work that names no ID; a test edited so that it passes; the
     skill growing past QR-13; think-twice giving conclusions in real use; scripts, hooks or agents appearing. At the
     end of each slice, Codex compares the changes with section 1 and the ID list, and the owner reads that review
