@@ -7,3 +7,6 @@
 # Private: think-twice journal entries must never be committed (FR-5.7)
 .think-twice/
 think-twice-journal*.md
+
+# Private: eval results stay local (QR-9, RC-02); always run `claude plugin eval` with --no-publish
+evals/results/
