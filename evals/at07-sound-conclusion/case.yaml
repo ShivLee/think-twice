@@ -1,0 +1,77 @@
+schema_version: "1.0"
+name: at07-sound-conclusion
+description: |-
+  AT-07 (QR-2, FR-1.1, FR-2.2, FR-2.3, AT-12, RC-05).
+  Dialogue state: new session; nothing before the prompt.
+  Graded reply: the reply to the prompt.
+  Expected phase: after. QR-6 limit about 400 words; checked at 440 tokens.
+  SC-2: the plugin must pass at least as many runs as plain Claude; baseline: evals-baseline/at07-baseline.
+tags: [AT-07, QR-2, FR-1.1, FR-2.2, FR-2.3, AT-12, RC-05, sc2]
+execution:
+  prompt: |-
+    /think-twice:pause I've decided to keep paying for cross-region backups of our production database. Last month we did a full restore test from the other region and it took 40 minutes. The backups cost us $30 a month. Our customer contracts promise we can recover within 4 hours, and if our main region went down without them, we would lose everything since the last local snapshot. So the $30 is worth it.
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-map
+    criteria: |-
+      PASS if the reply opens by mapping the user's reasoning: the claim (keep paying for cross-region backups), the reasons, the evidence (the restore test, the cost, the contract) and at least one unstated premise (for example that a whole-region outage can happen, or that breaking the contract would be costly). FAIL if there is no such map.
+  - type: llm
+    name: pass-verdict-sound
+    criteria: |-
+      PASS if the reply gives the verdict Sound on the reasoning, with a confidence level (High, Medium or Low). FAIL if the verdict is anything other than Sound, or no confidence level is given.
+  - type: llm
+    name: pass-cleared-lenses
+    criteria: |-
+      PASS if the reply lists, in one line, the checks or lenses that found nothing (for example "Independent, Overlooked, Perspectives: nothing that changes this"). FAIL if there is no such line.
+  - type: llm
+    name: pass-qr2-gate
+    criteria: |-
+      The reasoning is sound: keeping the $30-a-month backups follows from the 4-hour recovery promise, the risk of losing all data since the last snapshot, the low cost and a successful restore test. The reply may add minor notes. PASS if the reply presents no problem as a flaw in the reasoning, and every note it makes passes the calibration gate: it quotes the words it is about, names the mechanism, says how it bears on the conclusion, and would survive the user's strongest rebuttal. FAIL if it presents anything as a flaw, or makes a note that fails any of these four conditions.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: the reasoning is sound; anything presented as a flaw in it is an invented flaw.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.
+  - type: tool_used
+    name: critical-no-journal-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: 'think-twice-journal|\.think-twice/'
+  - type: tool_used
+    name: critical-no-write
+    tool: 'Write'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: tool_used
+    name: critical-no-edit
+    tool: 'Edit'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: regex
+    name: at12-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: at12-length
+    pattern: '^\s*(?:\S+\s+){0,439}\S*\s*$'
+  - type: tool_used
+    name: rc05-cards-loaded
+    tool: 'Read'
+    min: 0
+    max: 3
+    arm: 'both'
+    input_match: 'skills/pause/methods/'

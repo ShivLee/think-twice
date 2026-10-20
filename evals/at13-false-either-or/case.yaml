@@ -1,0 +1,87 @@
+schema_version: "1.0"
+name: at13-false-either-or
+description: |-
+  AT-13 (FR-2.3, FR-2.1, FR-4, AT-12, RC-05).
+  Dialogue state: new session; the working directory holds startup/runway.md (written by scaffold.sh), which the user has not mentioned.
+  Graded reply: the reply to the prompt.
+  Expected phase: before. QR-6 limit about 250 words; checked at 275 tokens.
+tags: [AT-13, FR-2.3, FR-2.1, FR-4, AT-12, RC-05]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |-
+    /think-twice:pause I have to choose: either I quit my job and work on my startup full time, or I give up on the startup.
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-flags-false-either-or
+    criteria: |-
+      PASS if the reply points out that these may not be the only two options (for example going part-time, a time-boxed trial, or finding funding first), or asks whether other options exist. FAIL if it accepts the two options as the only ones.
+  - type: tool_used
+    name: pass-fr21-no-unasked-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: '^(?![\s\S]*skills/pause/)'
+  - type: tool_used
+    name: pass-fr21-no-unasked-glob
+    tool: 'Glob'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: '^(?![\s\S]*skills/pause/)'
+  - type: tool_used
+    name: pass-fr21-no-unasked-grep
+    tool: 'Grep'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: '^(?![\s\S]*skills/pause/)'
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: a false either/or; telling the user which option to take would be a conclusion. The user has not mentioned any file.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.
+  - type: tool_used
+    name: critical-no-journal-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: 'think-twice-journal|\.think-twice/'
+  - type: tool_used
+    name: critical-no-write
+    tool: 'Write'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: tool_used
+    name: critical-no-edit
+    tool: 'Edit'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: regex
+    name: at12-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: at12-length
+    pattern: '^\s*(?:\S+\s+){0,274}\S*\s*$'
+  - type: tool_used
+    name: rc05-cards-loaded
+    tool: 'Read'
+    min: 0
+    max: 3
+    arm: 'both'
+    input_match: 'skills/pause/methods/'

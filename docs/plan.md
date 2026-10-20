@@ -68,15 +68,22 @@ Each task fits one session. Do them in this order.
 
 Settle these while writing the tests, before freezing them. Numbers refer to the Codex review.
 
-- #7 Behavioural coverage: QR-2's four conditions; FR-1.3's "examined and accepted" group; the before phase not
-  reading anything on its own initiative; affected people and other fields (Perspectives lens).
+- #7 **Settled in T1.6.** QR-2's four conditions: AT-07's gate grader (and the AT-22 manual check). FR-1.3's
+  "examined and accepted" group: AT-06 checks that the user's own price research is not flagged. The before phase
+  reading nothing on its own initiative: AT-13 has a fixture the user never mentions, with `pass-fr21-` graders.
+  Affected people and other fields (Perspectives): AT-19a's steelman grader names them.
 - #12 Settled by the probe and D46: runs record CLI, model and judge model; each SC-2 test (the 10, plus AT-07 and
-  AT-19) gets its own baseline case in D39 wording under `evals-baseline/`, written alongside its plugin case.
+  AT-19) gets its own baseline case in D39 wording under `evals-baseline/`, written alongside its plugin case
+  (T1.6: the 5.2 tests; T1.7: AT-S1, AT-S2, AT-S5).
 - #13 An SC-1 gate that computes "≥2 of 3 runs, no critical failure" from per-run results, even when P-6 passes;
-  how manual tests are re-run.
-- #18 Counting rules for QR-6 and QR-13 (tokenizer, mixed languages, tolerance) and which cards load first when more
-  than 3 apply.
-- #10 is decided by probe P-5.
+  how manual tests are re-run. The counting rules are written in `evals/README.md` (T1.6); the script and its three
+  examples come in T1.8. Manual tests: run once, re-run once on failure (each script says so).
+- #18 **Settled in T1.6** (`evals/README.md`, "Counting rules"): questions by question mark; QR-6 in
+  whitespace tokens with 10% tolerance; Chinese by CJK characters (implemented in T1.8); QR-13 by the token-counting
+  endpoint, with a fallback estimate and 10% tolerance. Card order when more than 3 apply: no test depends on it; it is
+  chosen with the cards in slice 6.
+- #10 **Settled by P-5:** a general description of what was reviewed is enough; AT-16 and AT-17 do not require turn
+  counts.
 
 **Later (no blocker for freezing):**
 

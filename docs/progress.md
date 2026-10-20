@@ -45,7 +45,13 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 - 2026-10-19: **T1.5 done.** `scripts/validate-plugin.sh` implements RC-06 and passes on the current docs (58 FR/QR
   units, 48 tests). `--self-test` passes 14/14 scenarios, including the four required failures: a missing ID, an
   unmapped requirement, a test citing an unknown ID, an undefined subcase. Eval cases declare their IDs in `tags`.
-- No product skill text or test has been written yet.
+- 2026-10-19: **T1.6 done.** The 5.2 tests are written: 34 auto cases in `evals/`, 10 SC-2 baseline cases in
+  `evals-baseline/` (D46), and 9 manual scripts in `evals/manual/`. Every case declares its IDs, dialogue state and
+  graded reply; every PASS and FAIL condition in its row has a grader; every case checks the critical failures, AT-12
+  and RC-05. Dialogues are frozen as `dialogue.md` and built by `scripts/build-histories.py` (D47). Gaps #7, #10 and
+  #18 settled ([plan.md](plan.md)). A smoke run confirmed the mechanics, and a judge calibration led to a tighter
+  critical-failure wording ([evaluation.md](evaluation.md)). Not frozen yet (T1.10).
+- No product skill text has been written yet.
 
 ## Slice 1 status
 
@@ -56,8 +62,9 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.3 Probes P-2–P-7 | Done 2026-10-19: all pass ([evaluation.md](evaluation.md)) |
 | T1.4 Set the "How" column | Done 2026-10-19 (D46, D47) |
 | T1.5 Validation script (RC-06) | Done 2026-10-19 |
-| T1.6 Tests in 5.2 | **Next** |
-| T1.7–T1.12 | Waiting |
+| T1.6 Tests in 5.2 | Done 2026-10-19 (not frozen until T1.10) |
+| T1.7 Tests in 5.3 (situations) | **Next** |
+| T1.8–T1.12 | Waiting |
 
 The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
@@ -68,6 +75,5 @@ The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) a
 
 ## Next action
 
-T1.6: write the tests in 5.2 (recognition, core, phases) and AT-12 as one reusable check (AT-01–AT-25, AT-30–AT-40;
-FR-0–FR-2, FR-4, QR-1–QR-6, QR-10, QR-12). Use the methods in D47 and settle the gaps listed in plan.md. Write the
-SC-2 baseline cases (D46) alongside their plugin cases.
+T1.7: write the tests in 5.3, the situations (AT-S1–AT-S7; FR-0.3, FR-3), with the baseline cases for AT-S1, AT-S2
+and AT-S5 (D46). Follow `evals/README.md`. AT-S3b is graded after an earlier pause turn, so it uses a dialogue.

@@ -1,0 +1,87 @@
+schema_version: "1.0"
+name: at24-complete-argument
+description: |-
+  AT-24 (FR-2.6, AT-12, RC-05).
+  Dialogue state: new session; nothing before the prompt.
+  Graded reply: the reply to the prompt (a complete essay passed as the argument).
+  Expected phase: after. QR-6 limit about 400 words; checked at 440 tokens.
+tags: [AT-24, FR-2.6, AT-12, RC-05]
+execution:
+  prompt: |-
+    /think-twice:pause
+    # Small changes shouldn't wait for code review
+
+    Our team requires an approving review on every pull request, however small. I think we should drop that rule for small changes (under about 20 lines, with passing tests) and let authors merge them directly.
+
+    First, the cost. Last quarter, the median wait for a review on a small pull request was 9 hours. For a one-line config fix, that wait is pure delay: the change is done, tested and sitting idle. Across roughly 300 small pull requests a quarter, it adds up to weeks of waiting.
+
+    Second, small reviews are mostly rubber stamps. I went through 50 recent small pull requests: 46 were approved with no comments, and the other four had only style nitpicks. Reviewers are spending attention where it rarely finds anything.
+
+    Third, our safety net doesn't depend on review for these changes. Every pull request runs the full test suite, we deploy behind feature flags, and we can roll back in under five minutes. If a small change breaks something, we find out fast and undo it.
+
+    The obvious objection is that small changes can still cause big outages: a one-character config change took down login two years ago. That's true, and it's why I'd keep two exceptions. Anything touching authentication, billing or infrastructure config still needs review, and anyone can ask for a review on any change.
+
+    So the proposal is: small, tested changes outside those sensitive areas can be merged without approval, with a review afterwards if anyone wants one. We'd try it for one quarter and compare incident counts and lead time with this quarter. If incidents go up, we go back.
+
+    I think this would make the team faster without making us less safe, and it would free reviewers to give real attention to the changes that need it.
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-recommends-reason-grill
+    criteria: |-
+      PASS if the reply recommends reason-grill for a deep review of this finished argument, in one line (a sentence). FAIL if it does not mention reason-grill, or spends more than a sentence or two on it.
+  - type: llm
+    name: pass-offers-quick-review
+    criteria: |-
+      PASS if the reply offers the quick review: it asks whether the user wants one, or says it will do one if the user wants it. FAIL if it neither offers nor mentions a quick review.
+  - type: llm
+    name: fail-deep-review
+    criteria: |-
+      FAIL if the reply goes ahead with a deep, point-by-point review of the essay (for example examining each of its arguments in turn). Otherwise PASS.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: a complete written argument; the user has not yet said what kind of review they want.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.
+  - type: tool_used
+    name: critical-no-journal-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: 'think-twice-journal|\.think-twice/'
+  - type: tool_used
+    name: critical-no-write
+    tool: 'Write'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: tool_used
+    name: critical-no-edit
+    tool: 'Edit'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: regex
+    name: at12-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: at12-length
+    pattern: '^\s*(?:\S+\s+){0,439}\S*\s*$'
+  - type: tool_used
+    name: rc05-cards-loaded
+    tool: 'Read'
+    min: 0
+    max: 3
+    arm: 'both'
+    input_match: 'skills/pause/methods/'

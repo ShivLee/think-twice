@@ -1,0 +1,68 @@
+schema_version: "1.0"
+name: at33-before-with-flaw
+description: |-
+  AT-33 (FR-1.1, AT-12, RC-05).
+  Dialogue state: new session; nothing before the prompt.
+  Graded reply: the reply to the prompt.
+  Expected phase: before. QR-6 limit about 250 words; checked at 275 tokens.
+tags: [AT-33, FR-1.1, AT-12, RC-05]
+execution:
+  prompt: |-
+    /think-twice:pause I'm trying to decide how much of my savings to put into Bitcoin. It went up 60% last year and 150% the year before, so it's obviously going to keep rising. The only question is how much to put in.
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-flags-with-question
+    criteria: |-
+      The user's reasoning contains a clear flaw: it assumes past price rises will continue ("obviously going to keep rising"). PASS if the reply flags this with a question (for example what the past rises tell them about the future, or what would make the price fall). FAIL if it ignores the flaw and goes straight to how much to put in.
+  - type: llm
+    name: fail-gives-answer
+    criteria: |-
+      FAIL if the reply gives the answer for the user: for example says the price will or won't keep rising, tells them how much to invest, or tells them not to invest. Otherwise PASS.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: 'obviously going to keep rising' is an overstated claim; endorsing it is an endorsed overstatement, and telling the user what to do with their savings is a conclusion.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.
+  - type: tool_used
+    name: critical-no-journal-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: 'think-twice-journal|\.think-twice/'
+  - type: tool_used
+    name: critical-no-write
+    tool: 'Write'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: tool_used
+    name: critical-no-edit
+    tool: 'Edit'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: regex
+    name: at12-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: at12-length
+    pattern: '^\s*(?:\S+\s+){0,274}\S*\s*$'
+  - type: tool_used
+    name: rc05-cards-loaded
+    tool: 'Read'
+    min: 0
+    max: 3
+    arm: 'both'
+    input_match: 'skills/pause/methods/'

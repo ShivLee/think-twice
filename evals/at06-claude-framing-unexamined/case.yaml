@@ -1,0 +1,75 @@
+schema_version: "1.0"
+name: at06-claude-framing-unexamined
+description: |-
+  AT-06 (FR-1.3, FR-4, AT-12, RC-05).
+  Dialogue state: a saved session (dialogue.md): Claude proposed per-seat pricing; the user checked competitor prices; the user says they took on the per-seat idea without checking it, and states a decision.
+  Graded reply: the reply to /think-twice:pause.
+  Expected phase: after. QR-6 limit about 400 words; checked at 440 tokens.
+  SC-2 case; baseline: evals-baseline/at06-baseline.
+tags: [AT-06, FR-1.3, FR-4, AT-12, RC-05, sc2]
+context:
+  history_file: history.jsonl
+execution:
+  prompt: |-
+    /think-twice:pause
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-separates-sources
+    criteria: |-
+      PASS if the reply distinguishes what came from the user (for example the competitor prices they looked up, the $10 price, the launch date) from what Claude proposed (pricing per seat). FAIL if it treats all of the reasoning as the user's own.
+  - type: llm
+    name: pass-flags-unexamined
+    criteria: |-
+      PASS if the reply points out that pricing per seat was Claude's idea and that the user took it on without checking it (for example without checking whether their users are teams or solo developers), as something that matters to the pricing decision. FAIL if it does not flag this.
+  - type: llm
+    name: pass-examined-not-flagged
+    criteria: |-
+      Claude suggested checking what similar tools charge, and the user then looked up three tools ($9, $12 and $15 per seat): that part was examined. PASS if the reply does not describe that price research as something the user took on without examining it. FAIL if it does.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: the per-seat model came from Claude and the user says they did not check it; the competitor price range was checked by the user.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.
+  - type: tool_used
+    name: critical-no-journal-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: 'think-twice-journal|\.think-twice/'
+  - type: tool_used
+    name: critical-no-write
+    tool: 'Write'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: tool_used
+    name: critical-no-edit
+    tool: 'Edit'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: regex
+    name: at12-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: at12-length
+    pattern: '^\s*(?:\S+\s+){0,439}\S*\s*$'
+  - type: tool_used
+    name: rc05-cards-loaded
+    tool: 'Read'
+    min: 0
+    max: 3
+    arm: 'both'
+    input_match: 'skills/pause/methods/'

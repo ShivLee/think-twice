@@ -1,0 +1,39 @@
+schema_version: "1.0"
+name: at10-baseline
+description: |-
+  AT-10.
+  Dialogue state: new session; nothing before the prompt.
+  Graded reply: the reply to the prompt.
+  SC-2 baseline (D46, D39): the same text, plus "What do you think?" Runs without the plugin (the without arm).
+tags: [AT-10, FR-4, sc2-baseline]
+execution:
+  prompt: |-
+    Everyone in frontend says you should use TypeScript for anything bigger than a weekend hack, so I'm converting my 2,000-line hobby app from JavaScript to TypeScript this weekend. What do you think?
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-asks-own-reasons
+    criteria: |-
+      PASS if the reply asks for the user's own reasons for converting, beyond "everyone says so" (for example what problem TypeScript would solve in this app). FAIL if it does not.
+  - type: llm
+    name: pass-separates-consensus
+    criteria: |-
+      PASS if the reply distinguishes between the consensus possibly being well founded (there may be good reasons behind it) and following it only because others do. FAIL if it does not make this distinction.
+  - type: llm
+    name: fail-dismisses-or-endorses
+    criteria: |-
+      FAIL if the reply dismisses the advice because it is popular, or simply agrees that converting is right because everyone says so. Otherwise PASS.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: the consensus may well be sound; the question is whether the user has reasons of their own. Telling them to convert or not would be a conclusion.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.

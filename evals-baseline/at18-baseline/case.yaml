@@ -1,0 +1,44 @@
+schema_version: "1.0"
+name: at18-baseline
+description: |-
+  AT-18 (FR-2.3, QR-6).
+  Dialogue state: the same conversation (dialogue.md) up to the user's lean, without the plugin.
+  Graded reply: the reply to the prompt.
+  SC-2 baseline (D46, D39): the same conversation, with the last message "So I'm leaning towards Sam. What do you think?" Runs without the plugin (the without arm).
+tags: [AT-18, FR-2.3, QR-6, sc2-baseline]
+context:
+  history_file: history.jsonl
+execution:
+  prompt: |-
+    So I'm leaning towards Sam. What do you think?
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-notices-shift
+    criteria: |-
+      The user started with three must-haves (three years of Go, Postgres in production, able to start within a month). After meeting Sam, who meets none of them, they re-weighted towards culture fit. PASS if the reply points out that the user's criteria changed after Sam appeared (for example that the must-haves were set aside or re-ranked once a favourite emerged). FAIL if it misses this.
+  - type: llm
+    name: fail-lectures
+    criteria: |-
+      FAIL if the reply lectures (long explanations of biases or general hiring advice) or tells the user whom to hire. Otherwise PASS.
+  - type: regex
+    name: pass-at-most-two-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: pass-within-during-length
+    pattern: '^\s*(?:\S+\s+){0,219}\S*\s*$'
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: the user's criteria drifted after a favourite appeared; telling the user whom to hire would be a conclusion.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.

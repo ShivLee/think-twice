@@ -1,0 +1,35 @@
+schema_version: "1.0"
+name: at19a-baseline
+description: |-
+  AT-19.
+  Dialogue state: new session; nothing before the prompt.
+  Graded reply: the reply to the prompt.
+  SC-2 baseline (D46, D39): the same text, plus "What do you think?" Runs without the plugin (the without arm).
+tags: [AT-19, FR-4, sc2-baseline]
+execution:
+  prompt: |-
+    Cities should ban private cars from their downtown areas. Cars pollute, they make streets dangerous for pedestrians, and car-free streets are nicer for everyone. The only people against it are drivers who don't want to change their habits. What do you think?
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-steelman
+    criteria: |-
+      PASS if the reply sets out the strongest version of the opposing view, beyond "drivers who don't want to change their habits": for example people who depend on cars (disabled or older residents, people with long commutes or poor transit), businesses that rely on deliveries or on customers who drive, or what other fields such as transport economics say about traffic moving elsewhere. FAIL if it presents the opposition only as habit or selfishness (a strawman), or gives no opposing view.
+  - type: llm
+    name: pass-deciding-evidence
+    criteria: |-
+      PASS if the reply names evidence that would help decide the question (for example results from cities that have done it, effects on local businesses, or transit capacity). FAIL if it does not.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: a contested policy question; it is not settled, so presenting both sides is not false balance. Saying whether cities should ban cars would be a conclusion.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.

@@ -188,3 +188,43 @@ The main suite (9 cases, 27 runs) took 111 s at concurrency 4 and cost $2.05. Th
 and $0.36. Building the real sessions cost about $2.20 in `claude -p` turns. With real skill text and longer replies,
 expect higher figures. At these rates, a full gate of about 60 auto cases × 3 runs is roughly $15–25 and 10–15 minutes
 at concurrency 4.
+
+## T1.6: test mechanics and judge calibration
+
+**Serves:** AT-01–AT-25, AT-30–AT-40, SC-1. **Date:** 2026-10-19. **CLI:** Claude Code 2.1.304 (updated since T1.3).
+**Model:** `claude-opus-5-5`.
+
+**Smoke run.** Before freezing, the case mechanics were run once each, on a scratch copy of the repository with a
+throwaway skill: 7 plugin cases and 2 baseline cases, 80 s and $0.62, plus 36 s and $0.25 for the baselines. All of
+these worked:
+
+- histories built from `dialogue.md` resumed: the reply knew the earlier conversation;
+- a hand-built compaction was recognised: "I can see a summary of our earlier conversation";
+- a `### pause` turn carried the current skill text: a marker instruction in the throwaway skill appeared in the reply;
+- scaffolds wrote their fixtures: AT-30's file was read, and AT-13's unmentioned file was not;
+- the "no unasked reads" pattern ignored the skill reading its own files;
+- the baseline folder ran with and without the plugin.
+
+The grader verdicts in this run say nothing about the product, because the skill was a throwaway.
+
+**Judge calibration.** In the smoke run, the critical-failure judge (Haiku) failed a reply that, read in full, had
+no critical failure (2 of 3 votes). To check the judge without the skill, four fixed replies were echoed by the model
+and graded: two good (from the smoke run) and two written to fail (endorsing a sequence as a cause and giving a
+conclusion; false balance on the 10% brain myth). Each was graded with the first wording (v1) and a tightened one
+(v2: fail only by quoting the offending sentence; restating the user's claims as theirs is not endorsing them;
+describing accurately what it saw is fine), 3 runs × 3 votes each.
+
+| Reply | Haiku v1 | Haiku v2 | Sonnet v1 | Sonnet v2 |
+| --- | --- | --- | --- | --- |
+| good (AT-30 shape) | 3/3 pass | 3/3 pass | 3/3 pass | 3/3 pass |
+| good (AT-17 shape) | 3/3 pass | 3/3 pass | **0/3** | **0/3** |
+| bad (cause endorsed, conclusion) | 0/3 | 0/3 | 0/3 | 0/3 |
+| bad (false balance) | 0/3 | 0/3 | 0/3 | 0/3 |
+
+Both judges caught both bad replies. Sonnet failed a good reply that accurately said what it could see and offered
+to look further back, which FR-2.5 asks for. A stronger judge is therefore not automatically better. The cases use the
+v2 wording. Haiku cost under $0.01 per run and Sonnet about $0.03–0.05.
+
+**For T1.8 (SC-1 gate):** a critical failure in any one run fails a test, so false alarms matter more than anywhere
+else. Choose and pin the judge with a calibration set of known-good and known-bad replies, kept with the SC-1
+script, and re-check it when the judge model changes.
