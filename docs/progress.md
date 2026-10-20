@@ -29,15 +29,31 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   and a plan review before each later slice. Owner chose no re-check.
 - 2026-10-18: committed `f7795fa` (D44, D45) and `c6e4471` (plan.md, progress.md, `.gitignore`, HANDOFF.md);
   pushed `main` to `origin`. HANDOFF.md rewritten for this session.
-- Nothing is built yet. No test has been written or run.
+- 2026-10-19: **probe P-1 passed** (T1.2; FR-0.1, QR-11). `claude plugin eval` invokes a manual-only skill
+  through `/think-twice:pause <text>` in the case prompt, and passes the text as its argument: 3/3 runs, plus a control
+  showing the model cannot invoke it on its own. Claude Code 2.1.303, `claude-opus-5-5`. No fallback needed. Details
+  and side findings for T1.3 in [evaluation.md](evaluation.md). Runs used a throwaway plugin outside the repository,
+  with `--no-publish`.
+- 2026-10-19: **probes P-2–P-7 done** (T1.3; FR-2.1, FR-2.2, QR-12, QR-13, RC-05, SC-1). All pass: pasted and
+  real-session conversations behave alike (P-2); fixtures work through `scaffold_script` (P-3); card loads can be
+  counted (P-4); scope is reported truthfully after a real compaction (P-5); `--json` has per-run, per-grader results,
+  and a small script will compute SC-1 (P-6); the P-7 list is written. Five constraints for the test writing are
+  recorded in [evaluation.md](evaluation.md), one of them for the owner (below).
+- 2026-10-19: **T1.4 done.** Owner approved D46 (each SC-2 test gets its own plain-wording baseline case) and D47
+  (test methods from the probe; every Auto test stays Auto, every Manual test stays Manual for now, revisited after
+  slice 2). REQUIREMENTS updated to cite them; `git diff requirements-v1.0` shows only lines citing D44–D47.
+- No product skill text or test has been written yet.
 
 ## Slice 1 status
 
 | Task | Status |
 | --- | --- |
 | T1.1 Eval privacy | `.gitignore` done; `--no-publish` applies from the first run |
-| T1.2 Probe P-1 | **Next** |
-| T1.3–T1.12 | Waiting |
+| T1.2 Probe P-1 | Done 2026-10-19: pass ([evaluation.md](evaluation.md)) |
+| T1.3 Probes P-2–P-7 | Done 2026-10-19: all pass ([evaluation.md](evaluation.md)) |
+| T1.4 Set the "How" column | Done 2026-10-19 (D46, D47) |
+| T1.5 Validation script (RC-06) | **Next** |
+| T1.6–T1.12 | Waiting |
 
 The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
@@ -48,5 +64,5 @@ The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) a
 
 ## Next action
 
-Start slice 1 with probe P-1 (T1.2): can `claude plugin eval` invoke a manual-only skill through
-`/think-twice:pause`?
+T1.5: write `scripts/validate-plugin.sh` with RC-06 (section 9, goal map). Done when it passes on the current docs
+and fails on each of: a missing ID, an unmapped requirement, a test citing an unknown ID, an undefined subcase.

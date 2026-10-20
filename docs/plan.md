@@ -42,7 +42,8 @@ change that might is treated as material and restarts the period.
 - Check `SKILL.md` and card sizes against QR-13 at the end of every slice (section 9 rule 11).
 - Slice reviews by Codex cover the diff, not the whole repository.
 - Real use before the SC-3 start is feedback only (D45). The real-use log stays private in `.local/`.
-- After slice 2, re-estimate the remaining work from measured times.
+- After slice 2, re-estimate the remaining work from measured times, and revisit whether AT-03, AT-21, AT-22, AT-32,
+  AT-37 and AT-34 (c)/(d) should become Auto with saved histories (owner chose to keep them Manual for now; D47).
 
 ## Slice 1 tasks
 
@@ -60,7 +61,7 @@ Each task fits one session. Do them in this order.
 | T1.8 | Write the tests in 5.4 (methods, journal, language, safety) and the SC-1 gate (#13) | AT-26–AT-29, AT-41; FR-5, FR-6, QR-7–QR-10; SC-1 | As T1.6; the SC-1 gate is checked on three examples: 1 of 3 runs passing fails the case, 2 of 3 passes it, and a critical failure in one run fails it even when the other two pass |
 | T1.9 | Owner test review (D44): a sample chosen in advance covering the three phases and the four failure modes | D44; QR-1 (substitution), QR-2 (manufactured objections), QR-3 (overstated facts), QR-4 (agreement), QR-5 | Owner has checked each case is realistic and its PASS would help; unrealistic tests are fixed |
 | T1.10 | Freeze the prompts and graders | All AT; prevents tests tuned to fit the skill (section 9 rule 2) | Frozen; RC-06 passes; later changes need a decision entry |
-| T1.11 | Run the plain-Claude baseline on the 10 SC-2 cases (information, not a gate) | SC-2 (AT-04, 06, 08, 09, 10, 14, 18, S1, S2, S5), D39; prevents finding out late that SC-2 is out of reach | Results recorded; if plain Claude already passes too many, the owner hears about it before slice 2 |
+| T1.11 | Run the plain-Claude baseline cases (D46) for the 10 SC-2 tests (information, not a gate) | SC-2 (AT-04, 06, 08, 09, 10, 14, 18, S1, S2, S5), D39; prevents finding out late that SC-2 is out of reach | Results recorded; if plain Claude already passes too many, the owner hears about it before slice 2 |
 | T1.12 | Slice review: Codex compares the changes with section 1 and the ID list | All slice 1 IDs; prevents drift (section 9 rule 11) | Owner has read the review |
 
 ### Test-level gaps to settle in T1.6–T1.8 (Codex review)
@@ -69,7 +70,8 @@ Settle these while writing the tests, before freezing them. Numbers refer to the
 
 - #7 Behavioural coverage: QR-2's four conditions; FR-1.3's "examined and accepted" group; the before phase not
   reading anything on its own initiative; affected people and other fields (Perspectives lens).
-- #12 Probe records CLI and model versions, and checks that the baseline gets an equivalent task.
+- #12 Settled by the probe and D46: runs record CLI, model and judge model; each SC-2 test (the 10, plus AT-07 and
+  AT-19) gets its own baseline case in D39 wording under `evals-baseline/`, written alongside its plugin case.
 - #13 An SC-1 gate that computes "≥2 of 3 runs, no critical failure" from per-run results, even when P-6 passes;
   how manual tests are re-run.
 - #18 Counting rules for QR-6 and QR-13 (tokenizer, mixed languages, tolerance) and which cards load first when more

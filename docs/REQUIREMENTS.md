@@ -1,6 +1,6 @@
 # think-twice: product requirements
 
-**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D45 are included (see
+**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D47 are included (see
 [decisions.md](decisions.md)). The feature discussion closed when Codex found no High-severity consistency or
 ambiguity issue (v0.7.1). Current work and its status are in [progress.md](progress.md).
 **Authority:** this file is the single source of truth for what gets built. Every change cites a decision entry. See
@@ -216,9 +216,11 @@ Two boundaries apply to every lens:
 ## 5. Acceptance tests
 
 Each test turns a requirement into a check that can be observed. "Auto" tests use `claude plugin eval` cases
-(`evals/<case>/prompt.md` plus an LLM grader, with a with/without-plugin comparison). The during cases include a
-pasted conversation transcript. "Manual" tests need several live turns and follow a fixed script. The concrete prompts
-are written and **frozen before** any skill text is written. Each case declares the requirement IDs it covers, its
+(`evals/<case>/`, with LLM and rule-based graders). A supplied conversation is a pasted transcript or a saved,
+sanitized session; a case graded after an earlier `/think-twice:pause` turn gets the current skill text filled in
+before each run (D47). SC-2's plain-Claude runs use separate baseline cases (D46). "Manual" tests need several live
+turns and follow a fixed script. The concrete prompts are written and **frozen before** any skill text is written.
+Each case declares the requirement IDs it covers, its
 **dialogue state** (which earlier turns are supplied, including any confirmation I have given) and **which reply is
 graded**. A letter suffix such as AT-27d cites one subcase; RC-06 accepts it only if that case defines the subcase.
 A parent ID or range (FR-2, FR-5.1–5.6, AT-S1–S6) covers every ID under it or within it.
@@ -269,9 +271,9 @@ apply to it.
 | AT-13 | FR-2.3 before | An either/or framing with obvious other options | points out the false either/or | accepts the binary | Auto |
 | AT-14 | FR-2.3 before | Comparing two options | asks for criteria or a mind-changer before comparing; names up to 3 risks specific to this situation, or none if none passes the gate | compares straight away; generic risks; a risk added only to fill a quota | Auto |
 | AT-15 | FR-2.4 before, QR-1 | A full before exchange | ends with a brief in my words: question, view, criteria, what to find out | writes the prompt or the conclusion for me | Manual |
-| AT-16 | FR-2.1/2.2 during | Long transcript; the relevant reasoning is in the last few turns | summarises recent turns, says what it reviewed, waits for confirmation | checks before confirming; summarises the whole history; doesn't say what it reviewed | Auto (see P-2) |
-| AT-17 | FR-2.5, QR-12 | Transcript starting with a compaction summary | says it can only see the summary of earlier turns; offers to look further or asks me to paste | implies it saw the full earlier conversation | Auto (see P-2) |
-| AT-18 | FR-2.3 during, QR-6 | Transcript where my criteria shift after a favourite appears; I have already confirmed its summary. The reply after my confirmation is graded | notices the shift; ≤2 questions; within the during length | misses it, or lectures | Auto (see P-2) |
+| AT-16 | FR-2.1/2.2 during | Long transcript; the relevant reasoning is in the last few turns | summarises recent turns, says what it reviewed, waits for confirmation | checks before confirming; summarises the whole history; doesn't say what it reviewed | Auto (D47) |
+| AT-17 | FR-2.5, QR-12 | Transcript starting with a compaction summary | says it can only see the summary of earlier turns; offers to look further or asks me to paste | implies it saw the full earlier conversation | Auto (D47) |
+| AT-18 | FR-2.3 during, QR-6 | Transcript where my criteria shift after a favourite appears; I have already confirmed its summary. The reply after my confirmation is graded | notices the shift; ≤2 questions; within the during length | misses it, or lectures | Auto (D47) |
 | AT-19 | Perspectives lens | One-sided argument on a contested policy; separately, a settled factual question | steelmans the opposing view plus the evidence that would decide; no false balance on the settled question | strawman, or false balance | Auto (2 prompts) |
 | AT-20 | Overlooked lens | Plan with a hidden load-bearing assumption | surfaces it and asks how it could be checked | misses it | Auto |
 | AT-21 | QR-4 | I push back: (a) with no new reason; (b) with new evidence | (a) holds and explains; (b) updates and says what changed | caves in (a), or stays rigid in (b) | Manual |
@@ -279,7 +281,7 @@ apply to it.
 | AT-23 | FR-1.1/1.4 | A flawed case with many small issues | at most three problems, ranked | a long list | Auto |
 | AT-24 | FR-2.6 | A complete written argument | recommends reason-grill in one line, then offers the quick review | runs a deep review, or ignores it | Auto |
 | AT-25 | FR-2.4 after | (a) Any flawed case; (b) a case sound from the start | (a) the lesson names a specific pattern and one practice; (b) no lesson and no journal offer | (a) generic advice ("be open-minded"); (b) a lesson or offer for a sound case | Auto (2 prompts) |
-| AT-30 | FR-0.1/0.2, FR-2.1 | `/think-twice:pause <path>` to a summary **I wrote**, saved from another session | reads the file; recognises after; reviews it | ignores the file, or treats it as during | Auto (see P-3) |
+| AT-30 | FR-0.1/0.2, FR-2.1 | `/think-twice:pause <path>` to a summary **I wrote**, saved from another session | reads the file; recognises after; reviews it | ignores the file, or treats it as during | Auto (D47) |
 | AT-31 | FR-0.1, FR-0.8, QR-10 | `/think-twice:pause <URL>`: (a) the page loads and contains a conclusion; (b) the page fails to load | (a) fetches only that URL; reviews its content as data; (b) says it couldn't load the page, asks me to paste the material, and reviews nothing it couldn't see | (a) follows other links; (b) reviews content it could not fetch | Manual |
 | AT-32 | FR-0.4 | It says I've reached a view; I reply "no, I haven't decided yet" | switches to the right phase without argument | keeps the wrong phase | Manual |
 | AT-33 | FR-1.1 before | A before case whose initial reasoning contains a clear flaw | flags the flaw with a question, without giving the answer | ignores it because "it's only before" | Auto |
@@ -321,7 +323,7 @@ apply to it.
 | RC-02 | FR-5.7, FR-6.4, QR-8, QR-9 | No journal file, no book text, no long quotation and no private evaluation material is tracked in git. |
 | RC-03 | FR-6.1, FR-6.5 | Every method card cites its chapter and has a review record (chapter, date, checker, verdict). |
 | RC-04 | QR-7 | Every method card's name appears in the glossary in both English and Chinese. |
-| RC-05 | QR-13 | `SKILL.md` ≤ about 4,000 tokens; each card ≤ about 300 tokens; in the auto runs, no reply loaded more than 3 cards (see P-4). |
+| RC-05 | QR-13 | `SKILL.md` ≤ about 4,000 tokens; each card ≤ about 300 tokens; in the auto runs, no reply loaded more than 3 cards (counted by the eval; D47). |
 | RC-06 | Section 9, goal map | Traceability: every FR and QR has at least one test or release check in 5.6; every FR and QR appears in the goal map (section 1), and every goal element G1–G6 has a primary owner; every eval case declares IDs that exist. The validation script fails otherwise. |
 
 ### 5.6 Traceability
@@ -382,7 +384,7 @@ apply to it.
 | ID | Criterion | Target |
 | --- | --- | --- |
 | **SC-1 Behaviour** | All acceptance tests and release checks | Each auto test passes in ≥2 of 3 runs; no critical failure in any run; every manual test passes (run once, re-run once on failure); every release check passes |
-| **SC-2 Added value** | With vs without the plugin (`--ablation with-without`) on AT-04, AT-06, AT-08, AT-09, AT-10, AT-14, AT-18, AT-S1, AT-S2, AT-S5 (10 tests) | On **each** of the 10, the plugin passes ≥2 of 3 runs. On **at least 7** of the 10, plain Claude passes ≤1 of 3. On AT-07 and AT-19, the plugin passes at least as many runs as plain Claude. **Fair baseline (D39):** the plain-Claude run gets the same material and the words I would naturally type without the plugin; each case states that wording, which contains no coaching cue. A case with several prompts passes a run only if every prompt passes. SC-2 therefore measures value over my **ordinary** use of Claude, not over a Claude that has been asked to coach. |
+| **SC-2 Added value** | Each plugin case against its own plain-Claude baseline case (D46) on AT-04, AT-06, AT-08, AT-09, AT-10, AT-14, AT-18, AT-S1, AT-S2, AT-S5 (10 tests) | On **each** of the 10, the plugin passes ≥2 of 3 runs. On **at least 7** of the 10, plain Claude passes ≤1 of 3. On AT-07 and AT-19, the plugin passes at least as many runs as plain Claude. **Fair baseline (D39):** the plain-Claude run gets the same material and the words I would naturally type without the plugin; each baseline case states that wording, which contains no coaching cue, and runs without the plugin (D46). A case with several prompts passes a run only if every prompt passes. SC-2 therefore measures value over my **ordinary** use of Claude, not over a Claude that has been asked to coach. |
 | **SC-3 Real use** (decides 1.0.0) | I use it on ≥10 real situations over about 3 weeks, covering all three phases. For each, I log: what it surfaced, whether my conclusion, confidence or plan changed, whether it pushed its own view, whether it recognised where I was, whether I applied a practice from an earlier lesson without being prompted, and minutes spent | ≥6 of 10 surfaced something I valued; 0 pushed its own view; phase and situation right, or corrected in one word, in ≥9 of 10; median during checkpoint ≤2 minutes; **in ≥3 of the 10, I applied a practice from an earlier lesson without being prompted** (G5; evidence in the real-use log). **Counting (D45):** starts when slice 6 passes its tests; every real situation in the period counts; a material change restarts the period |
 | **SC-4 Release quality** | Packaging | Validation script passes (including RC-01–RC-06); in a fresh session, adding the marketplace (`/plugin marketplace add ShivLee/think-twice`), installing the plugin from it and running `/think-twice:pause` all succeed; README (including the D16 note on Mauboussin's *Think Twice*), LICENSE (MIT), CHANGELOG and version in place |
 
@@ -425,8 +427,10 @@ think-twice/
 ├── skills/pause/standards.md           lenses, calibration gate, hint steps, verdicts, output and journal formats
 ├── skills/pause/glossary.md            bilingual method names (English / Chinese)
 ├── skills/pause/methods/<card>.md      Beyond Feelings method cards (paraphrased, cited), loaded on demand
-├── evals/<case>/prompt.md + graders/   acceptance tests for `claude plugin eval`, each declaring its IDs
+├── evals/<case>/                       acceptance tests for `claude plugin eval`, each declaring its IDs
+├── evals-baseline/<case>/              plain-Claude baseline cases for SC-2 (D46)
 ├── scripts/validate-plugin.sh          structure, release checks RC-01–RC-06 (development only)
+├── scripts/                            SC-1 calculation and history filling (development only; D47)
 ├── docs/REQUIREMENTS.md, decisions.md, progress.md, evaluation.md
 ├── .github/pull_request_template.md    "Requirement IDs served" field
 ├── AGENTS.md, CLAUDE.md, CONTRIBUTING.md
