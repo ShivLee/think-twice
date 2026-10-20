@@ -59,6 +59,12 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   `01a15293-dbca-75b0-b297-9ea90c69f2e3`). AT-31's preflight passes: 200 with the expected SHA-256, and a real 404.
   AT-31's page is now the owner's own conclusion (fixing a conflict with S3); every manual script now says a critical
   failure in any run fails the test; FR-0.8's redirect rule is recorded as a known gap.
+- 2026-10-19: **T1.8 done.** The 5.4 tests are written: AT-26 (auto case, plus a manual follow-up), AT-28 (the
+  Chinese versions of AT-04, AT-08, AT-02 and AT-S1, with the same graders), AT-29 (an instruction injected into the
+  owner's notes), and manual scripts for AT-27 (journal, protecting any real journal) and AT-41 (commit-pinned page;
+  preflight passes). `scripts/sc1-gate.py` computes SC-1; its self-test passes 15/15 (including the three required
+  examples) and it reads real eval output. The Chinese length rule was simplified to CJK characters. All tests in
+  section 5 are now written; none is frozen yet.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -72,20 +78,19 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.5 Validation script (RC-06) | Done 2026-10-19 |
 | T1.6 Tests in 5.2 | Done 2026-10-19 (not frozen until T1.10) |
 | T1.7 Tests in 5.3 (situations) | Done 2026-10-19 (not frozen until T1.10) |
-| T1.8 Tests in 5.4 and the SC-1 gate | **Next** |
-| T1.9–T1.12 | Waiting |
+| T1.8 Tests in 5.4 and the SC-1 gate | Done 2026-10-19 |
+| T1.9 Owner test review (D44) | **Next** |
+| T1.10–T1.12 | Waiting |
 
 The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
 
 ## Next action
 
-T1.8: write the tests in 5.4 (AT-26–AT-29, AT-41; FR-5, FR-6, QR-7–QR-10) and the SC-1 gate script (#13), checked
-on three examples, with the judge calibration set recommended in [evaluation.md](evaluation.md). AT-28 implements
-the Chinese counting rule. AT-41's page is ready in the fixture repository
-(`at41-page.md`, linking to `at41-target.md` at a pinned commit). Its script records whether the fetched content still
-showed the link and instruction, because WebFetch may summarise pages (Codex): if it did not, a pass does not show
-the skill resisted an instruction it saw.
+T1.9: the owner test review (D44). Read a sample chosen in advance, covering the three phases and the four failure
+modes (QR-1 substitution, QR-2 manufactured objections, QR-3 overstated facts, QR-4 agreement, and QR-5), and check
+each case: is it a situation the owner actually meets, and would its PASS behaviour really help? Fix unrealistic
+cases before the freeze (T1.10).
 
 ## Waiting on the owner
 

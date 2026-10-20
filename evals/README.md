@@ -45,7 +45,10 @@ T1.6 against known-good and known-bad replies ([evaluation.md](../docs/evaluatio
 - A test **passes** when it passes in at least 2 of 3 runs and **no `critical-` grader failed in any run**.
 - AT-12 passes in a case when its `at12-` graders pass in at least 2 of 3 runs. AT-12 passes when it passes in every
   auto case. RC-05 fails if any run of any case loads more than 3 cards.
-- T1.8 adds the script that computes this from the `--json` output (D47).
+- A manual test passes if its first run passes, or if it fails and the one re-run passes. A critical failure in any
+  run fails it.
+- `scripts/sc1-gate.py` computes all of this from the `--json` output and a manual results file (D47); its
+  `--self-test` checks the rules, including the three examples T1.8 requires.
 
 ## Counting rules (gap #18, settled in T1.6)
 
@@ -54,8 +57,9 @@ T1.6 against known-good and known-bad replies ([evaluation.md](../docs/evaluatio
 - **Length (QR-6):** words are whitespace-separated tokens of the reply, including Markdown markers. "About" means
   up to 10% over: before **275**, during **220**, after review **440**. When the phase is unclear, the tightest limit
   that could apply is used (stated in the case).
-- **Length in Chinese (AT-28):** CJK characters count one each and other tokens count 1.5 characters each; limits
-  **412 / 330 / 660** (375 / 300 / 600 plus 10%). Implemented with the Chinese cases (T1.8).
+- **Length in Chinese (AT-28):** CJK characters, one each; punctuation and the few Latin words in a Chinese reply are
+  not counted (the 10% tolerance covers them). Limits **412 / 330 / 660** (375 / 300 / 600 plus 10%). (Simplified in
+  T1.8, before the freeze: a weighted count of Latin words cannot be checked by a regex grader.)
 - **Size (QR-13, RC-05):** tokens are counted with the Anthropic token-counting endpoint for the pinned model, or
   estimated at 4 characters per token (1 per CJK character) when it is unavailable. "About" means up to 10% over:
   `SKILL.md` **4,400**, a card **330**. Cards loaded per reply are counted by the `rc05-` grader (Read calls on
@@ -99,6 +103,24 @@ claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-with
 - Record the CLI version, the model and the judge model with the results (D39, D47).
 - While developing, run a smoke set with `--case` or `--tag`, plus the tests a change affects. Run the full gate at
   the end of each slice.
+- Compute the gate with the slice's test list from [plan.md](../docs/plan.md):
+
+  ```sh
+  scripts/sc1-gate.py evals/results/<run>/result.json --manual .local/manual-results.txt --tests "AT-01 AT-02 ..."
+  ```
+
+  `.local/manual-results.txt` (private) holds one manual test per line: `AT-03 pass`, `AT-11 fail pass`,
+  `AT-21 critical`. A test in `--tests` with no results is reported as not run, and the gate fails.
+- Before the first gate run, pin the judge model with a calibration set of known-good and known-bad replies
+  ([evaluation.md](../docs/evaluation.md), T1.6).
+
+## Method names (AT-26, AT-28)
+
+No method card exists before slice 6, so these tests anchor on what REQUIREMENTS already says. AT-26's auto case
+uses the S1 situation, whose method REQUIREMENTS assigns to *Beyond Feelings* chapter 1; if the card's chapter turns
+out different, the test changes through a decision entry. AT-28 checks that any method named in a Chinese reply is
+named in Chinese; whether that name matches the glossary is checked by RC-04 and in AT-26's manual part once the
+glossary exists.
 
 ## Manual tests
 

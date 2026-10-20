@@ -42,6 +42,8 @@ change that might is treated as material and restarts the period.
 - Check `SKILL.md` and card sizes against QR-13 at the end of every slice (section 9 rule 11).
 - Slice reviews by Codex cover the diff, not the whole repository.
 - Real use before the SC-3 start is feedback only (D45). The real-use log stays private in `.local/`.
+- Before slice 2's first gate run, choose and pin the judge model with a calibration set of known-good and known-bad
+  replies (evaluation.md, T1.6), because one false critical failure fails a test.
 - After slice 2, re-estimate the remaining work from measured times, and revisit whether AT-03, AT-21, AT-22, AT-32,
   AT-37 and AT-34 (c)/(d) should become Auto with saved histories (owner chose to keep them Manual for now; D47).
 
@@ -75,9 +77,10 @@ Settle these while writing the tests, before freezing them. Numbers refer to the
 - #12 Settled by the probe and D46: runs record CLI, model and judge model; each SC-2 test (the 10, plus AT-07 and
   AT-19) gets its own baseline case in D39 wording under `evals-baseline/`, written alongside its plugin case
   (T1.6: the 5.2 tests; T1.7: AT-S1, AT-S2, AT-S5).
-- #13 An SC-1 gate that computes "≥2 of 3 runs, no critical failure" from per-run results, even when P-6 passes;
-  how manual tests are re-run. The counting rules are written in `evals/README.md` (T1.6); the script and its three
-  examples come in T1.8. Manual tests: run once, re-run once on failure (each script says so).
+- #13 **Settled in T1.8.** `scripts/sc1-gate.py` computes "≥2 of 3 runs, no critical failure" from the `--json`
+  output, per test (all of a test's cases must pass in the same run), plus AT-12, RC-05 and a manual results file
+  (run once, re-run once on failure; a critical failure in any run fails). Its self-test covers the three required
+  examples. Before the first gate run (slice 2), pin the judge with a calibration set (evaluation.md, T1.6).
 - #18 **Settled in T1.6** (`evals/README.md`, "Counting rules"): questions by question mark; QR-6 in
   whitespace tokens with 10% tolerance; Chinese by CJK characters (implemented in T1.8); QR-13 by the token-counting
   endpoint, with a fallback estimate and 10% tolerance. Card order when more than 3 apply: no test depends on it; it is

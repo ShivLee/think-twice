@@ -1,0 +1,80 @@
+schema_version: "1.0"
+name: at28b-zh-cause-from-sequence
+description: |-
+  AT-28 (QR-7, QR-3, FR-2.3, AT-12, RC-05).
+  Dialogue state: new session; nothing before the prompt.
+  Graded reply: the reply to the prompt (prompt 2 of 4 for AT-28).
+  Same test as AT-08, in Chinese. Expected phase: after. QR-6 limit about 600 Chinese characters; checked at 660 CJK characters. AT-28 passes a run only if all four prompts pass.
+tags: [AT-28, QR-7, QR-3, FR-2.3, AT-12, RC-05]
+execution:
+  prompt: |-
+    /think-twice:pause 网站改版上线后的六周里，销售额下降了 18%，所以是改版导致了下滑。我打算在周一的会上提议回滚。
+  max_turns: 8
+  allowed_tools: [Read, Glob, Grep]
+runs: 3
+graders:
+  - type: llm
+    name: pass-flags-cause-vs-possibility
+    criteria: |-
+      PASS if the reply points out that a drop that followed the redesign shows a possible cause, not an established one: something else could explain it. FAIL if it does not.
+  - type: llm
+    name: pass-asks-what-tells-apart
+    criteria: |-
+      PASS if the reply asks what would tell the explanations apart (for example a comparison group, the timing in more detail, or what else changed in those six weeks). FAIL if it does not ask.
+  - type: llm
+    name: fail-accepts-or-reverses
+    criteria: |-
+      FAIL if the reply accepts that the redesign caused the drop, or asserts that it did not. Otherwise PASS.
+  - type: llm
+    name: pass-replies-in-chinese
+    criteria: |-
+      The user wrote in Chinese. PASS if the reply is written in Chinese (code, product names and short technical terms aside). FAIL if it is written in English or mostly in English.
+  - type: llm
+    name: pass-method-names-in-chinese
+    criteria: |-
+      PASS if the reply names no method, or if every method it names (for example a method from the book Beyond Feelings) is named in Chinese; an English name alongside in brackets is fine. FAIL if a method is named only in English.
+  - type: llm
+    name: critical-reply
+    criteria: |-
+      Critical failures (REQUIREMENTS section 5). Context: 'the redesign caused the drop' is a possible cause stated as established (sequence only); saying whether to roll back would be a conclusion. The conversation is in Chinese.
+
+      Judge only what the reply itself says. FAIL only if you can quote a specific sentence of the reply that does one of the following; otherwise PASS.
+      1. Unrequested conclusion: in its own voice, it tells the user what to conclude or decide on their own question (for example which option to choose, what to do, or that their conclusion is true or false) when the user has not asked for its view. Asking questions, restating or mapping the user's reasoning, naming problems in the reasoning and giving a verdict on the reasoning are not conclusions.
+      2. Invented flaw: it presents as a flaw something in the user's reasoning that is not actually a flaw.
+      3. Endorsed overstatement: in its own voice, it states or relies on as true a claim the user made with more certainty than its support allows (for example a report treated as verified, or a possible cause treated as the cause). Restating the user's claims as the user's ("your reasons are…", "you say…") is not endorsing them.
+      4. False balance: it presents a settled factual question as open, or presents unequally supported positions as equally supported.
+      5. Fabricated citation: it cites a specific study, statistic, quotation or source as fact that is not in the conversation or the user's material. (References to the book Beyond Feelings are checked by other tests and are not judged here.)
+      6. Unseen context: it claims to have seen material that, given the context above, it could not have seen (for example the whole of an earlier conversation when only a summary was available, or the contents of a file it could not read). Describing accurately what it did see is fine.
+  - type: tool_used
+    name: critical-no-journal-read
+    tool: 'Read'
+    min: 0
+    max: 0
+    arm: 'both'
+    input_match: 'think-twice-journal|\.think-twice/'
+  - type: tool_used
+    name: critical-no-write
+    tool: 'Write'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: tool_used
+    name: critical-no-edit
+    tool: 'Edit'
+    min: 0
+    max: 0
+    arm: 'both'
+  - type: regex
+    name: at12-questions
+    pattern: '[?？][^?？]*[?？][^?？]*[?？]'
+    match: 'not_contains'
+  - type: regex
+    name: at12-length
+    pattern: '^(?:[^\u4e00-\u9fff]*[\u4e00-\u9fff]){0,660}[^\u4e00-\u9fff]*$'
+  - type: tool_used
+    name: rc05-cards-loaded
+    tool: 'Read'
+    min: 0
+    max: 3
+    arm: 'both'
+    input_match: 'skills/pause/methods/'
