@@ -4,7 +4,8 @@ The task record for building think-twice. **Read it at the start of every sessio
 the product does is defined in [REQUIREMENTS.md](REQUIREMENTS.md); the slices and tasks are in [plan.md](plan.md);
 this file says where the work stands.
 
-This repository is public: no personal reasoning, journal content or real-use transcripts go here.
+This repository is public (D3; made public on 2026-10-19): no personal reasoning, journal content or real-use
+transcripts go here.
 
 ## Current outcome
 
@@ -82,15 +83,16 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.9 Owner test review (D44) | **Next** |
 | T1.10–T1.12 | Waiting |
 
-The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
-[plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
+The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settled; see
+[plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review). [HANDOFF.md](HANDOFF.md) lists the next steps
+in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T1.9: the owner test review (D44). Read a sample chosen in advance, covering the three phases and the four failure
-modes (QR-1 substitution, QR-2 manufactured objections, QR-3 overstated facts, QR-4 agreement, and QR-5), and check
-each case: is it a situation the owner actually meets, and would its PASS behaviour really help? Fix unrealistic
-cases before the freeze (T1.10).
+T1.9: the owner test review (D44). Claude prepares the sample listed in [HANDOFF.md](HANDOFF.md) as one readable
+page, covering the three phases and the failure modes (QR-1 to QR-5). The owner checks each case: is it a situation
+they actually meet, and would its PASS behaviour really help? Fix unrealistic cases before the freeze (T1.10). Then
+pin the judge with a calibration set before any graded run (T1.11 and later).
 
 ## Waiting on the owner
 

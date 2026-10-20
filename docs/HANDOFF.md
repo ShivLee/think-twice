@@ -1,64 +1,107 @@
-# Handoff: 2026-10-18 (planning session)
+# Handoff: 2026-10-19 (slice 1: probes and tests)
 
 A snapshot of where things stand and where to pick up. **For live status, read [progress.md](progress.md)**; it wins
 if the two ever disagree. The tasks are in [plan.md](plan.md).
 
 ## Where things stand
 
-- **Requirements:** approved v1.0 (tag `requirements-v1.0`), now with **D44 and D45** added. `git diff
-  requirements-v1.0 -- docs/REQUIREMENTS.md` shows only the lines that cite them.
-- **Plan:** `docs/plan.md` exists, has had the Codex rule 9 review, and all findings are fixed.
-- **Built:** nothing yet. No skill text, no tests, no scripts. T1.1 (eval privacy) is in place: `evals/results/` is
-  ignored by git, and `--no-publish` applies from the first eval run.
-- **Git:** D44, D45 and the plan are committed and pushed to <https://github.com/ShivLee/think-twice> (`f7795fa`,
-  `c6e4471`), followed by one commit with this handoff and the matching progress.md update.
-- **Next:** slice 1, task **T1.2: probe P-1**.
+- **Slice 1, tasks T1.1–T1.8 are done.** All 48 acceptance tests in REQUIREMENTS section 5 are written. They are
+  **not frozen yet**: the freeze is T1.10, after your review (T1.9).
+- **Probes P-1 to P-7 all passed** (T1.2–T1.3), so every Auto test can stay automatic. Results, constraints and costs
+  are in [evaluation.md](evaluation.md).
+- **Built so far:**
+  - `evals/`: 50 auto cases;
+  - `evals-baseline/`: 14 SC-2 baseline cases (D46);
+  - `evals/manual/`: 12 manual scripts;
+  - `scripts/validate-plugin.sh`: RC-06;
+  - `scripts/build-histories.py`: builds session histories from `dialogue.md`, with the current skill filled in;
+  - `scripts/sc1-gate.py`: computes SC-1.
+
+  Conventions are in [evals/README.md](../evals/README.md).
+- **No product skill text yet**, and no `.claude-plugin/plugin.json` yet. Both are deliberate: tests come first.
+- **Requirements:** v1.0 plus D44–D47. `git diff requirements-v1.0 -- docs/REQUIREMENTS.md` shows only lines citing
+  them.
+- **Git:** everything is committed and pushed. The last commit is `5ee37d5` on `main` of
+  <https://github.com/ShivLee/think-twice>, which is **public** since 2026-10-19 (D3). A scan of the whole history
+  found no email, local path, username or credential.
+- **New public repository:** <https://github.com/ShivLee/think-twice-fixtures> holds the synthetic web pages for AT-31
+  and AT-41. They are pinned by commit `0787d68`. **Never rewrite its history**, because that would break the frozen
+  URLs.
 
 ## What this session decided
 
 | # | Decision | Where |
 | --- | --- | --- |
-| — | **Keep the original plan:** 7 slices, all 48 tests, tests frozen before any skill text. Streamlining by cutting tests or slices was rejected after a Codex review; time is saved by how the work is run, not by changing the rules. | plan.md, "Working practices" |
-| D44 | **Slice 1 ends with an owner test review**, not real use, because slice 1 builds no product feature. Before the freeze, I read a sample of test cases chosen in advance (three phases, four failure modes) and check: is this a situation I actually encounter, and would the PASS behaviour really help me? | decisions.md |
-| D45 | **SC-3 counting starts after slice 6** passes its tests; the ~3 weeks of real use run alongside slice 7. Earlier use is feedback only. Six counting rules: every real situation counts; extend only for coverage, never for scores; same percentages above 10 uses; earlier lessons count if applied unprompted; a material change restarts the period; during the period, only critical failures are fixed. | decisions.md (protected item: success criteria) |
-| — | **Eval privacy first:** every `claude plugin eval` run uses `--no-publish` (the default publishes the report to claude.ai), and `evals/results/` is ignored by git. | plan.md T1.1, `.gitignore` |
-| — | **`docs/plan.md`** holds the slices and tasks; **`docs/progress.md`** holds status only, so it stays short. | plan.md, progress.md |
+| D46 | Each SC-2 test (the 10, plus AT-07 and AT-19) gets its own baseline case, in the words you'd naturally type, run as plain Claude. The eval's built-in baseline arm can't do this: it gets the slash command too. | decisions.md (protected: success criteria) |
+| D47 | How the auto cases run: pasted text or saved sessions; sanitized histories only; the current skill filled into pause turns; fixtures by scaffold script; card loads counted for RC-05; SC-1 computed by script; CLI, model and judge recorded. Every Manual test stays Manual for now, to be revisited after slice 2. | decisions.md |
+| — | Eval cases declare their IDs in `tags`; RC-06 checks them. | evals/README.md |
+| — | During cases use saved sessions, not pasted transcripts: FR-0.2 defines *during* by a conversation in this session. | evals/README.md |
+| — | Counting rules (gap #18): questions by question mark; QR-6 length in whitespace tokens, +10%; Chinese in CJK characters, +10%. | evals/README.md |
+| — | AT-31 and AT-41 fetch commit-pinned pages from a separate public fixture repository, after a Codex consultation. FR-0.8's redirect rule is a **known gap**, not tested. | plan.md, progress.md |
+| — | A critical failure in **any** run, the first or the re-run, fails a manual test. | every manual script |
 
-## How the plan works (one minute)
+## What to do next time, in order
 
-- **Each slice's gate** is a fixed list of tests in plan.md. A slice passes when its own tests **and every earlier
-  slice's tests** pass under the SC-1 rule (≥2 of 3 runs, no critical failure). Tests for later slices are "not
-  implemented", not failures.
-- **Each slice ends with** its gate passing, me using it once on something real (slice 1: the D44 test review),
-  and a Codex review of the diff.
-- **Before each later slice starts**, its tasks are written into plan.md and Codex reviews them (rule 9).
-- **Version:** `0.x` until SC-1–SC-4 are all met; then `1.0.0`. The earliest `1.0.0` is about 3 weeks after
-  slice 6 is done.
-- **The biggest unknown is P-1.** If `claude plugin eval` can't invoke a manual-only skill, every auto test becomes
-  manual and the work grows. Re-estimate the timeline after slice 2, from measured times.
+1. **Start-up.** Read [AGENTS.md](../AGENTS.md), this file, [progress.md](progress.md) and [plan.md](plan.md). Run
+   `scripts/validate-plugin.sh` and `scripts/build-histories.py --check`; both should pass with no skill present.
+2. **T1.9, your test review (D44).** Claude prepares the sample below as one readable page: each case's situation,
+   dialogue, graded reply and PASS/FAIL conditions. For each case you answer: *is this a situation I actually meet?*
+   and *would its PASS behaviour really help me?* Unrealistic cases get fixed. The sample is chosen in advance, as D44
+   requires, though you may change it before reading:
 
-## Where to pick up
+   | Area | Cases |
+   | --- | --- |
+   | Before | AT-04 (substitution), AT-14 (criteria first), AT-33 (a flaw in early reasoning) |
+   | During | AT-16 (summarise recent turns), AT-18 (criteria shift after a favourite), AT-S2b (resisting Claude) |
+   | After | AT-07 (sound: no invented flaws), AT-08 (cause vs sequence), AT-35c (two flaws), AT-25a (the lesson) |
+   | Situations | AT-S1 (strong reaction), AT-S5 (hindsight) |
+   | Failure modes | QR-1: AT-04, AT-05 · QR-2: AT-07, AT-22 · QR-3: AT-08, AT-09 · QR-4: AT-21, AT-S2a · QR-5: AT-11 |
+   | Also check | the plain-Claude wordings in all 14 baseline cases (D39), the Chinese prompts in AT-28a–d, and AT-26's "chapter 1" anchor |
 
-**Slice 1, in plan.md order:** T1.2 probe P-1 → T1.3 probes P-2–P-7 → T1.4 set the "How" column → T1.5 validation
-script (RC-06) → T1.6–T1.8 write the tests → **T1.9 my test review** → T1.10 freeze → T1.11 plain-Claude baseline
-on the SC-2 cases → T1.12 slice review.
+3. **T1.10, the freeze.** Freeze the prompts, dialogues and graders. RC-06 must pass. From then on, any change needs a
+   decision entry. Consider tagging the commit, for example `tests-v1.0`, so drift shows in a diff as it does for
+   REQUIREMENTS.
+4. **Pin the judge before any graded run.** Build a calibration set of known-good and known-bad replies, and choose and
+   pin the judge model with it. In T1.6, Haiku once failed a good reply, and Sonnet failed another good reply in every
+   run ([evaluation.md](evaluation.md)). One false critical failure fails a whole test.
+5. **T1.11, the plain-Claude baseline** on the 14 baseline cases. This is information, not a gate. The repository has
+   no `plugin.json` yet, so run it from a scratch copy with a minimal one (as the T1.6 smoke test did), or decide to
+   add the real one. Tell the owner before slice 2 if plain Claude already passes too many.
+6. **T1.12, the slice review.** Codex compares slice 1's changes with section 1 and the ID list; you read the review.
+7. **Before slice 2:** write slice 2's tasks into plan.md, with IDs and done-when, and get the Codex rule 9 review.
+   Slice 2 is the first time skill text gets written.
 
 To resume, paste this:
 
 ```text
 In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md.
-Then start T1.2, probe P-1, with a throwaway skill. Run every eval with --no-publish.
+Then prepare T1.9: the owner test review sample from HANDOFF.md as one readable page.
 Name the requirement IDs each step serves.
 ```
 
+## How to change a test before the freeze
+
+The case files were generated by scripts that lived in the session's scratch folder. Private copies are in
+`.local/t1-generators/` (gitignored), for reference only. **Edit the case files directly.** Keep the shared grader
+text identical in every case: `critical-reply`, the `at12-` and `rc05-` graders, and the critical tool checks. After
+any edit, run `scripts/validate-plugin.sh` and `scripts/build-histories.py --check`.
+
 ## Rules that apply from now on
 
-- REQUIREMENTS v1.0 is frozen. Every change cites a decision entry; `git diff requirements-v1.0` shows drift.
-- Every new decision gets the D40 drift check: *Serves* and *Protected item*.
-- Tests are frozen before skill text. Never weaken a test to make it pass.
-- Write the skill from the tests, not by copying the requirements; SKILL.md stays under about 4,000 tokens (QR-13).
-- Every eval run uses `--no-publish`. Real-use logs stay private in `.local/`, never in progress.md.
-- No commit, push, tag or release unless I ask.
+- REQUIREMENTS v1.0 is frozen. Every change cites a decision entry, and every new decision gets the D40 drift check.
+- Tests are frozen at T1.10 and never weakened to make them pass. Write the skill from the tests; SKILL.md stays under
+  about 4,000 tokens (QR-13).
+- Every eval run uses `--no-publish`. Run `scripts/build-histories.py` before each run. Record the CLI, model and judge
+  versions: the CLI moved from 2.1.303 to 2.1.304 during this session.
+- Committed histories hold only conversation entries. Raw session files contain your email and credential entries.
+- Real-use logs and manual results stay private in `.local/`.
+- No commit, push, tag or release unless you ask. Stage files individually.
+
+## Leftovers on this machine
+
+None. The kept eval run folders (`/private/tmp/e-*`) and the T1.3 probe session files, which contained your email,
+were deleted on 2026-10-19 at your request. Runs with `--keep-temp` leave such folders behind, so delete them after
+inspecting.
 
 ## Codex threads
 
@@ -66,16 +109,20 @@ All on gpt-6-astra, high effort. Resume with `/cc-suite:continue <thread>`.
 
 | Thread | What it reviewed |
 | --- | --- |
-| `01a14e42-3bc6-7750-bd9b-be610089efce` | Requirements v0.4 → v0.7.1 (earlier session) |
-| `01a15259-f481-73d2-8658-a609e2c89b01` | The streamlining proposal; recommendations for D44 and D45 |
-| `01a15293-dbca-75b0-b297-9ea90c69f2e3` | Rule 9 review of plan.md: NEEDS REVISION, 6 findings, all fixed |
+| `01a14e42-3bc6-7750-bd9b-be610089efce` | Requirements v0.4 → v0.7.1 |
+| `01a15259-f481-73d2-8658-a609e2c89b01` | The streamlining proposal; D44 and D45 |
+| `01a15293-dbca-75b0-b297-9ea90c69f2e3` | Rule 9 review of plan.md; then (2026-10-19) best practice for AT-31 and AT-41 |
 
 ## Lessons from this session
 
-- **Cutting tests and slices saves less than it seems.** Most of the time comes from SC-3's three weeks and from
-  repeat runs. Running the work well (targeted checks, early baseline, real use as feedback) saves more than changing
-  the rules.
-- **An "obvious" test merge can drop a requirement.** AT-03 and AT-32, or AT-38 and AT-31b, look alike but check
-  different things.
-- **Parent IDs hide scope.** Writing "FR-0" for slice 2 silently pulled in situations from slice 4. Gates now list
-  exact tests.
+- **Probe the real mechanics before writing frozen tests.** Several findings would have quietly broken the tests:
+  - a resumed session follows the skill text stored in its history, not the current plugin's;
+  - raw session files carry private data;
+  - auto-memory can write during history generation;
+  - the eval's baseline arm gets the slash command too.
+- **The judge is part of the test.** With "one critical failure fails the test", a jumpy judge sinks good behaviour.
+  Check a judge against known answers before trusting it; a stronger model is not automatically safer.
+- **Read the replies, not just the verdicts.** Both suspicious grader results in this session were settled only by
+  reading the full reply.
+- **Situations interact.** AT-31's page was someone else's post, which made S3 apply and contradicted the test's own
+  PASS condition. Codex caught it. Check each fixture against FR-0.2 and FR-3 before freezing.
