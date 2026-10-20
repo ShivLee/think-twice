@@ -90,6 +90,9 @@ Settle these while writing the tests, before freezing them. Numbers refer to the
 - #9 Procedure for changing method cards and tests (CONTRIBUTING.md covers situations only).
 - #19 What "one pass" means alongside the correction loop.
 - #21 Paired self-review cases: the same reasoning attributed to Claude, to me and to a third party.
+- FR-0.8's redirect rule (follow a redirect only within the same site, otherwise ask) has no test case. Owner decision
+  2026-10-19: record it as a known gap; add redirect cases only if real use shows a need. They would need a definition
+  of "same site" and a host that serves real HTTP redirects.
 
 ## Slice 6 note: the omission pass (section 7)
 

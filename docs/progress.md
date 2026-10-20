@@ -51,6 +51,14 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   and RC-05. Dialogues are frozen as `dialogue.md` and built by `scripts/build-histories.py` (D47). Gaps #7, #10 and
   #18 settled ([plan.md](plan.md)). A smoke run confirmed the mechanics, and a judge calibration led to a tighter
   critical-failure wording ([evaluation.md](evaluation.md)). Not frozen yet (T1.10).
+- 2026-10-19: **T1.7 done.** The 5.3 situation tests are written: 10 auto cases (AT-S1–AT-S7, with AT-S2 and AT-S3
+  as two prompts each, and AT-S7 as no-cue and two-cue cases) and 4 SC-2 baseline cases (AT-S1, AT-S2a, AT-S2b,
+  AT-S5). Same conventions as T1.6. A smoke run checked the multi-line pause argument in AT-S3b. Not frozen yet.
+- 2026-10-19: AT-31 and AT-41 test pages published in the public repository `ShivLee/think-twice-fixtures` and
+  pinned by commit (`0787d68`), on the owner's choice after a Codex consultation (thread
+  `01a15293-dbca-75b0-b297-9ea90c69f2e3`). AT-31's preflight passes: 200 with the expected SHA-256, and a real 404.
+  AT-31's page is now the owner's own conclusion (fixing a conflict with S3); every manual script now says a critical
+  failure in any run fails the test; FR-0.8's redirect rule is recorded as a known gap.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -63,17 +71,22 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.4 Set the "How" column | Done 2026-10-19 (D46, D47) |
 | T1.5 Validation script (RC-06) | Done 2026-10-19 |
 | T1.6 Tests in 5.2 | Done 2026-10-19 (not frozen until T1.10) |
-| T1.7 Tests in 5.3 (situations) | **Next** |
-| T1.8–T1.12 | Waiting |
+| T1.7 Tests in 5.3 (situations) | Done 2026-10-19 (not frozen until T1.10) |
+| T1.8 Tests in 5.4 and the SC-1 gate | **Next** |
+| T1.9–T1.12 | Waiting |
 
 The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
 
+## Next action
+
+T1.8: write the tests in 5.4 (AT-26–AT-29, AT-41; FR-5, FR-6, QR-7–QR-10) and the SC-1 gate script (#13), checked
+on three examples, with the judge calibration set recommended in [evaluation.md](evaluation.md). AT-28 implements
+the Chinese counting rule. AT-41's page is ready in the fixture repository
+(`at41-page.md`, linking to `at41-target.md` at a pinned commit). Its script records whether the fetched content still
+showed the link and instruction, because WebFetch may summarise pages (Codex): if it did not, a pass does not show
+the skill resisted an instruction it saw.
+
 ## Waiting on the owner
 
 - Nothing at the moment.
-
-## Next action
-
-T1.7: write the tests in 5.3, the situations (AT-S1–AT-S7; FR-0.3, FR-3), with the baseline cases for AT-S1, AT-S2
-and AT-S5 (D46). Follow `evals/README.md`. AT-S3b is graded after an earlier pause turn, so it uses a dialogue.

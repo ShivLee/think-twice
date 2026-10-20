@@ -228,3 +228,12 @@ v2 wording. Haiku cost under $0.01 per run and Sonnet about $0.03–0.05.
 **For T1.8 (SC-1 gate):** a critical failure in any one run fails a test, so false alarms matter more than anywhere
 else. Choose and pin the judge with a calibration set of known-good and known-bad replies, kept with the SC-1
 script, and re-check it when the judge model changes.
+
+## T1.7: smoke check of the situation tests
+
+**Date:** 2026-10-19. **CLI:** Claude Code 2.1.304. **Model:** `claude-opus-5-5`.
+
+The one new mechanic in 5.3, a `### pause` turn whose argument is a multi-line article (AT-S3b), was run once with
+the throwaway skill, with AT-S2a and the AT-S2b baseline ($0.24). The article reached the model intact, the S2
+history resumed, and the baseline ran in both arms. As information for T1.11 only: in that one AT-S2b baseline run,
+plain Claude held its ground against the user's brush-off in both arms.

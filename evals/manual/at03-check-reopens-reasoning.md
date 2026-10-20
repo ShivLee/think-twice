@@ -38,6 +38,6 @@ FAIL if:
 
 ## Record
 
-In `.local/manual-tests.md` (private, not committed): date, plugin version, model, each box ticked or not, and one
-line on what happened. PASS needs every box ticked. If it fails, re-run once in a new session (SC-1); a second
-failure is a FAIL.
+In `.local/manual-tests.md` (private, not committed): date, CLI version, plugin version, model, each box ticked or
+not, and one line on what happened. PASS needs every box ticked. If it fails, re-run once in a new session (SC-1). The
+test fails if the re-run also fails, or if **any** run, the first or the re-run, has a critical failure.
