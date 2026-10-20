@@ -42,6 +42,9 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 - 2026-10-19: **T1.4 done.** Owner approved D46 (each SC-2 test gets its own plain-wording baseline case) and D47
   (test methods from the probe; every Auto test stays Auto, every Manual test stays Manual for now, revisited after
   slice 2). REQUIREMENTS updated to cite them; `git diff requirements-v1.0` shows only lines citing D44–D47.
+- 2026-10-19: **T1.5 done.** `scripts/validate-plugin.sh` implements RC-06 and passes on the current docs (58 FR/QR
+  units, 48 tests). `--self-test` passes 14/14 scenarios, including the four required failures: a missing ID, an
+  unmapped requirement, a test citing an unknown ID, an undefined subcase. Eval cases declare their IDs in `tags`.
 - No product skill text or test has been written yet.
 
 ## Slice 1 status
@@ -52,8 +55,9 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.2 Probe P-1 | Done 2026-10-19: pass ([evaluation.md](evaluation.md)) |
 | T1.3 Probes P-2–P-7 | Done 2026-10-19: all pass ([evaluation.md](evaluation.md)) |
 | T1.4 Set the "How" column | Done 2026-10-19 (D46, D47) |
-| T1.5 Validation script (RC-06) | **Next** |
-| T1.6–T1.12 | Waiting |
+| T1.5 Validation script (RC-06) | Done 2026-10-19 |
+| T1.6 Tests in 5.2 | **Next** |
+| T1.7–T1.12 | Waiting |
 
 The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) are listed in
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
@@ -64,5 +68,6 @@ The test-level gaps to settle before the freeze (Codex #7, #10, #12, #13, #18) a
 
 ## Next action
 
-T1.5: write `scripts/validate-plugin.sh` with RC-06 (section 9, goal map). Done when it passes on the current docs
-and fails on each of: a missing ID, an unmapped requirement, a test citing an unknown ID, an undefined subcase.
+T1.6: write the tests in 5.2 (recognition, core, phases) and AT-12 as one reusable check (AT-01–AT-25, AT-30–AT-40;
+FR-0–FR-2, FR-4, QR-1–QR-6, QR-10, QR-12). Use the methods in D47 and settle the gaps listed in plan.md. Write the
+SC-2 baseline cases (D46) alongside their plugin cases.
