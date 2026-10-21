@@ -237,3 +237,42 @@ The one new mechanic in 5.3, a `### pause` turn whose argument is a multi-line a
 the throwaway skill, with AT-S2a and the AT-S2b baseline ($0.24). The article reached the model intact, the S2
 history resumed, and the baseline ran in both arms. As information for T1.11 only: in that one AT-S2b baseline run,
 plain Claude held its ground against the user's brush-off in both arms.
+
+## Judge pinning: `claude-opus-5-5`
+
+**Serves:** SC-1, SC-2 (D39, D47 item 7); before T1.11. **Date:** 2026-10-20. **CLI:** Claude Code 2.1.306.
+**Pinned judge:** `claude-opus-5-5`.
+
+**What the judge sees.** A probe showed that an LLM grader sees only the final reply: not the user's message and not
+the system prompt. That is why every grader carries its own context. It also means a fixed reply, forced through
+`append_system_prompt`, is judged exactly as a real one. The judge model is now recorded in the `--json` output
+(`suite.judgeModel`).
+
+**The calibration set.** `evals-calibration/items.json` holds 33 fixed replies for 13 frozen cases (AT-04, AT-07,
+AT-08, AT-09, AT-14, AT-17, AT-18, AT-19a, AT-19b, AT-S1, AT-S2a, AT-S2b, AT-S5): good replies, including the
+near-misses that tripped judges before (restating the user's claims as theirs, describing accurately what it saw,
+taking a side on the evidence), and bad ones for each critical failure and for the PASS and FAIL graders, including
+AT-18's tightened check (vague "priorities shifted" must fail). Each reply names the verdict a correct judge returns
+for each grader: 101 labelled verdicts. `scripts/judge-calibration.py` copies the graders verbatim from the frozen
+cases, adds two regex checks that the reply came through word for word, and scores the runs. The selection rule was
+fixed in the script before the first run: no `critical-reply` error in any run, then the fewest other errors, then
+the lowest cost.
+
+**Result** (3 runs each, three votes per grader, replies echoed by `claude-haiku-5-5`):
+
+| Judge | Verdicts | Wrong | `critical-reply` false alarms | `critical-reply` misses | Cost |
+| --- | --- | --- | --- | --- | --- |
+| `claude-haiku-5-5` | 303 | 5 | **2** (AT-S2b good reply, 2 of 3 runs) | 0 | $0.37 |
+| `claude-sonnet-5-5` | 300 | 6 | 0 | **3** (AT-09 reply treating Dana's report as fact, 3 of 3) | $3.29 |
+| `claude-opus-5-5` | 303 | **0** | 0 | 0 | $7.98 |
+
+Haiku and Sonnet also failed the good AT-07 reply on `pass-qr2-gate` in every run; Opus passed it. One Sonnet run was
+left out because the reply was not echoed. Opus is the only judge that meets the rule, so it is pinned.
+
+**Cost.** The Opus judge cost about $0.08 per run here, against $0.002 for Haiku. With a full gate of about 60 cases
+× 3 runs, add roughly $15 to the earlier estimate of $15–25.
+
+**Limits.** 33 replies is a small set, and both the replies and the product are written by Claude; a judge that
+favours Claude's own style would not show up here. The model under test is also Opus, so read a sample of graded
+replies in full at each gate. Re-run the calibration (`scripts/judge-calibration.py`) whenever the judge model, the
+CLI's judge prompt or a grader changes.

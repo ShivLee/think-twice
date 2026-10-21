@@ -92,9 +92,9 @@ or local paths (D47).
 ```sh
 scripts/build-histories.py
 claude plugin eval . --no-publish --scaffold --ablation none --runs 3 \
-  --model <pinned model> --judge-model <pinned judge>
+  --model <pinned model> --judge-model claude-opus-5-5
 claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-without --runs 3 \
-  --model <pinned model> --judge-model <pinned judge>
+  --model <pinned model> --judge-model claude-opus-5-5
 ```
 
 - `--no-publish` always (QR-9, RC-02). Results go to `evals/results/`, which git ignores.
@@ -112,8 +112,9 @@ claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-with
 
   `.local/manual-results.txt` (private) holds one manual test per line: `AT-03 pass`, `AT-11 fail pass`,
   `AT-21 critical`. A test in `--tests` with no results is reported as not run, and the gate fails.
-- Before the first gate run, pin the judge model with a calibration set of known-good and known-bad replies
-  ([evaluation.md](../docs/evaluation.md), T1.6).
+- The judge is pinned to `claude-opus-5-5` by a calibration set of known-good and known-bad replies
+  (`evals-calibration/`, `scripts/judge-calibration.py`; [evaluation.md](../docs/evaluation.md)). Re-run the
+  calibration whenever the judge model, the CLI or a grader changes.
 
 ## Method names (AT-26, AT-28)
 

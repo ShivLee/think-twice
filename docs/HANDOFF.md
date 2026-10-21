@@ -76,7 +76,7 @@ To resume, paste this:
 
 ```text
 In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md.
-T1.9 and T1.10 are done. Next: pin the judge with a calibration set, then T1.11.
+T1.9, T1.10 and judge pinning are done. Next: T1.11, the plain-Claude baseline.
 Name the requirement IDs each step serves.
 ```
 

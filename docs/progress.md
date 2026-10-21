@@ -77,6 +77,11 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   RC-06 passes; 18/18 dialogues parse; the shared graders (`critical-`, `at12-`, `rc05-`) are identical in every
   case, apart from the per-phase and Chinese length limits; each baseline has the same PASS and FAIL graders as its
   plugin case. From now on a change to a test needs a decision entry.
+- 2026-10-20: **judge pinned: `claude-opus-5-5`** (SC-1, SC-2; D39, D47 item 7). A probe showed the judge sees only
+  the final reply. A calibration set of 33 fixed replies (101 labelled verdicts) was graded with the frozen graders
+  by three judges, under a selection rule fixed beforehand: Haiku gave 2 false critical failures, Sonnet missed a
+  critical failure 3 times, Opus made no error. Details, cost and limits in [evaluation.md](evaluation.md);
+  `evals-calibration/` and `scripts/judge-calibration.py` re-run it.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -93,8 +98,9 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.8 Tests in 5.4 and the SC-1 gate | Done 2026-10-19 |
 | T1.9 Owner test review (D44) | Done 2026-10-20 |
 | T1.10 Freeze | Done 2026-10-20 (tag `tests-v1.0`) |
-| Judge pinning (before T1.11) | **Next** |
-| T1.11–T1.12 | Waiting |
+| Judge pinning (before T1.11) | Done 2026-10-20 (`claude-opus-5-5`) |
+| T1.11 Plain-Claude baseline | **Next** |
+| T1.12 | Waiting |
 
 The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settled; see
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review). [HANDOFF.md](HANDOFF.md) lists the next steps
@@ -102,9 +108,9 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-Pin the judge before any graded run (no task ID in plan.md yet; it must come before T1.11). Build a calibration set of
-known-good and known-bad replies for the LLM graders, choose the judge model with it, and record the choice in
-[evaluation.md](evaluation.md) (D47 item 7). Then T1.11: the plain-Claude baseline on the 14 baseline cases.
+T1.11: the plain-Claude baseline on the 14 baseline cases (SC-2; D39, D46), with the judge `claude-opus-5-5`. This is
+information, not a gate. The repository has no `plugin.json` yet, so run from a scratch copy with a minimal one. Tell
+the owner before slice 2 if plain Claude already passes too many.
 
 ## Waiting on the owner
 
