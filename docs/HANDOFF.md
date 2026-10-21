@@ -1,112 +1,118 @@
-# Handoff: 2026-10-19 (slice 1: probes and tests)
+# Handoff: 2026-10-21 (slice 1: review, freeze, judge, baseline)
 
 A snapshot of where things stand and where to pick up. **For live status, read [progress.md](progress.md)**; it wins
 if the two ever disagree. The tasks are in [plan.md](plan.md).
 
 ## Where things stand
 
-- **Slice 1, tasks T1.1–T1.8 are done.** All 48 acceptance tests in REQUIREMENTS section 5 are written. They are
-  **frozen since 2026-10-20** (T1.10, tag `tests-v1.0`), after your review (T1.9). [progress.md](progress.md) has
-  what the review changed.
-- **Probes P-1 to P-7 all passed** (T1.2–T1.3), so every Auto test can stay automatic. Results, constraints and costs
-  are in [evaluation.md](evaluation.md).
+- **Slice 1, tasks T1.1–T1.11 are done; T1.12 (the slice review) is next.** Then slice 2's plan and its Codex review,
+  before any skill text.
+- **Tests are frozen** since 2026-10-20 (T1.10, tag `tests-v1.0`), after your review (T1.9). Any change to a prompt,
+  dialogue or grader now needs a decision entry. `git diff tests-v1.0 --stat -- evals evals-baseline` should show
+  only `evals/README.md` (run instructions, not tests).
+- **Judge chosen by calibration:** Opus made no error on 303 labelled verdicts; Haiku gave false critical failures and
+  Sonnet missed real ones ([evaluation.md](evaluation.md)). Re-run with `scripts/judge-calibration.py`.
+- **Model and judge are `opus`** (D48): the alias for the latest Opus, today `claude-opus-5-5`. The eval output
+  records only the alias, so every run session records the resolved ID before and after.
+- **Plain-Claude baseline (T1.11):** plain Claude passes at most 1 of 3 runs on 8 of the 10 SC-2 tests, so "at least
+  7 of 10" is reachable with a margin of one. It already passes AT-09 (3/3) and AT-06 (2/3).
 - **Built so far:**
-  - `evals/`: 50 auto cases;
-  - `evals-baseline/`: 14 SC-2 baseline cases (D46);
-  - `evals/manual/`: 12 manual scripts;
-  - `scripts/validate-plugin.sh`: RC-06;
-  - `scripts/build-histories.py`: builds session histories from `dialogue.md`, with the current skill filled in;
-  - `scripts/sc1-gate.py`: computes SC-1.
+  - `evals/`: 50 auto cases; `evals-baseline/`: 14 SC-2 baseline cases (D46); `evals/manual/`: 12 manual scripts;
+  - `evals-calibration/items.json`: 33 fixed replies with expected verdicts, for choosing the judge;
+  - `scripts/validate-plugin.sh` (RC-06), `scripts/build-histories.py`, `scripts/sc1-gate.py` (SC-1),
+    `scripts/judge-calibration.py`.
 
-  Conventions are in [evals/README.md](../evals/README.md).
-- **No product skill text yet**, and no `.claude-plugin/plugin.json` yet. Both are deliberate: tests come first.
-- **Requirements:** v1.0 plus D44–D47. `git diff requirements-v1.0 -- docs/REQUIREMENTS.md` shows only lines citing
-  them.
-- **Git:** everything is committed and pushed. The last commit is `5ee37d5` on `main` of
-  <https://github.com/ShivLee/think-twice>, which is **public** since 2026-10-19 (D3). A scan of the whole history
-  found no email, local path, username or credential.
-- **New public repository:** <https://github.com/ShivLee/think-twice-fixtures> holds the synthetic web pages for AT-31
-  and AT-41. They are pinned by commit `0787d68`. **Never rewrite its history**, because that would break the frozen
-  URLs.
+  Conventions and run commands are in [evals/README.md](../evals/README.md).
+- **No product skill text yet**, and no `.claude-plugin/plugin.json` yet. Runs so far used a scratch copy with a
+  minimal one.
+- **Requirements:** v1.0 plus D44–D48. `git diff requirements-v1.0 -- docs/REQUIREMENTS.md` shows only sentences
+  citing them.
+- **Git:** everything is committed and pushed to `main` of <https://github.com/ShivLee/think-twice> (public, D3).
+  Tags: `requirements-v1.0`, `tests-v1.0`.
+- **Fixture repository:** <https://github.com/ShivLee/think-twice-fixtures> holds the AT-31 and AT-41 pages, pinned by
+  commit `0787d68`. **Never rewrite its history.**
 
-## What this session decided
+## What this session did
 
-| # | Decision | Where |
+| # | What | Where |
 | --- | --- | --- |
-| D46 | Each SC-2 test (the 10, plus AT-07 and AT-19) gets its own baseline case, in the words you'd naturally type, run as plain Claude. The eval's built-in baseline arm can't do this: it gets the slash command too. | decisions.md (protected: success criteria) |
-| D47 | How the auto cases run: pasted text or saved sessions; sanitized histories only; the current skill filled into pause turns; fixtures by scaffold script; card loads counted for RC-05; SC-1 computed by script; CLI, model and judge recorded. Every Manual test stays Manual for now, to be revisited after slice 2. | decisions.md |
-| — | Eval cases declare their IDs in `tags`; RC-06 checks them. | evals/README.md |
-| — | During cases use saved sessions, not pasted transcripts: FR-0.2 defines *during* by a conversation in this session. | evals/README.md |
-| — | Counting rules (gap #18): questions by question mark; QR-6 length in whitespace tokens, +10%; Chinese in CJK characters, +10%. | evals/README.md |
-| — | AT-31 and AT-41 fetch commit-pinned pages from a separate public fixture repository, after a Codex consultation. FR-0.8's redirect rule is a **known gap**, not tested. | plan.md, progress.md |
-| — | A critical failure in **any** run, the first or the re-run, fails a manual test. | every manual script |
+| T1.9 | Your test review: all 18 sample cases are realistic and their PASS would help; the Chinese prompts and AT-26's anchor are right. 9 baselines now use your own wording (the plugin text with nothing added); AT-06 keeps one question. AT-18's check now requires naming the standard set before the favourite and the one applied after. | progress.md; answers private in `.local/t19-owner-review.md` |
+| T1.10 | Prompts, dialogues and graders frozen; tag `tests-v1.0`. | evals/README.md |
+| — | The judge sees only the final reply (probe). Judge chosen by a calibration set, with a selection rule fixed in advance. | evaluation.md |
+| D48 | Runs use `--model opus --judge-model opus` (`claude-opus` is not a valid name). Record the resolved ID; one comparison never mixes versions; a new judge re-runs the calibration first; a model change restarts SC-3 (D45). | decisions.md (protected: success criteria) |
+| T1.11 | Plain-Claude baseline on the 14 baseline cases: 8 of 10 at ≤1/3. | evaluation.md; raw results private in `.local/t111/` |
+| — | `evals-baseline/results/` is now gitignored. | .gitignore |
+
+The T1.9 review page is a private artifact, which also stores your answers:
+<https://claude.ai/artifact/P84bfSY8c5QhF93SCoxBa7>.
 
 ## What to do next time, in order
 
 1. **Start-up.** Read [AGENTS.md](../AGENTS.md), this file, [progress.md](progress.md) and [plan.md](plan.md). Run
-   `scripts/validate-plugin.sh` and `scripts/build-histories.py --check`; both should pass with no skill present.
-2. **T1.9, your test review (D44).** Claude prepares the sample below as one readable page: each case's situation,
-   dialogue, graded reply and PASS/FAIL conditions. For each case you answer: *is this a situation I actually meet?*
-   and *would its PASS behaviour really help me?* Unrealistic cases get fixed. The sample is chosen in advance, as D44
-   requires, though you may change it before reading:
+   `scripts/validate-plugin.sh` and `scripts/build-histories.py --check`; both pass with no skill present. Check that
+   `git diff tests-v1.0 --stat -- evals evals-baseline` shows only `evals/README.md`.
+2. **Check the model.** Record `claude --version` and what `opus` resolves to:
 
-   | Area | Cases |
-   | --- | --- |
-   | Before | AT-04 (substitution), AT-14 (criteria first), AT-33 (a flaw in early reasoning) |
-   | During | AT-16 (summarise recent turns), AT-18 (criteria shift after a favourite), AT-S2b (resisting Claude) |
-   | After | AT-07 (sound: no invented flaws), AT-08 (cause vs sequence), AT-35c (two flaws), AT-25a (the lesson) |
-   | Situations | AT-S1 (strong reaction), AT-S5 (hindsight) |
-   | Failure modes | QR-1: AT-04, AT-05 · QR-2: AT-07, AT-22 · QR-3: AT-08, AT-09 · QR-4: AT-21, AT-S2a · QR-5: AT-11 |
-   | Also check | the plain-Claude wordings in all 14 baseline cases (D39), the Chinese prompts in AT-28a–d, and AT-26's "chapter 1" anchor |
+   ```sh
+   claude -p --model opus --output-format json "Reply OK" | python3 -c 'import json,sys; print(*json.load(sys.stdin)["modelUsage"])'
+   ```
 
-3. **T1.10, the freeze.** Freeze the prompts, dialogues and graders. RC-06 must pass. From then on, any change needs a
-   decision entry. Consider tagging the commit, for example `tests-v1.0`, so drift shows in a diff as it does for
-   REQUIREMENTS.
-4. **Pin the judge before any graded run.** Build a calibration set of known-good and known-bad replies, and choose and
-   pin the judge model with it. In T1.6, Haiku once failed a good reply, and Sonnet failed another good reply in every
-   run ([evaluation.md](evaluation.md)). One false critical failure fails a whole test.
-5. **T1.11, the plain-Claude baseline** on the 14 baseline cases. This is information, not a gate. The repository has
-   no `plugin.json` yet, so run it from a scratch copy with a minimal one (as the T1.6 smoke test did), or decide to
-   add the real one. Tell the owner before slice 2 if plain Claude already passes too many.
-6. **T1.12, the slice review.** Codex compares slice 1's changes with section 1 and the ID list; you read the review.
-7. **Before slice 2:** write slice 2's tasks into plan.md, with IDs and done-when, and get the Codex rule 9 review.
-   Slice 2 is the first time skill text gets written.
+   If it is no longer `claude-opus-5-5`, D48 applies: re-run the judge calibration before any graded run, and re-run
+   the T1.11 baseline before comparing anything with it.
+3. **T1.12, the slice review** (section 9; all slice 1 IDs). Codex (through cc-suite) reviews slice 1's changes,
+   `git diff 96748d6..HEAD`, against REQUIREMENTS section 1 and the ID list: does every change name the IDs it
+   serves, is anything built that no test needs, does anything weaken a failure-mode guard. You read the review. A
+   finding that would change a frozen test needs a decision entry.
+4. **Close slice 1** (D44): mark it done in progress.md once T1.12's findings are settled, and update README.md's
+   status line.
+5. **Before slice 2:** write slice 2's tasks into plan.md, with IDs and done-when, and get the Codex rule 9 review.
+   Slice 2 is the first time skill text gets written: write it from the frozen tests and keep `SKILL.md` within
+   QR-13. Slice 2 also adds the real `.claude-plugin/plugin.json`.
+6. **At slice 2's first gate:**
+   - read the plugin's AT-07 replies in full. Plain Claude's AT-07 replies failed `critical-reply` while calling the
+     reasoning sound, which a verdict on the reasoning may do; check the judge is not stricter than section 5;
+   - remember the SC-2 margin is one test, and part of AT-18's margin is brevity;
+   - read a sample of graded replies in full: the judge and the product are both Claude, so the calibration cannot
+     catch a judge that favours Claude's style.
 
 To resume, paste this:
 
 ```text
 In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md.
-T1.9–T1.11 and judge pinning are done. Next: T1.12, the slice review.
+Run the start-up checks and record what opus resolves to. Then start T1.12, the slice 1 review with Codex.
 Name the requirement IDs each step serves.
 ```
 
-## How to change a test before the freeze
+## How to run things
 
-The case files were generated by scripts that lived in the session's scratch folder. Private copies are in
-`.local/t1-generators/` (gitignored), for reference only. **Edit the case files directly.** Keep the shared grader
-text identical in every case: `critical-reply`, the `at12-` and `rc05-` graders, and the critical tool checks. After
-any edit, run `scripts/validate-plugin.sh` and `scripts/build-histories.py --check`.
+- **Eval runs:** the commands are in [evals/README.md](../evals/README.md). Until slice 2 adds the real
+  `plugin.json`, run from a scratch copy (`git archive HEAD | tar -x -C <dir>`) with a minimal
+  `.claude-plugin/plugin.json`, then run `scripts/build-histories.py` there. Without a skill, the 5 dialogues with a
+  `### pause` turn do not build; the 4 baseline dialogues do.
+- **Judge calibration:** `scripts/judge-calibration.py build <dir outside the repo>`, then one `claude plugin eval`
+  per candidate judge (the script's help has the command), then `scripts/judge-calibration.py score <json>...`.
+  About $8 with the Opus judge.
+- **Measured cost:** the 14 baseline cases × 3 runs × 2 arms cost about $25 with Opus as model and judge.
 
 ## Rules that apply from now on
 
 - REQUIREMENTS v1.0 is frozen. Every change cites a decision entry, and every new decision gets the D40 drift check.
-- Tests are frozen at T1.10 and never weakened to make them pass. Write the skill from the tests; SKILL.md stays under
-  about 4,000 tokens (QR-13).
-- Every eval run uses `--no-publish`. Run `scripts/build-histories.py` before each run. Record the CLI, model and judge
-  versions: the CLI moved from 2.1.303 to 2.1.304 during this session.
+- Tests are frozen at `tests-v1.0` and never weakened to make them pass. Write the skill from the tests.
+- Every eval run uses `--no-publish`. Run `scripts/build-histories.py` before each run. Record the CLI version and the
+  resolved model before and after each run session (D48).
 - Committed histories hold only conversation entries. Raw session files contain your email and credential entries.
-- Real-use logs and manual results stay private in `.local/`.
+- Real-use logs, manual results and raw eval results stay private in `.local/`.
 - No commit, push, tag or release unless you ask. Stage files individually.
 
 ## Leftovers on this machine
 
-None. The kept eval run folders (`/private/tmp/e-*`) and the T1.3 probe session files, which contained your email,
-were deleted on 2026-10-19 at your request. Runs with `--keep-temp` leave such folders behind, so delete them after
-inspecting.
+- No `/private/tmp/e-*` eval folders remain (no run used `--keep-temp`).
+- This session's scratch folder holds the review page sources, the calibration runs and the T1.11 scratch copy. They
+  hold only synthetic test material.
 
 ## Codex threads
 
-All on gpt-6-astra, high effort. Resume with `/cc-suite:continue <thread>`.
+All on gpt-6-astra, high effort. Resume with `/cc-suite:continue <thread>`. None was used this session.
 
 | Thread | What it reviewed |
 | --- | --- |
@@ -116,14 +122,13 @@ All on gpt-6-astra, high effort. Resume with `/cc-suite:continue <thread>`.
 
 ## Lessons from this session
 
-- **Probe the real mechanics before writing frozen tests.** Several findings would have quietly broken the tests:
-  - a resumed session follows the skill text stored in its history, not the current plugin's;
-  - raw session files carry private data;
-  - auto-memory can write during history generation;
-  - the eval's baseline arm gets the slash command too.
-- **The judge is part of the test.** With "one critical failure fails the test", a jumpy judge sinks good behaviour.
-  Check a judge against known answers before trusting it; a stronger model is not automatically safer.
-- **Read the replies, not just the verdicts.** Both suspicious grader results in this session were settled only by
-  reading the full reply.
-- **Situations interact.** AT-31's page was someone else's post, which made S3 apply and contradicted the test's own
-  PASS condition. Codex caught it. Check each fixture against FR-0.2 and FR-3 before freezing.
+- **The judge sees only the final reply**, not your message or the system prompt. That is why every grader carries
+  its own context, and why fixed replies can calibrate it.
+- **Neither a stronger nor a weaker judge is automatically safer.** Haiku raised false critical failures; Sonnet
+  missed real ones. Fix the selection rule before the results come in.
+- **Check the `error` field before reading scores.** A usage limit cut T1.11 short: 31 runs scored 0 on an API error,
+  not on behaviour. Re-run them only after checking the model resolves to the same ID.
+- **Eval CLI quirks:** only the last `--case` flag applies (use one glob); `costUsd` already includes
+  `judgeCostUsd`; the eval's YAML parser rejects a quoted pattern that spans lines, even where Ruby accepts it.
+  `claude plugin eval <dir> --case zzz-none` lists case files that fail to load, without running anything.
+- **Your natural wording has no added question.** You state the situation and stop; the baselines now do the same.

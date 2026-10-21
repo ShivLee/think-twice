@@ -117,6 +117,9 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
+First record what `opus` resolves to (D48; the command is in [HANDOFF.md](HANDOFF.md)); if it is no longer
+`claude-opus-5-5`, re-run the judge calibration and the T1.11 baseline before relying on them.
+
 T1.12: the slice 1 review. Codex compares slice 1's changes with section 1 and the ID list; the owner reads the
 review. Then write slice 2's tasks into plan.md and get the Codex rule 9 review before any skill text.
 
