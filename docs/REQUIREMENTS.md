@@ -230,8 +230,8 @@ reasoning, endorsing an overstated fact, false balance on a settled factual ques
 or writing the journal unasked, or claiming to have seen context it has not seen.
 
 **Model.** Results are measured on the model the owner uses day to day, recorded with the results. One run on a
-smaller model is recorded for information only; it does not decide pass or fail. Model versions are pinned and
-recorded (D39).
+smaller model is recorded for information only; it does not decide pass or fail. Runs use the latest Opus through the
+`opus` alias; the resolved version is recorded with every result, and one comparison never mixes versions (D39, D48).
 
 ### 5.1 Test feasibility probe (the first implementation task)
 

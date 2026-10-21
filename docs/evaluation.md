@@ -272,6 +272,9 @@ left out because the reply was not echoed. Opus is the only judge that meets the
 **Cost.** The Opus judge cost about $0.08 per run here, against $0.002 for Haiku. With a full gate of about 60 cases
 × 3 runs, add roughly $15 to the earlier estimate of $15–25.
 
+**Since D48** the judge runs as the alias `opus`. This calibration holds while `opus` resolves to `claude-opus-5-5`;
+when it resolves to a newer Opus, re-run it before any graded result counts.
+
 **Limits.** 33 replies is a small set, and both the replies and the product are written by Claude; a judge that
 favours Claude's own style would not show up here. The model under test is also Opus, so read a sample of graded
 replies in full at each gate. Re-run the calibration (`scripts/judge-calibration.py`) whenever the judge model, the

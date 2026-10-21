@@ -82,6 +82,10 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   by three judges, under a selection rule fixed beforehand: Haiku gave 2 false critical failures, Sonnet missed a
   critical failure 3 times, Opus made no error. Details, cost and limits in [evaluation.md](evaluation.md);
   `evals-calibration/` and `scripts/judge-calibration.py` re-run it.
+- 2026-10-20: owner approved **D48** (protected: success criteria): runs use the latest Opus through the `opus` alias,
+  for the model and the judge, instead of a fixed ID (`claude-opus` is not a valid CLI name). The resolved ID is
+  recorded per run session; one comparison never mixes versions; a judge change re-runs the calibration.
+  REQUIREMENTS section 5 cites it.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -108,7 +112,7 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T1.11: the plain-Claude baseline on the 14 baseline cases (SC-2; D39, D46), with the judge `claude-opus-5-5`. This is
+T1.11: the plain-Claude baseline on the 14 baseline cases (SC-2; D39, D46), with `--model opus --judge-model opus` (D48). This is
 information, not a gate. The repository has no `plugin.json` yet, so run from a scratch copy with a minimal one. Tell
 the owner before slice 2 if plain Claude already passes too many.
 

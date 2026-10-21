@@ -92,16 +92,24 @@ or local paths (D47).
 ```sh
 scripts/build-histories.py
 claude plugin eval . --no-publish --scaffold --ablation none --runs 3 \
-  --model <pinned model> --judge-model claude-opus-5-5
+  --model opus --judge-model opus
 claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-without --runs 3 \
-  --model <pinned model> --judge-model claude-opus-5-5
+  --model opus --judge-model opus
 ```
 
 - `--no-publish` always (QR-9, RC-02). Results go to `evals/results/`, which git ignores.
 - `--scaffold` runs the cases' own scaffold scripts, which only write fixtures.
 - For the baseline cases, only the **without** arm counts (D46). The with arm loads the plugin, but the manual-only
   skill is invisible to the model, so it behaves the same.
-- Record the CLI version, the model and the judge model with the results (D39, D47).
+- `opus` is the alias for the latest Opus (D48). The eval output records only the alias, so record the resolved model
+  ID and `claude --version` before and after each run session:
+
+  ```sh
+  claude -p --model opus --output-format json "Reply OK" | python3 -c 'import json,sys; print(*json.load(sys.stdin)["modelUsage"])'
+  ```
+
+  One comparison never mixes resolved models: if the ID changes, re-run it. When the judge's ID changes, re-run the
+  judge calibration before any graded result counts (D39, D47, D48).
 - While developing, run a smoke set with `--case` or `--tag`, plus the tests a change affects. Run the full gate at
   the end of each slice.
 - Compute the gate with the slice's test list from [plan.md](../docs/plan.md):
@@ -112,7 +120,7 @@ claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-with
 
   `.local/manual-results.txt` (private) holds one manual test per line: `AT-03 pass`, `AT-11 fail pass`,
   `AT-21 critical`. A test in `--tests` with no results is reported as not run, and the gate fails.
-- The judge is pinned to `claude-opus-5-5` by a calibration set of known-good and known-bad replies
+- The judge is `opus`, chosen (as `claude-opus-5-5`) by a calibration set of known-good and known-bad replies
   (`evals-calibration/`, `scripts/judge-calibration.py`; [evaluation.md](../docs/evaluation.md)). Re-run the
   calibration whenever the judge model, the CLI or a grader changes.
 

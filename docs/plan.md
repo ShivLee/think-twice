@@ -42,8 +42,9 @@ change that might is treated as material and restarts the period.
 - Check `SKILL.md` and card sizes against QR-13 at the end of every slice (section 9 rule 11).
 - Slice reviews by Codex cover the diff, not the whole repository.
 - Real use before the SC-3 start is feedback only (D45). The real-use log stays private in `.local/`.
-- The judge model is pinned to `claude-opus-5-5` by a calibration set of known-good and known-bad replies
-  (evaluation.md, 2026-10-20), because one false critical failure fails a test. Re-check it when the judge changes.
+- Runs use the latest Opus as both model and judge (`opus`, D48), with the resolved ID recorded. The judge was chosen
+  by a calibration set (evaluation.md, 2026-10-20), because one false critical failure fails a test; re-run it when
+  the resolved judge changes.
 - After slice 2, re-estimate the remaining work from measured times, and revisit whether AT-03, AT-21, AT-22, AT-32,
   AT-37 and AT-34 (c)/(d) should become Auto with saved histories (owner chose to keep them Manual for now; D47).
 
