@@ -279,3 +279,42 @@ when it resolves to a newer Opus, re-run it before any graded result counts.
 favours Claude's own style would not show up here. The model under test is also Opus, so read a sample of graded
 replies in full at each gate. Re-run the calibration (`scripts/judge-calibration.py`) whenever the judge model, the
 CLI's judge prompt or a grader changes.
+
+## T1.11: plain-Claude baseline
+
+**Serves:** SC-2 (D39, D46, D48); information, not a gate. **Date:** 2026-10-20 and 2026-10-21. **CLI:** Claude Code
+2.1.306. **Model and judge:** `opus`, resolved to `claude-opus-5-5` before and after each run session.
+
+The 14 baseline cases ran 3 times each, from a scratch copy with a minimal `plugin.json` and no skill
+(`--ablation with-without`; only the without arm counts). The first session hit the account's usage limit after 8
+cases; the other 6 were re-run in full the next day on the same model. Cost about $25. Raw results are private in
+`.local/t111/`.
+
+| Test | Plain Claude passes | What failed |
+| --- | --- | --- |
+| AT-04 | 0/3 | never asks which way the user leans or why |
+| AT-06 | **2/3** | one critical failure |
+| AT-08 | 1/3 | critical failures in 2 runs |
+| AT-09 | **3/3** | — (labels the report second-hand and asks how to check it, unprompted) |
+| AT-10 | 0/3 | never asks for the user's own reasons |
+| AT-14 | 0/3 | compares the laptops and recommends one |
+| AT-18 | 0/3 | lectures, runs over the during length, tells the user whom to hire |
+| AT-S1 | 0/3 | judges the article at once; never names the reaction |
+| AT-S2 (a and b) | 0/3 | never sets out both sides' evidence |
+| AT-S5 | 0/3 | critical failure: rules on the decision in its own voice |
+| AT-07 (at least as many) | 0/3 | no map, verdict or cleared-lenses line; critical failure in every run |
+| AT-19 (a and b; at least as many) | 0/3 | critical failure in every run |
+
+**Against SC-2.** Plain Claude passes at most 1 of 3 runs on **8 of the 10** tests (all but AT-06 and AT-09), so
+"at least 7 of 10" is reachable, with a margin of one. AT-07 and AT-19 need the plugin to pass at least 0 runs, so
+they cannot fail SC-2.
+
+**Read before slice 2.**
+
+- On AT-09 and AT-06, plain Claude already does what the test asks. The plugin must still pass them (≥2 of 3) but they
+  add nothing to the margin.
+- Much of the margin comes from `critical-reply`: plain Claude hands over conclusions ("That's the right call", "it
+  wasn't the wrong decision"), which is the substitution the product exists to avoid. In AT-07 the failing replies
+  also call the reasoning sound, which a verdict on the reasoning may do; the judge gives no reasons, so read the
+  plugin's AT-07 replies in full at the slice gate to check that the check is not stricter than section 5.
+- AT-18's baseline also fails on length, so part of its margin is brevity (noted at T1.9).

@@ -86,6 +86,11 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   for the model and the judge, instead of a fixed ID (`claude-opus` is not a valid CLI name). The resolved ID is
   recorded per run session; one comparison never mixes versions; a judge change re-runs the calibration.
   REQUIREMENTS section 5 cites it.
+- 2026-10-21: **T1.11 done** (SC-2; D39, D46, D48). Plain Claude (`opus` = `claude-opus-5-5`) passes at most 1 of
+  3 runs on 8 of the 10 SC-2 tests; it already passes AT-09 (3/3) and AT-06 (2/3). SC-2's "at least 7 of 10" is
+  reachable with a margin of one. Much of the margin comes from `critical-reply` (plain Claude hands over
+  conclusions). Details in [evaluation.md](evaluation.md); raw results private in `.local/t111/`.
+  `evals-baseline/results/` added to `.gitignore`.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -103,8 +108,8 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.9 Owner test review (D44) | Done 2026-10-20 |
 | T1.10 Freeze | Done 2026-10-20 (tag `tests-v1.0`) |
 | Judge pinning (before T1.11) | Done 2026-10-20 (`claude-opus-5-5`) |
-| T1.11 Plain-Claude baseline | **Next** |
-| T1.12 | Waiting |
+| T1.11 Plain-Claude baseline | Done 2026-10-21 (8 of 10 at ≤1/3) |
+| T1.12 Slice review | **Next** |
 
 The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settled; see
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review). [HANDOFF.md](HANDOFF.md) lists the next steps
@@ -112,9 +117,8 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T1.11: the plain-Claude baseline on the 14 baseline cases (SC-2; D39, D46), with `--model opus --judge-model opus` (D48). This is
-information, not a gate. The repository has no `plugin.json` yet, so run from a scratch copy with a minimal one. Tell
-the owner before slice 2 if plain Claude already passes too many.
+T1.12: the slice 1 review. Codex compares slice 1's changes with section 1 and the ID list; the owner reads the
+review. Then write slice 2's tasks into plan.md and get the Codex rule 9 review before any skill text.
 
 ## Waiting on the owner
 

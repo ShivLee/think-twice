@@ -76,7 +76,7 @@ To resume, paste this:
 
 ```text
 In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md.
-T1.9, T1.10 and judge pinning are done. Next: T1.11, the plain-Claude baseline.
+T1.9–T1.11 and judge pinning are done. Next: T1.12, the slice review.
 Name the requirement IDs each step serves.
 ```
 

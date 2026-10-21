@@ -10,6 +10,7 @@ think-twice-journal*.md
 
 # Private: eval results stay local (QR-9, RC-02); always run `claude plugin eval` with --no-publish
 evals/results/
+evals-baseline/results/
 
 # Generated before each eval run by scripts/build-histories.py (D47); the frozen source is dialogue.md
 evals/**/history.jsonl
