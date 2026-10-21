@@ -4,11 +4,11 @@ description: |-
   AT-10.
   Dialogue state: new session; nothing before the prompt.
   Graded reply: the reply to the prompt.
-  SC-2 baseline (D46, D39): the same text, plus "What do you think?" Runs without the plugin (the without arm).
+  SC-2 baseline (D46, D39): the same text with nothing added (the owner's wording, T1.9 review). Runs without the plugin (the without arm).
 tags: [AT-10, FR-4, sc2-baseline]
 execution:
   prompt: |-
-    Everyone in frontend says you should use TypeScript for anything bigger than a weekend hack, so I'm converting my 2,000-line hobby app from JavaScript to TypeScript this weekend. What do you think?
+    Everyone in frontend says you should use TypeScript for anything bigger than a weekend hack, so I'm converting my 2,000-line hobby app from JavaScript to TypeScript this weekend.
   max_turns: 8
   allowed_tools: [Read, Glob, Grep]
 runs: 3

@@ -66,6 +66,17 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   preflight passes). `scripts/sc1-gate.py` computes SC-1; its self-test passes 15/15 (including the three required
   examples) and it reads real eval output. The Chinese length rule was simplified to CJK characters. All tests in
   section 5 are now written; none is frozen yet.
+- 2026-10-20: **T1.9 done** (D44; QR-1–QR-5). The owner reviewed the advance sample on one page: all 18 cases are
+  situations they meet, and every PASS behaviour would help; the Chinese prompts (AT-28a–d) and AT-26's chapter 1
+  anchor are right. Fixes from the review: 9 SC-2 baselines (AT-04, AT-07, AT-08, AT-09, AT-10, AT-14, AT-19a,
+  AT-19b, AT-S1) now use the owner's own wording, which is the plugin text with nothing added (D39); AT-06 keeps one
+  question, because its plugin turn is only the slash command; AT-18's `pass-notices-shift` now requires the reply
+  to set the standard fixed before the favourite against the one applied after (in both arms, word for word). The
+  owner's answers are kept privately in `.local/`.
+- 2026-10-20: **T1.10 done: prompts, dialogues and graders frozen**, tag `tests-v1.0` (section 9 rule 2; all AT).
+  RC-06 passes; 18/18 dialogues parse; the shared graders (`critical-`, `at12-`, `rc05-`) are identical in every
+  case, apart from the per-phase and Chinese length limits; each baseline has the same PASS and FAIL graders as its
+  plugin case. From now on a change to a test needs a decision entry.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -80,8 +91,10 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.6 Tests in 5.2 | Done 2026-10-19 (not frozen until T1.10) |
 | T1.7 Tests in 5.3 (situations) | Done 2026-10-19 (not frozen until T1.10) |
 | T1.8 Tests in 5.4 and the SC-1 gate | Done 2026-10-19 |
-| T1.9 Owner test review (D44) | **Next** |
-| T1.10–T1.12 | Waiting |
+| T1.9 Owner test review (D44) | Done 2026-10-20 |
+| T1.10 Freeze | Done 2026-10-20 (tag `tests-v1.0`) |
+| Judge pinning (before T1.11) | **Next** |
+| T1.11–T1.12 | Waiting |
 
 The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settled; see
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review). [HANDOFF.md](HANDOFF.md) lists the next steps
@@ -89,10 +102,9 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T1.9: the owner test review (D44). Claude prepares the sample listed in [HANDOFF.md](HANDOFF.md) as one readable
-page, covering the three phases and the failure modes (QR-1 to QR-5). The owner checks each case: is it a situation
-they actually meet, and would its PASS behaviour really help? Fix unrealistic cases before the freeze (T1.10). Then
-pin the judge with a calibration set before any graded run (T1.11 and later).
+Pin the judge before any graded run (no task ID in plan.md yet; it must come before T1.11). Build a calibration set of
+known-good and known-bad replies for the LLM graders, choose the judge model with it, and record the choice in
+[evaluation.md](evaluation.md) (D47 item 7). Then T1.11: the plain-Claude baseline on the 14 baseline cases.
 
 ## Waiting on the owner
 

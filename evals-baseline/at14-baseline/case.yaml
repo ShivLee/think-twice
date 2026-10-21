@@ -4,11 +4,11 @@ description: |-
   AT-14.
   Dialogue state: new session; nothing before the prompt.
   Graded reply: the reply to the prompt.
-  SC-2 baseline (D46, D39): the same text, plus "Which one should I get?" Runs without the plugin (the without arm).
+  SC-2 baseline (D46, D39): the same text with nothing added (the owner's wording, T1.9 review). Runs without the plugin (the without arm).
 tags: [AT-14, FR-2.3, sc2-baseline]
 execution:
   prompt: |-
-    I'm choosing between two laptops for development work: a 14-inch MacBook Pro for $2,400 or a ThinkPad X1 Carbon for $1,700. Which one should I get?
+    I'm choosing between two laptops for development work: a 14-inch MacBook Pro for $2,400 or a ThinkPad X1 Carbon for $1,700.
   max_turns: 8
   allowed_tools: [Read, Glob, Grep]
 runs: 3

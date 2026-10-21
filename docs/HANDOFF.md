@@ -6,7 +6,8 @@ if the two ever disagree. The tasks are in [plan.md](plan.md).
 ## Where things stand
 
 - **Slice 1, tasks T1.1–T1.8 are done.** All 48 acceptance tests in REQUIREMENTS section 5 are written. They are
-  **not frozen yet**: the freeze is T1.10, after your review (T1.9).
+  **frozen since 2026-10-20** (T1.10, tag `tests-v1.0`), after your review (T1.9). [progress.md](progress.md) has
+  what the review changed.
 - **Probes P-1 to P-7 all passed** (T1.2–T1.3), so every Auto test can stay automatic. Results, constraints and costs
   are in [evaluation.md](evaluation.md).
 - **Built so far:**
@@ -75,7 +76,7 @@ To resume, paste this:
 
 ```text
 In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md.
-Then prepare T1.9: the owner test review sample from HANDOFF.md as one readable page.
+T1.9 and T1.10 are done. Next: pin the judge with a calibration set, then T1.11.
 Name the requirement IDs each step serves.
 ```
 

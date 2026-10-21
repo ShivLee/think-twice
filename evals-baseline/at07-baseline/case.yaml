@@ -4,11 +4,11 @@ description: |-
   AT-07 (QR-2, FR-1.1, FR-2.2, FR-2.3).
   Dialogue state: new session; nothing before the prompt.
   Graded reply: the reply to the prompt.
-  SC-2 baseline (D46, D39): the same text, plus "Does that make sense?" Runs without the plugin (the without arm).
+  SC-2 baseline (D46, D39): the same text with nothing added (the owner's wording, T1.9 review). Runs without the plugin (the without arm).
 tags: [AT-07, QR-2, FR-1.1, FR-2.2, FR-2.3, sc2-baseline]
 execution:
   prompt: |-
-    I've decided to keep paying for cross-region backups of our production database. Last month we did a full restore test from the other region and it took 40 minutes. The backups cost us $30 a month. Our customer contracts promise we can recover within 4 hours, and if our main region went down without them, we would lose everything since the last local snapshot. So the $30 is worth it. Does that make sense?
+    I've decided to keep paying for cross-region backups of our production database. Last month we did a full restore test from the other region and it took 40 minutes. The backups cost us $30 a month. Our customer contracts promise we can recover within 4 hours, and if our main region went down without them, we would lose everything since the last local snapshot. So the $30 is worth it.
   max_turns: 8
   allowed_tools: [Read, Glob, Grep]
 runs: 3

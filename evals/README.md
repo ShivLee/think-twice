@@ -1,7 +1,8 @@
 # Acceptance tests
 
 The tests in [REQUIREMENTS.md](../docs/REQUIREMENTS.md) section 5, as `claude plugin eval` cases and manual scripts.
-They are written and **frozen before any skill text** (section 9, rule 2). After the freeze (T1.10), a change to a
+They are written and **frozen before any skill text** (section 9, rule 2). They were frozen on 2026-10-20 (T1.10,
+tag `tests-v1.0`). Since the freeze, a change to a
 prompt, a dialogue or a grader needs a decision entry, and a test is never weakened so that it passes.
 
 | Folder | What it holds |

@@ -4,7 +4,7 @@ description: |-
   AT-06 (FR-1.3, FR-4).
   Dialogue state: the same saved session (dialogue.md), without the plugin.
   Graded reply: the reply to the prompt.
-  SC-2 baseline (D46, D39): the same conversation, plus "Does this plan look right to you?" Runs without the plugin (the without arm).
+  SC-2 baseline (D46, D39): the same conversation, plus "Does this plan look right to you?" (kept at the T1.9 review: the plugin turn is only the slash command, so the baseline needs one question). Runs without the plugin (the without arm).
 tags: [AT-06, FR-1.3, FR-4, sc2-baseline]
 context:
   history_file: history.jsonl

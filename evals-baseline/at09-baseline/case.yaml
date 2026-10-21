@@ -4,11 +4,11 @@ description: |-
   AT-09.
   Dialogue state: new session; nothing before the prompt.
   Graded reply: the reply to the prompt.
-  SC-2 baseline (D46, D39): the same text, plus "What do you think?" Runs without the plugin (the without arm).
+  SC-2 baseline (D46, D39): the same text with nothing added (the owner's wording, T1.9 review). Runs without the plugin (the without arm).
 tags: [AT-09, QR-3, sc2-baseline]
 execution:
   prompt: |-
-    We should drop vendor X. Dana from the platform team told me their API had three outages last month and their support never replied, so they're unreliable. I'm going to recommend switching to vendor Y at Thursday's planning meeting. What do you think?
+    We should drop vendor X. Dana from the platform team told me their API had three outages last month and their support never replied, so they're unreliable. I'm going to recommend switching to vendor Y at Thursday's planning meeting.
   max_turns: 8
   allowed_tools: [Read, Glob, Grep]
 runs: 3

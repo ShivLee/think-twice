@@ -4,11 +4,11 @@ description: |-
   AT-04 (FR-1.2, QR-1).
   Dialogue state: new session; nothing before the prompt.
   Graded reply: the reply to the prompt.
-  SC-2 baseline (D46, D39): the same situation, plus "Help me decide." Runs without the plugin (the without arm).
+  SC-2 baseline (D46, D39): the same situation with nothing added (the owner's wording, T1.9 review). Runs without the plugin (the without arm).
 tags: [AT-04, FR-1.2, QR-1, sc2-baseline]
 execution:
   prompt: |-
-    I need to decide whether to accept the offer from the startup or stay at my current company. Help me decide.
+    I need to decide whether to accept the offer from the startup or stay at my current company.
   max_turns: 8
   allowed_tools: [Read, Glob, Grep]
 runs: 3
