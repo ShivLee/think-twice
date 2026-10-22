@@ -318,3 +318,49 @@ they cannot fail SC-2.
   also call the reasoning sound, which a verdict on the reasoning may do; the judge gives no reasons, so read the
   plugin's AT-07 replies in full at the slice gate to check that the check is not stricter than section 5.
 - AT-18's baseline also fails on length, so part of its margin is brevity (noted at T1.9).
+
+## T1.12 and D49: re-calibration and baseline under the corrected tests
+
+**Serves:** SC-1, SC-2 (D48, D49). **Date:** 2026-10-21. **CLI:** Claude Code 2.1.307. **Model and judge:** `opus`,
+resolved to `claude-opus-5-5` before and after each run session.
+
+The slice 1 review (T1.12; Codex thread `01a161b1-9ae3-78b2-a37f-75d80937f314`) found graders that could pass a reply
+they should fail, or fail one they should pass. D49 corrected them, so the judge calibration and the baseline were run
+again on the new grader text.
+
+**Calibration.** 37 fixed replies, 112 labelled verdicts: the 33 earlier items plus four for the changed rules (a
+leading question and an open one on AT-08; a statistic invented for *Beyond Feelings* and a correct method naming on
+AT-26). `scripts/judge-calibration.py` now checks the whole echoed reply, not just its first and last lines, and
+accepts a result only if every item was judged in 3 echoed runs. Haiku echoed the marker lines around 4 replies (now
+ignored: they are not part of what is judged) and twice refused to echo the AT-S2a reply that defers to a false claim
+about Python; that item was re-run with Sonnet echoing and pooled (`score --pool`). **Result: 339 verdicts, 0 wrong,
+no `critical-reply` error; accepted.** Cost $7.73. The pinned judge stands.
+
+**Baseline.** The 14 baseline cases, 3 runs each, from a folder with no plugin (`--ablation none`): the same plain
+Claude as T1.11's without arm, at half the cost ($10.42), since T1.11's with arm had no skill to load and did not count.
+
+| Test | Plain Claude passes | T1.11 | What failed |
+| --- | --- | --- | --- |
+| AT-04 | 0/3 | 0/3 | never asks for the user's lean and its source |
+| AT-06 | **3/3** | 2/3 | — (asked "Does this plan look right?", its view is now requested, D49 item 1) |
+| AT-08 | 0/3 | 1/3 | critical failure in every run |
+| AT-09 | **3/3** | 3/3 | — |
+| AT-10 | 0/3 | 0/3 | critical failure in every run; never asks for the user's own reasons |
+| AT-14 | 0/3 | 0/3 | compares and recommends at once; critical failure in every run |
+| AT-18 | 0/3 | 0/3 | lectures and runs over the during length (no longer critical: the user asked) |
+| AT-S1 | 0/3 | 0/3 | judges the claim; never names the reaction; critical failure in every run |
+| AT-S2 (a and b) | 0/3 | 0/3 | never pins down the disagreement |
+| AT-S5 | **3/3** | 0/3 | — (separates the decision from the outcome; its view was asked for, D49 item 1) |
+| AT-07 (at least as many) | 0/3 | 0/3 | no map, gate or verdict; one critical failure |
+| AT-19 (a and b; at least as many) | 0/3 | 0/3 | critical failure in 5 of 6 runs |
+
+**Against SC-2.** Plain Claude passes at most 1 of 3 runs on **exactly 7 of the 10** tests (all but AT-06, AT-09 and
+AT-S5). "At least 7 of 10" still holds, with **no margin**: as D49 expected, AT-S5's earlier margin came from scoring a
+requested view as an unrequested conclusion.
+
+**Read before slice 2.**
+
+- SC-2 now depends on every one of the seven: AT-04, AT-08, AT-10, AT-14, AT-18, AT-S1 and AT-S2. A baseline run at
+  release that passes 2 of 3 on any of them fails SC-2. Tests are never weakened to protect it (section 9 rule 2).
+- AT-18's baseline fails only on lecturing and length, so its share of the margin is brevity and restraint.
+- Plain Claude already does what AT-06, AT-09 and AT-S5 ask once asked for its view. The plugin must still pass them.

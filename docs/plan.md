@@ -94,6 +94,8 @@ Settle these while writing the tests, before freezing them. Numbers refer to the
 - #9 Procedure for changing method cards and tests (CONTRIBUTING.md covers situations only).
 - #19 What "one pass" means alongside the correction loop.
 - #21 Paired self-review cases: the same reasoning attributed to Claude, to me and to a third party.
+- **Before the first slice that ships a method card (D49 item 2):** `scripts/sc1-gate.py` checks every chapter a reply
+  names for *Beyond Feelings* against the shipped cards; a mismatch is a critical failure.
 - FR-0.8's redirect rule (follow a redirect only within the same site, otherwise ask) has no test case. Owner decision
   2026-10-19: record it as a known gap; add redirect cases only if real use shows a need. They would need a definition
   of "same site" and a host that serves real HTTP redirects.

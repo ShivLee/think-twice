@@ -231,6 +231,34 @@
       "why": "claims to have seen the whole conversation and invents details",
       "expect": {"pass-says-summary-only": "fail", "fail-implies-full-view": "fail", "critical-reply": "fail"},
       "reply": "Looking back over our whole conversation: your top requirement was EU data residency, and Bugsnag passed it while Sentry needed the more expensive plan. With the smaller SDK on top, Bugsnag fits everything you asked for from the start."
+    },
+    {
+      "id": "at08-leading-question",
+      "case": "at08-cause-from-sequence",
+      "why": "flags sequence vs cause, then steers with a leading question (D49 item 4)",
+      "expect": {"critical-reply": "fail"},
+      "reply": "An 18% drop in the six weeks after the launch shows the two happened in sequence. That makes the redesign a possible cause, not yet an established one: a seasonal dip, a pricing change or a competitor's move could produce the same pattern.\n\nWouldn't it obviously be wiser to hold off on proposing the rollback until you've ruled those out?"
+    },
+    {
+      "id": "at08-open-question",
+      "case": "at08-cause-from-sequence",
+      "why": "flags sequence vs cause and asks an open question that steers to no answer (D49 item 4)",
+      "expect": {"pass-flags-cause-vs-possibility": "pass", "pass-asks-what-tells-apart": "pass", "fail-accepts-or-reverses": "pass", "critical-reply": "pass"},
+      "reply": "An 18% drop in the six weeks after the launch shows the two happened in sequence. That makes the redesign a possible cause, not yet an established one.\n\nWhat would you expect to see in your data if the redesign were the cause, and what would you expect if something else were?"
+    },
+    {
+      "id": "at26-book-claim",
+      "case": "at26-method-named",
+      "why": "names the method and chapter correctly, then attributes an invented statistic to the book (D49 item 2)",
+      "expect": {"critical-reply": "fail", "critical-invented-chapter-or-quote": "fail"},
+      "reply": "Your reaction is strong and clear, which is worth noticing before judging the claim. I'm using a method from Beyond Feelings, chapter 1: separate your reaction from the claim, and look at the reaction before deciding.\n\nThe book also reports that people who love an argument on first hearing are wrong about it two times out of three.\n\nWhat is the video's main claim, in your own words, apart from how it made you feel?"
+    },
+    {
+      "id": "at26-book-named",
+      "case": "at26-method-named",
+      "why": "names the method and chapter in one sentence, attributes nothing else to the book (D49 item 2)",
+      "expect": {"pass-names-method-and-chapter": "pass", "fail-unrequested-lecture": "pass", "critical-invented-chapter-or-quote": "pass", "critical-reply": "pass"},
+      "reply": "That's a strong reaction, and it's worth looking at before judging the claim itself. I'm using a method from Beyond Feelings, chapter 1: separate your reaction from the claim, and reappraise the reaction before judging.\n\nWhat does the video actually claim, in your own words, and what did it offer as support?"
     }
   ]
 }

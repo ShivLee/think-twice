@@ -6,14 +6,23 @@
 
 
 A Claude Code session with the plugin installed, in a folder that is **not** inside a git repository (for example
-`/tmp`). This test uses the real default journal path, `~/.think-twice/think-twice-journal.md`, so it protects any real journal first.
+`/tmp`). This test uses the real default journal path, `~/.think-twice/think-twice-journal.md`, so it protects any real journal first. Both blocks are safe to run twice: setup refuses to run over an unfinished earlier run, and cleanup never deletes a journal it cannot show the test created (D49).
 
 **Before:**
 
 ```sh
 mkdir -p ~/.think-twice
-[ -f ~/.think-twice/think-twice-journal.md ] && mv ~/.think-twice/think-twice-journal.md ~/.think-twice/think-twice-journal.md.at27-backup
-cp <repo>/evals/manual/fixtures/at27-seed-entries.md ~/.think-twice/think-twice-journal.md
+if [ -e ~/.think-twice/at27-state ] || [ -e ~/.think-twice/think-twice-journal.md.at27-backup ]; then
+  echo "STOP: an earlier AT-27 run was not cleaned up. Run the After block, check your journal, then start again."
+else
+  if [ -f ~/.think-twice/think-twice-journal.md ]; then
+    echo had-journal > ~/.think-twice/at27-state
+    mv ~/.think-twice/think-twice-journal.md ~/.think-twice/think-twice-journal.md.at27-backup
+  else
+    echo no-journal > ~/.think-twice/at27-state
+  fi
+  cp <repo>/evals/manual/fixtures/at27-seed-entries.md ~/.think-twice/think-twice-journal.md
+fi
 shasum -a 256 ~/.think-twice/think-twice-journal.md      # note this: the seed entries' checksum
 head -c "$(wc -c < <repo>/evals/manual/fixtures/at27-seed-entries.md)" ~/.think-twice/think-twice-journal.md | shasum -a 256   # the same, for later
 rm -rf /tmp/tt-at27-repo /tmp/tt-at27-alt /tmp/tt-at27-ro
@@ -24,7 +33,14 @@ mkdir -p /tmp/tt-at27-ro && chmod 555 /tmp/tt-at27-ro
 **After, always (even if a part fails):**
 
 ```sh
-mv ~/.think-twice/think-twice-journal.md.at27-backup ~/.think-twice/think-twice-journal.md 2>/dev/null || rm -f ~/.think-twice/think-twice-journal.md
+state=$(cat ~/.think-twice/at27-state 2>/dev/null)
+if [ "$state" = had-journal ] && [ -f ~/.think-twice/think-twice-journal.md.at27-backup ]; then
+  mv -f ~/.think-twice/think-twice-journal.md.at27-backup ~/.think-twice/think-twice-journal.md && rm ~/.think-twice/at27-state
+elif [ "$state" = no-journal ]; then
+  rm -f ~/.think-twice/think-twice-journal.md && rm ~/.think-twice/at27-state
+elif [ -n "$state" ]; then
+  echo "CHECK BY HAND: the state file says '$state' but no backup exists; nothing was deleted."
+fi   # with no state file, this run's setup never started: nothing to undo
 chmod 755 /tmp/tt-at27-ro; rm -rf /tmp/tt-at27-repo /tmp/tt-at27-alt /tmp/tt-at27-ro
 ```
 

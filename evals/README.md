@@ -43,11 +43,13 @@ T1.6 against known-good and known-bad replies ([evaluation.md](../docs/evaluatio
 - A case **passes a run** when all its `pass-`, `fail-` and `critical-` graders pass in that run.
 - A test with several cases (AT-01 ×3, AT-19 ×2, AT-25 a–b, AT-35 a–d, AT-39 a–b) passes a run only if **every**
   case passes in that run.
+- Evidence must be complete: every case of a test has results, each with exactly 3 runs, and every run has the shared
+  graders (`critical-`, `at12-`, `rc05-`). Anything missing fails the test rather than being skipped (T1.12).
 - A test **passes** when it passes in at least 2 of 3 runs and **no `critical-` grader failed in any run**.
 - AT-12 passes in a case when its `at12-` graders pass in at least 2 of 3 runs. AT-12 passes when it passes in every
   auto case. RC-05 fails if any run of any case loads more than 3 cards.
 - A manual test passes if its first run passes, or if it fails and the one re-run passes. A critical failure in any
-  run fails it.
+  run fails it. A test with auto and manual parts (AT-26) passes only if both parts pass.
 - `scripts/sc1-gate.py` computes all of this from the `--json` output and a manual results file (D47); its
   `--self-test` checks the rules, including the three examples T1.8 requires.
 
@@ -100,7 +102,9 @@ claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-with
 - `--no-publish` always (QR-9, RC-02). Results go to `evals/results/`, which git ignores.
 - `--scaffold` runs the cases' own scaffold scripts, which only write fixtures.
 - For the baseline cases, only the **without** arm counts (D46). The with arm loads the plugin, but the manual-only
-  skill is invisible to the model, so it behaves the same.
+  skill is invisible to the model, so it behaves the same. Running the baseline cases from a copy of
+  `evals-baseline/` in a folder with no plugin, with `--ablation none --trust-plugin`, runs only that arm, at half the
+  cost (evaluation.md, D49 re-run).
 - `opus` is the alias for the latest Opus (D48). The eval output records only the alias, so record the resolved model
   ID and `claude --version` before and after each run session:
 

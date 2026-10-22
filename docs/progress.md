@@ -9,8 +9,9 @@ transcripts go here.
 
 ## Current outcome
 
-**Slice 1: test feasibility probe, validation script, tests written and frozen.** Serves 5.1 (P-1–P-7), RC-06 and
-section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, including the owner test review (D44).
+**Slice 1 is done** (2026-10-21; D44): test feasibility probe, validation script, tests written and frozen, slice
+review read by the owner. **Next: plan slice 2** (recognition, core and the quick after review; IDs in the
+[plan.md](plan.md) slice table): its tasks with IDs and done-when, then the Codex rule 9 review, before any skill text.
 
 ## Last verified state
 
@@ -91,6 +92,19 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
   reachable with a margin of one. Much of the margin comes from `critical-reply` (plain Claude hands over
   conclusions). Details in [evaluation.md](evaluation.md); raw results private in `.local/t111/`.
   `evals-baseline/results/` added to `.gitignore`.
+- 2026-10-21: **T1.12 review run** (section 9 rule 11; all slice 1 IDs). Start-up checks pass; `opus` resolves to
+  `claude-opus-5-5` (CLI 2.1.307). Codex (gpt-6-astra, high; thread `01a161b1-9ae3-78b2-a37f-75d80937f314`) reviewed
+  `git diff 96748d6..HEAD`: NEEDS REVISION, 4 High, 4 Medium, 1 Low; each finding checked against the files and
+  confirmed. Tooling fixed without a decision: `scripts/sc1-gate.py` (incomplete evidence passed; a manual pass hid
+  an auto critical failure; RC-05 reported for cases without its grader; self-test 21/21) and
+  `scripts/judge-calibration.py` (whole-reply echo check, complete coverage, pooled re-runs; self-test 14/14). Owner
+  approved **D49** (protected: success criteria) for the test fixes: requested views in three baselines, *Beyond
+  Feelings* citations as critical, `Grep`/`Glob` journal and card checks, leading questions, AT-06's sources, and a
+  safe AT-27 setup. Commit `3bc95ff` names no requirement ID (finding 9): it records handoff and status for T1.6–T1.8.
+- 2026-10-21: **re-calibration accepted** (339 verdicts, 0 wrong) and **baseline re-run** under D49
+  ([evaluation.md](evaluation.md)): plain Claude passes ≤1 of 3 on exactly 7 of the 10 SC-2 tests (AT-S5 now passes
+  3/3 once its requested view is not counted as a conclusion). SC-2 is still reachable, with **no margin**.
+- 2026-10-21: owner read the T1.12 review: **slice 1 done** (D44).
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -109,7 +123,7 @@ section 9. Done when tasks T1.1–T1.12 in [plan.md](plan.md) are done, includin
 | T1.10 Freeze | Done 2026-10-20 (tag `tests-v1.0`) |
 | Judge pinning (before T1.11) | Done 2026-10-20 (`claude-opus-5-5`) |
 | T1.11 Plain-Claude baseline | Done 2026-10-21 (8 of 10 at ≤1/3) |
-| T1.12 Slice review | **Next** |
+| T1.12 Slice review | Done 2026-10-21 (D49 applied; owner read the review) |
 
 The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settled; see
 [plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review). [HANDOFF.md](HANDOFF.md) lists the next steps
@@ -117,12 +131,8 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-First record what `opus` resolves to (D48; the command is in [HANDOFF.md](HANDOFF.md)); if it is no longer
-`claude-opus-5-5`, re-run the judge calibration and the T1.11 baseline before relying on them.
-
-T1.12: the slice 1 review. Codex compares slice 1's changes with section 1 and the ID list; the owner reads the
-review. Then write slice 2's tasks into plan.md and get the Codex rule 9 review before any skill text.
+Write slice 2's tasks into plan.md, with IDs and done-when, and get the Codex rule 9 review before any skill text.
 
 ## Waiting on the owner
 
-- Nothing at the moment.
+- Say whether to commit the D49 changes and tag `tests-v1.1` (D49; nothing is committed yet).
