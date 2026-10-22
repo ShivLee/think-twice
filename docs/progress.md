@@ -105,6 +105,8 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
   ([evaluation.md](evaluation.md)): plain Claude passes ≤1 of 3 on exactly 7 of the 10 SC-2 tests (AT-S5 now passes
   3/3 once its requested view is not counted as a conclusion). SC-2 is still reachable, with **no margin**.
 - 2026-10-21: owner read the T1.12 review: **slice 1 done** (D44).
+- 2026-10-21: committed `6ddfa0a` (scripts) and `d4e3729` (D49 tests and docs), tagged **`tests-v1.1`**, pushed `main`
+  and the tag to `origin`. Raw T1.12 results and the review are private in `.local/t112/`.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -135,4 +137,4 @@ Write slice 2's tasks into plan.md, with IDs and done-when, and get the Codex ru
 
 ## Waiting on the owner
 
-- Say whether to commit the D49 changes and tag `tests-v1.1` (D49; nothing is committed yet).
+- Nothing at the moment.
