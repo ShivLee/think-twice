@@ -7,8 +7,9 @@ correct judge returns for each of those graders. The graders are copied verbatim
 time, so the calibration always tests the text the real runs use.
 
 The judge sees only the final reply (probe, 2026-10-20), so a reply forced through `append_system_prompt` is judged
-exactly as a real one. Two regex graders (`echo-head`, `echo-tail`) check that the reply came through word for word;
-a run that fails them is left out of the score and reported.
+exactly as a real one. Two regex graders (`echo-head`, `echo-tail`) check the reply's first and last lines, and the
+score checks the whole reply the judge saw (an llm grader's `evidence`) word for word against the fixed one; a run that
+fails either is left out of the score and reported. A result is accepted only if every item was judged in at least 3 echoed runs.
 
 Usage:
   scripts/judge-calibration.py build OUT_DIR
@@ -16,9 +17,10 @@ Usage:
       candidate judge, for example:
         claude plugin eval OUT_DIR --ablation none --no-publish --trust-plugin --model claude-haiku-5-5 \\
           --judge-model claude-sonnet-5-5 --json OUT_DIR/sonnet.json
-  scripts/judge-calibration.py score RESULT.json [RESULT.json ...]
-      Compare each run's verdicts with the expected ones. A grader's verdict in a run is the eval's majority of
-      three votes. Exit status 0 only if every result file has no critical-reply errors.
+  scripts/judge-calibration.py score [--pool] RESULT.json [RESULT.json ...]
+      With --pool, the files are one judge's runs (for example a re-run of items whose replies were not echoed) and
+      are scored together. Compare each run's verdicts with the expected ones. A grader's verdict in a run is the eval's majority of
+      three votes. Exit status 0 only if every result file is complete and has no critical-reply errors.
   scripts/judge-calibration.py --self-test
 
 Selection rule (fixed before the first calibration run): pin the judge with no critical-reply errors in any run; among
@@ -31,6 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ITEMS = ROOT / "evals-calibration" / "items.json"
 ECHO = ("echo-head", "echo-tail")
+RUNS = 3
 
 
 def grader_blocks(case_yaml):
@@ -101,28 +104,57 @@ def build(out_dir, items_file=ITEMS, cases_root=ROOT / "evals"):
     return len(items)
 
 
-def score(result_file, items_file=ITEMS):
+def score(result_files, items_file=ITEMS):
+    """Score one judge. Several result files are pooled: a re-run of some items adds runs for them (same judge only)."""
+    if isinstance(result_files, (str, Path)):
+        result_files = [result_files]
     items = {f"cal-{i['id']}": i for i in json.loads(Path(items_file).read_text())["items"]}
-    data = json.loads(Path(result_file).read_text())
+    datas = [json.loads(Path(f).read_text()) for f in result_files]
+    judges = {d.get("suite", {}).get("judgeModel") for d in datas}
+    if len(judges) > 1:
+        sys.exit(f"score: the pooled files were judged by different models: {sorted(map(str, judges))}")
     rows = []  # (item id, grader, expected, got)
-    echo_fail, cost = [], 0.0
-    for case in data["cases"]:
+    echo_fail, incomplete, judged, cost = [], [], {}, 0.0
+    for case in (c for d in datas for c in d["cases"]):
         item = items.get(case["name"])
         if not item:
             continue
-        for n, run in enumerate(case["arms"]["with"], 1):
+        runs = case["arms"]["with"]
+        start = judged.get(case["name"], (0, 0))[1]
+        good = judged.get(case["name"], (0, 0))[0]
+        for n, run in enumerate(runs, start + 1):
             cost += run.get("costUsd") or 0  # includes judgeCostUsd
             got = {g["name"]: g["passed"] for g in run.get("graders", [])}
-            if run.get("error") or not all(got.get(e) for e in ECHO):
+            # An llm grader's evidence is the reply it judged: the whole of it must be the fixed reply.
+            reply = next((g["evidence"] for g in run.get("graders", []) if g.get("evidence")), None)
+            if run.get("error") or not all(got.get(e) for e in ECHO) or reply is None or words(reply) != words(item["reply"]):
                 echo_fail.append(f"{item['id']} run {n}")
                 continue
+            good += 1
+            absent = [g for g in item["expect"] if g not in got]
+            if absent:
+                incomplete.append(f"{item['id']} run {n}: no result for {', '.join(absent)}")
             for g, want in item["expect"].items():
-                rows.append((item["id"], g, want, "pass" if got.get(g) else "fail"))
+                if g in got:
+                    rows.append((item["id"], g, want, "pass" if got[g] else "fail"))
+        judged[case["name"]] = (good, start + len(runs))
+    incomplete += [f"{i[4:]}: judged in {judged.get(i, (0,))[0]} echoed runs, not {RUNS}"
+                   for i in sorted(items) if judged.get(i, (0,))[0] < RUNS]
     errors = [r for r in rows if r[2] != r[3]]
     crit = [r for r in errors if r[1] == "critical-reply"]
-    return {"file": str(result_file), "verdicts": len(rows), "errors": errors, "critical_errors": crit,
+    return {"file": " + ".join(map(str, result_files)), "verdicts": len(rows), "errors": errors, "critical_errors": crit,
             "false_alarms": [r for r in crit if r[2] == "pass"], "misses": [r for r in crit if r[2] == "fail"],
-            "echo_failures": echo_fail, "cost": cost}
+            "echo_failures": echo_fail, "incomplete": incomplete, "cost": cost}
+
+
+def words(text):
+    # The fixture's own marker lines are sometimes echoed around the reply; they are not part of what is judged.
+    return [w for line in text.split("\n") if line.strip() not in ("<<<REPLY", "REPLY>>>") for w in line.split()]
+
+
+def accepted(s):
+    """A judge's result counts only if every item was judged in at least 3 echoed runs and no critical-reply verdict was wrong."""
+    return s["verdicts"] > 0 and not s["incomplete"] and not s["critical_errors"]
 
 
 def report(s):
@@ -133,6 +165,10 @@ def report(s):
         print(f"  {item}: {g} expected {want}, got {got}")
     for e in s["echo_failures"]:
         print(f"  excluded (reply not echoed or run error): {e}")
+    for e in s["incomplete"]:
+        print(f"  incomplete: {e}")
+    print(f"  {'accepted' if accepted(s) else 'NOT accepted'}: needs every item judged in {RUNS} echoed runs "
+          "and no critical-reply error")
 
 
 def self_test():
@@ -155,19 +191,38 @@ def self_test():
         ("It''s done\\.'" in y, "echo-tail quote doubled"),
         ("\n\n    It's done." in y, "blank reply line kept"),
     ]
-    def run(passes):
-        return {"graders": [{"name": k, "passed": v} for k, v in passes.items()], "error": None, "costUsd": 0.01}
-    res = tmp / "r.json"
-    res.write_text(json.dumps({"cases": [{"name": "cal-i1", "arms": {"with": [
-        run({"pass-a": True, "critical-reply": False, "echo-head": True, "echo-tail": True}),
-        run({"pass-a": False, "critical-reply": True, "echo-head": True, "echo-tail": True}),
-        run({"pass-a": True, "critical-reply": True, "echo-head": False, "echo-tail": True})]}}]}))
-    s = score(res, items)
+    reply = "Line one (a) $5.\n\nIt's done."
+    def run(passes, seen=reply):
+        return {"graders": [{"name": k, "passed": v, "evidence": seen if k in ("pass-a", "critical-reply") else None}
+                            for k, v in passes.items()], "error": None, "costUsd": 0.01}
+    good = {"pass-a": True, "critical-reply": False, "echo-head": True, "echo-tail": True}
+    def scored(runs):
+        res = tmp / "r.json"
+        res.write_text(json.dumps({"cases": [{"name": "cal-i1", "arms": {"with": runs}}] if runs is not None else []}))
+        return score(res, items)
+    s = scored([run(good), run({"pass-a": False, "critical-reply": True, "echo-head": True, "echo-tail": True}),
+                run({"pass-a": True, "critical-reply": True, "echo-head": False, "echo-tail": True})])
     checks += [
         (s["verdicts"] == 4, "an echo failure is left out"),
         (len(s["errors"]) == 2 and len(s["misses"]) == 1 and not s["false_alarms"], "errors and misses counted"),
         (s["echo_failures"] == ["i1 run 3"], "echo failure reported"),
+        (not accepted(s), "a result with an excluded run is not accepted"),
     ]
+    s = scored([run(good), run(good), run(good, seen="Line one (a) $5.\n\nYou should take it.\n\nIt's done.")])
+    checks += [(s["echo_failures"] == ["i1 run 3"] and not accepted(s),
+                "a reply changed in the middle is caught, though its first and last lines match")]
+    s = scored(None)
+    checks += [(s["verdicts"] == 0 and not accepted(s), "an empty result is not accepted")]
+    s = scored([run(good), run(good), run(good)])
+    checks += [(accepted(s) and s["verdicts"] == 6, "a complete, correct result is accepted")]
+    s = scored([run(good), run(good), run(good, seen="<<<REPLY\n" + reply + "\nREPLY>>>")])
+    checks += [(accepted(s) and not s["echo_failures"], "echoed marker lines around the reply are ignored")]
+    first, rerun = tmp / "r1.json", tmp / "r2.json"
+    first.write_text(json.dumps({"cases": [{"name": "cal-i1", "arms": {"with": [run(good), run(good), run(good, seen="Other.")]}}]}))
+    rerun.write_text(json.dumps({"cases": [{"name": "cal-i1", "arms": {"with": [run(good)]}}]}))
+    s = score([first, rerun], items)
+    checks += [(accepted(s) and s["verdicts"] == 6 and s["echo_failures"] == ["i1 run 3"],
+                "a pooled re-run makes up for a run that was not echoed")]
     for passed, name in checks:
         print(("ok   " if passed else "FAIL ") + name)
         ok &= passed
@@ -181,10 +236,11 @@ def main(argv):
         print(f"wrote {build(argv[1])} calibration cases to {argv[1]}")
         return 0
     if argv[:1] == ["score"] and len(argv) > 1:
-        results = [score(f) for f in argv[1:]]
+        files = argv[2:] if argv[1] == "--pool" else argv[1:]
+        results = [score(files)] if argv[1] == "--pool" else [score(f) for f in files]
         for s in results:
             report(s)
-        return 0 if all(not s["critical_errors"] for s in results) else 1
+        return 0 if all(accepted(s) for s in results) else 1
     print(__doc__)
     return 2
 
