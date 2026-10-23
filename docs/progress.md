@@ -107,6 +107,29 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
 - 2026-10-21: owner read the T1.12 review: **slice 1 done** (D44).
 - 2026-10-21: committed `6ddfa0a` (scripts) and `d4e3729` (D49 tests and docs), tagged **`tests-v1.1`**, pushed `main`
   and the tag to `origin`. Raw T1.12 results and the review are private in `.local/t112/`.
+- 2026-10-22: start-up checks pass: RC-06, 18/18 dialogues parsed, `sc1-gate.py` self-test 21/21,
+  `judge-calibration.py` self-test passes, `git diff tests-v1.1 --stat -- evals evals-baseline` empty. `opus`
+  resolves to `claude-opus-5-5`, unchanged; the CLI is now **2.1.308** (was 2.1.307 at the last calibration). No
+  graded run this session, so nothing re-run; T2.5 re-runs the calibration if the CLI or judge differs at the gate.
+- 2026-10-22: **slice 2 planned** in [plan.md](plan.md) (T2.1–T2.10, each with IDs and done-when; section 9 rule 9).
+  The Codex rule 9 review brief is drafted privately in `.local/t2-plan/`, for the owner to read before it is sent.
+- 2026-10-22: **Codex rule 9 review of the slice 2 plan** (gpt-6-astra, high; fresh thread
+  `01a1668c-f769-7e60-8f52-38161738a006`): NEEDS REVISION, 3 High, 4 Medium; each finding checked against the files
+  and confirmed (for example, `scripts/sc1-gate.py` drops subcase letters and does not require every frozen grader).
+  Plan revised to T2.1–T2.15: gate tooling and the D49 chapter check (empty card set) first, calibration before any
+  graded run, sentinel-file privacy check, smaller development groups, a gate manifest. Owner choices: **AT-37 moves
+  to slice 5** (its setup needs the journal offer); **Codex is the blind second grader** of a gate sample; **Claude
+  drives the manual tests and the owner grades the transcripts**. Review private in `.local/t2-plan/`.
+- 2026-10-22: Codex re-check (same thread): the 3 High findings fixed; 3 new Medium (blind sample covers only the six
+  paired tests, manual-run permissions and tool results, smoke-check criteria) and 1 Low (FR-1.7 qualifiers), each
+  fixed in plan.md. The second grading is split into a blind paired sample and an open audit.
+- 2026-10-22: **T2.1 done** (FR-0.1, QR-11, QR-9, RC-02). Real `.claude-plugin/plugin.json` (0.1.0) and a
+  frontmatter-only `skills/pause/SKILL.md` (`disable-model-invocation: true`); RC-06 passes; 18/18 dialogues build.
+  A sentinel probe showed that a run started from the repository can `Read` `.local/`, `.env` and journal files by
+  exact path in the plugin root, so **runs start from an allowlisted staging copy** (`/private/tmp/think-twice-run`),
+  where no sentinel is reachable; a smoke run invoked `/think-twice:pause` from it ([evaluation.md](evaluation.md)).
+  Two follow-ups added to plan.md: T2.2 fails a run that reads `evals/`, and T2.9 re-runs the probe after a CLI
+  change. The CLI moved to **2.1.309** during the session.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -133,7 +156,7 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-Write slice 2's tasks into plan.md, with IDs and done-when, and get the Codex rule 9 review before any skill text.
+T2.2: gate tooling in `scripts/sc1-gate.py` (SC-1, QR-8, RC-05, D49 item 2).
 
 ## Waiting on the owner
 
