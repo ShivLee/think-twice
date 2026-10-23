@@ -9,9 +9,10 @@ transcripts go here.
 
 ## Current outcome
 
-**Slice 1 is done** (2026-10-21; D44): test feasibility probe, validation script, tests written and frozen, slice
-review read by the owner. **Next: plan slice 2** (recognition, core and the quick after review; IDs in the
-[plan.md](plan.md) slice table): its tasks with IDs and done-when, then the Codex rule 9 review, before any skill text.
+**Slice 2 is under way** (recognition, core and the quick after review). Its plan is reviewed (T2.1–T2.15 in
+[plan.md](plan.md)), the skill exists (`skills/pause/SKILL.md`, `standards.md`), and **T2.1–T2.6 are done**:
+development runs for recognition, opening, material and input pass. **Next: T2.7**, development runs for the
+verdicts and the review's shape.
 
 ## Last verified state
 
@@ -196,8 +197,23 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
 | T1.12 Slice review | Done 2026-10-21 (D49 applied; owner read the review) |
 
 The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settled; see
-[plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review). [HANDOFF.md](HANDOFF.md) lists the next steps
-in order, with the proposed T1.9 sample.
+[plan.md](plan.md#test-level-gaps-to-settle-in-t16t18-codex-review).
+
+## Slice 2 status
+
+| Task | Status |
+| --- | --- |
+| Plan and Codex rule 9 review | Done 2026-10-22 (two rounds; all findings fixed) |
+| T2.1 Plugin skeleton and run location | Done 2026-10-22 (runs start from a staging copy) |
+| T2.2 Gate tooling | Done 2026-10-22 (self-test 38/38) |
+| T2.3 Judge calibration on CLI 2.1.309 | Done 2026-10-22 (accepted) |
+| T2.4 First draft of the skill | Done 2026-10-22 (Codex goal review fixed) |
+| T2.5 Development runs A | Done 2026-10-22 |
+| T2.6 Development runs B | Done 2026-10-23 |
+| T2.7 Development runs C | Next |
+| T2.8–T2.15 | Not started |
+
+[HANDOFF.md](HANDOFF.md) lists the next steps in order.
 
 ## Next action
 

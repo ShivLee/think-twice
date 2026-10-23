@@ -7,9 +7,9 @@ something: Is my reasoning sound? Am I thinking independently? What am I overloo
 I consider?
 
 **Status:** requirements approved (v1.0; see [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)). Slice 1 is done: all
-acceptance tests are written, reviewed by the owner and frozen ([evals/](evals/README.md); corrected after the slice
-review, D49, tag `tests-v1.1`), and no skill text is written yet. Slice 2 (recognition, core and the after review) is
-next. There is nothing to install yet. Progress: [docs/progress.md](docs/progress.md).
+acceptance tests are written, reviewed by the owner and frozen ([evals/](evals/README.md); tag `tests-v1.1`). Slice 2
+(recognition, core and the after review) is under way: a first version of the skill exists and is being tested
+against the frozen tests. It is not ready to install yet. Progress: [docs/progress.md](docs/progress.md).
 
 ## About the name
 

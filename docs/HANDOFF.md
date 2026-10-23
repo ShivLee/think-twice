@@ -1,152 +1,153 @@
-# Handoff: 2026-10-21 (slice 1 closed: review, D49, `tests-v1.1`)
+# Handoff: 2026-10-23 (slice 2 under way: T2.1–T2.6 done)
 
 A snapshot of where things stand and where to pick up. **For live status, read [progress.md](progress.md)**; it wins
-if the two ever disagree. The slices and tasks are in [plan.md](plan.md).
+if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice 2 tasks").
 
 ## Where things stand
 
-- **Slice 1 is done** (T1.1–T1.12, D44). **Next: plan slice 2**, then its Codex rule 9 review, before any skill text.
-- **Tests are frozen at `tests-v1.1`** (D49, 2026-10-21), which replaces `tests-v1.0`. Any change to a prompt,
-  dialogue, grader or manual script needs a decision entry. `git diff tests-v1.1 --stat -- evals evals-baseline`
-  should show nothing.
-- **Model and judge are `opus`** (D48), today `claude-opus-5-5`, CLI 2.1.307. The eval output records only the alias,
-  so every run session records the resolved ID before and after.
-- **Judge calibration holds** under the D49 graders: 37 fixed replies, 339 verdicts, 0 wrong, no `critical-reply`
-  error ([evaluation.md](evaluation.md)). Re-run it if `opus` resolves to a new model or a grader changes.
-- **SC-2 holds with no margin.** Plain Claude passes at most 1 of 3 runs on exactly 7 of the 10 SC-2 tests (AT-04,
-  AT-08, AT-10, AT-14, AT-18, AT-S1, AT-S2). It passes AT-06, AT-09 and AT-S5 3/3. If any of the seven flips at
-  release, SC-2 fails; tests are never weakened to protect it.
-- **Built so far:**
-  - `evals/`: 50 auto cases; `evals-baseline/`: 14 SC-2 baseline cases (D46); `evals/manual/`: 12 manual scripts;
-  - `evals-calibration/items.json`: 37 fixed replies with expected verdicts;
-  - `scripts/validate-plugin.sh` (RC-06), `scripts/build-histories.py`, `scripts/sc1-gate.py` (SC-1; self-test
-    21/21), `scripts/judge-calibration.py` (self-test 14/14).
-
-  Conventions, counting rules and run commands are in [evals/README.md](../evals/README.md).
-- **No product skill text yet**, and no `.claude-plugin/plugin.json` yet.
-- **Requirements:** v1.0 plus D44–D48. D49 changed tests only, not REQUIREMENTS. `git diff requirements-v1.0 --
-  docs/REQUIREMENTS.md` shows only sentences citing D44–D48.
-- **Git:** everything is committed and pushed to `main` of <https://github.com/ShivLee/think-twice> (public, D3).
-  Tags: `requirements-v1.0`, `tests-v1.0`, `tests-v1.1`.
-- **Fixture repository:** <https://github.com/ShivLee/think-twice-fixtures> holds the AT-31 and AT-41 pages, pinned by
-  commit `0787d68`. **Never rewrite its history.**
+- **Slice 2 is planned and half built.** T2.1–T2.15 are in plan.md. Codex reviewed the plan twice (fresh thread
+  `01a1668c-f769-7e60-8f52-38161738a006`); every finding was fixed. **T2.1–T2.6 are done; next is T2.7.**
+- **The skill exists:** `skills/pause/SKILL.md` (about 2,810 tokens by the fallback estimate; limit 4,400) and
+  `skills/pause/standards.md` (about 1,450), plus `.claude-plugin/plugin.json` (0.1.0). Codex reviewed the draft
+  against the goal (thread `01a1670a-3660-7ae0-9cc0-0b11fad47237`): 1 High (premises attributed to the owner) and 6
+  more, all fixed; the re-check found one new conflict, also fixed.
+- **Development runs so far** (not gate results): group A (recognition, opening: AT-01, 02, 04, 05, 39a) and group B
+  (material, input: AT-29, 30, 36, 38) all pass ≥2 of 3, with AT-12 and RC-05, and no critical failure.
+- **Tests are frozen at `tests-v1.1`.** `git diff tests-v1.1 --stat -- evals evals-baseline` shows nothing.
+- **Model and judge:** `opus` = `claude-opus-5-5`; **CLI 2.1.309**. The judge calibration was re-run on 2.1.309
+  (T2.3): 354 verdicts, 0 wrong, accepted.
+- **AT-37 moved to slice 5** (owner): its frozen setup declines a journal offer that only slice 5 builds. Slice 2's
+  gate is now 26 tests: 19 auto (26 cases) and 7 manual.
+- **Git:** everything is committed and pushed to `main` (last commit `915ac98`). No new tags this slice.
 
 ## What this session did
 
 | # | What | Where |
 | --- | --- | --- |
-| — | Start-up checks pass; `opus` resolved to `claude-opus-5-5` (CLI 2.1.306 → 2.1.307, no re-run needed) | progress.md |
-| T1.12 | Codex reviewed `git diff 96748d6..HEAD`: NEEDS REVISION, 4 High, 4 Medium, 1 Low. Every finding checked against the files and confirmed. You read the review. | review private in `.local/t112/t112-review.md` |
-| — | Tooling fixed (findings 1, 7): the SC-1 gate no longer passes incomplete evidence or lets a manual pass hide an auto critical failure; calibration checks the whole echoed reply and full coverage | `6ddfa0a` |
-| D49 | Test corrections (findings 2–6, 8): requested views in three baselines; *Beyond Feelings* citations critical; `Grep`/`Glob` journal and card checks; leading questions count as conclusions; AT-06 sources; safe AT-27 setup | decisions.md; `d4e3729` |
-| — | Re-calibration accepted; baseline re-run: SC-2 at exactly 7 of 10 | evaluation.md; raw results in `.local/t112/` |
-| D44 | Slice 1 closed; tag `tests-v1.1`; pushed | progress.md, README.md |
+| — | Start-up checks pass; `opus` = `claude-opus-5-5`; the CLI moved 2.1.307 → 2.1.309 during the session | progress.md |
+| Plan | Slice 2 tasks T2.1–T2.15; Codex plan review (3 High, 4 Medium) and re-check (3 Medium, 1 Low), all fixed | plan.md; review private in `.local/t2-plan/` |
+| T2.1 | Real `plugin.json` and skill frontmatter. A sentinel probe showed a run started from the repository can `Read` `.local/`, `.env` and journal files, so **runs start from an allowlisted staging copy** | evaluation.md |
+| T2.2 | `scripts/sc1-gate.py`: subcases in `--tests`, every defined grader required, the D49 book check (no card yet, so naming the book is critical), eval-folder contamination, and an **incomplete** verdict so a baseline cannot look worse than it was. Self-test 38/38. The gate command is in plan.md | `883557c` |
+| T2.3 | Judge re-calibration on CLI 2.1.309, accepted | evaluation.md; `.local/t23/` |
+| T2.4 | First draft of `SKILL.md` and `standards.md`, then the Codex goal review and fixes | `b50d139`, `12d81ae`; `.local/t24/` |
+| T2.5 | Group A runs; "settled" defined; one question per request | evaluation.md; `49ff8c0`; `.local/t25/` |
+| T2.6 | Group B runs; nothing said about a Claude-written summary until the owner answers; on the owner's choice, an unclear state gets FR-0.5's own question "Have you formed a view yet?" | evaluation.md; `915ac98`; `.local/t26/` |
 
-Finding 9 (commit `3bc95ff` names no ID) is recorded in progress.md; no history rewrite.
+Owner decisions this session (recorded in plan.md and progress.md; none needed a decision entry): AT-37 to slice 5;
+Codex as the second grader (a blind paired sample plus an open audit, T2.11); Claude drives the manual tests and the
+owner grades the transcripts (T2.10); no nlpm in the process for now (its vague-word rule would push the verdict
+definitions away from REQUIREMENTS' wording).
 
 ## What to do next time, in order
 
-1. **Start-up.** Read [AGENTS.md](../AGENTS.md), this file, [progress.md](progress.md) and [plan.md](plan.md). Then
-   run, from the repository:
+1. **Start-up.** Read [AGENTS.md](../AGENTS.md), this file, [progress.md](progress.md) and plan.md ("Slice 2
+   tasks"). Then run, from the repository:
 
    ```sh
    scripts/validate-plugin.sh                  # RC-06: pass
    python3 scripts/build-histories.py --check  # 18/18 dialogues parsed
-   python3 scripts/sc1-gate.py --self-test     # 21/21
+   python3 scripts/sc1-gate.py --self-test     # 38/38
    python3 scripts/judge-calibration.py --self-test
    git diff tests-v1.1 --stat -- evals evals-baseline   # empty
    ```
 
-2. **Check the model.** Record `claude --version` and what `opus` resolves to:
+2. **Check the model and the CLI.** Note `< /dev/null`: without it, `claude -p` waits on stdin and prints nothing.
 
    ```sh
-   claude -p --model opus --output-format json "Reply OK" | python3 -c 'import json,sys; print(*json.load(sys.stdin)["modelUsage"])'
+   claude --version
+   claude -p --model opus --output-format json "Reply OK" < /dev/null | python3 -c 'import json,sys; print(*json.load(sys.stdin)["modelUsage"])'
    ```
 
-   If it is no longer `claude-opus-5-5`, D48 applies: re-run the judge calibration before any graded run, and re-run
-   the baseline before comparing anything with it.
-3. **Plan slice 2** (section 9 rule 9). Write its tasks into [plan.md](plan.md), each with IDs and done-when. Slice 2
-   is "Recognition, core and the quick after review": its IDs and the 27 tests in its gate are in the plan's slice
-   table (row 2), which is the authority. The plan must include:
-   - the real `.claude-plugin/plugin.json`, and `SKILL.md` written from the frozen tests, within QR-13;
-   - **method cards load with `Read` only** (D49 item 3: a `Grep` on the skill folder fails RC-05);
-   - **if slice 2 ships any method card**, first build the chapter check in `scripts/sc1-gate.py` (D49 item 2;
-     plan.md, "Later");
-   - after slice 2, re-estimate the remaining work and revisit the Manual tests (D47).
-4. **Codex rule 9 review of the slice 2 plan** (through cc-suite, read-only; earlier plan reviews used thread
-   `01a15293-dbca-75b0-b297-9ea90c69f2e3`). Settle its findings before writing skill text.
-5. **At slice 2's first gate:**
-   - read the plugin's AT-07 replies in full: check the judge is not stricter than section 5 on a verdict on the
-     reasoning;
-   - SC-2 has **no margin**; AT-18's share of it is brevity and restraint;
-   - read a sample of graded replies in full: the judge and the product are both Claude, so the calibration cannot
-     catch a judge that favours Claude's style.
+   If `opus` is no longer `claude-opus-5-5`, D48 applies: re-run the judge calibration before any graded run. If the
+   CLI is no longer 2.1.309, re-run the calibration (evals/README.md) before results count, and the T2.1 reach probe
+   before the gate (T2.9).
+3. **T2.7: development runs C** (verdicts and the review's shape): AT-07, AT-23, AT-24, AT-35 (a–d), 3 runs each,
+   then a one-run smoke check of groups A and B. About $8. **Read every AT-07 reply in full**: the judge must not be
+   stricter than section 5 on a Sound verdict.
+4. **T2.8: development runs D** (lenses and lessons): AT-08, AT-09, AT-10, AT-19, AT-20, AT-25, then a one-run smoke
+   check of groups A–C.
+5. Then T2.9–T2.15 as plan.md says: the auto gate (re-run the six paired baselines first: the old results kept no
+   traces, so they now read "incomplete"), the manual tests, Codex's second grading, the SC-1 and SC-2 results, the
+   owner's real use, the slice review, and the re-estimate.
 
 To resume, paste this:
 
 ```text
-In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md.
-Run the start-up checks and record what opus resolves to. Then plan slice 2 in plan.md
-(tasks with IDs and done-when) and prepare the Codex rule 9 review brief for me to see first.
-Name the requirement IDs each step serves.
+In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md
+("Slice 2 tasks"). Run the start-up checks and record the CLI version and what opus resolves to.
+Then start T2.7 (development runs C), and name the requirement IDs each step serves.
 ```
 
 ## How to run things
 
-- **Eval runs:** the commands are in [evals/README.md](../evals/README.md). Until slice 2 adds the real
-  `plugin.json`, run from a scratch copy of the working tree (outside the repository, without `.git` and `.local`)
-  with a minimal `.claude-plugin/plugin.json`, then run `scripts/build-histories.py` there. Without a skill, the 5
-  dialogues with a `### pause` turn do not build; the 4 baseline dialogues do.
-- **Baseline (plain Claude):** copy `evals-baseline/` (with its built histories) into a folder with **no** plugin and
-  run `claude plugin eval . --eval-dir evals-baseline --no-publish --trust-plugin --ablation none --runs 3 -j 3 --model
-  opus --judge-model opus --json <file>`. Only the counted arm runs: about $10.
-- **Judge calibration:** `scripts/judge-calibration.py build <dir outside the repo>`, then `claude plugin eval <dir>
-  --ablation none --no-publish --trust-plugin --runs 3 -j 3 --model claude-haiku-5-5 --judge-model opus --json <file>`,
-  then `scripts/judge-calibration.py score <file>`. About $8. If the echo model refuses to repeat an item, re-run just
-  that case (`--case cal-<id>`, echo with Sonnet) and score both files with `score --pool`.
-- **SC-1 gate:** `scripts/sc1-gate.py <result.json> [--root <suite dir>] [--manual <file>] [--tests "AT-01 ..."]`.
-- **Codex:** through cc-suite's runner, read-only; brief the owner before sending.
+- **Development runs** (T2.5–T2.8): `.local/devrun.sh OUT_DIR RUNS CASE [CASE]` rebuilds the staging copy at
+  `/private/tmp/think-twice-run` with only the named cases, builds their histories, records the CLI, the resolved
+  model, the skill hashes and the commit before and after, and runs `claude plugin eval` with `--keep-temp`
+  (`opus` as model and judge). Score with `scripts/sc1-gate.py OUT_DIR/result.json --root . --tests "<IDs> AT-12
+  RC-05"`. A smoke check is one run; read its per-case results directly, since the gate script reports a one-run
+  result as incomplete.
+- **Gate runs** (T2.9): the command block in plan.md, below the slice 2 task table.
+- **Never run evals from the repository** (T2.1): always from the staging copy.
+- **Clearing kept eval folders** (`/private/tmp/e-*`, read-only): make the folder writable first, then the rest
+  (`chmod u+w "$d"; chmod -R u+rwx "$d"; rm -rf "$d"`), and not under `set -e`.
+- **Codex:** through cc-suite's runner (`node <cc-suite>/scripts/codex-runner.mjs --kind review-plan --model
+  gpt-6-astra --effort high --sandbox read-only -- "<brief>"`), read-only; brief the owner before sending.
+- **Judge calibration and baseline:** as before (evals/README.md; evaluation.md).
+
+## Open items to keep in view
+
+- **AT-02's disputed runs.** Two of four runs failed `fail-asks-for-phase` on an either/or question about the
+  owner's state, the same shape as the case's own PASS example: probably a judge error. The skill now asks FR-0.5's
+  open question instead (owner's choice, recorded as prompted by the judge). The disputed runs go to T2.11. The
+  calibration set has no AT-02 item; adding one is the owner's call (about $8 to re-run).
+- **SC-2 has no margin** (plain Claude passes ≤1 of 3 on exactly 7 of 10). The six paired baselines are re-run in
+  T2.9; if a valid new baseline removes a qualifying test, the owner hears about it, and tests are not weakened.
+- **FR-2.5** (offer to look further back when a summary can't be confirmed) is deferred to slice 3, with AT-17.
+- **`Read` by exact path reaches the eval cases** under the plugin root; the gate now fails any run that touches an
+  eval folder.
 
 ## Rules that apply from now on
 
-- REQUIREMENTS v1.0 is frozen. Every change cites a decision entry, and every new decision gets the D40 drift check.
-- Tests are frozen at `tests-v1.1` and never weakened to make them pass. Write the skill from the tests.
-- Every eval run uses `--no-publish`. Run `scripts/build-histories.py` before each run. Record the CLI version and the
-  resolved model before and after each run session (D48).
-- Committed histories hold only conversation entries. Raw session files contain your email and credential entries.
+- REQUIREMENTS v1.0 is frozen; every change cites a decision entry with the D40 drift check.
+- Tests are frozen at `tests-v1.1` and never weakened. A failing test is fixed in the skill; every skill change is
+  noted in evaluation.md with the general rule and ID it implements, and uses no wording from a case.
+- Every gate attempt is kept; unchanged skill text is never re-run to get a pass.
+- Every eval run uses `--no-publish` and starts from the staging copy. Record the CLI and the resolved model before
+  and after each run session (D48).
 - Real-use logs, manual results, raw eval results and Codex reviews stay private in `.local/`.
-- No commit, push, tag or release unless you ask. Stage files individually.
+- No commit, push, tag or release unless the owner asks. Stage files individually.
 
 ## Leftovers on this machine
 
-- `.local/t112/`: the T1.12 brief and review, the calibration results (`opus.json`, `opus-rerun.json`) and the
-  baseline results (`baseline.json`). Private; gitignored.
-- This session's scratch folder (under `/private/tmp/claude-501/`) holds the same files plus the scratch copies used
-  for the runs. It may be cleared by the system; nothing there is needed.
-- No `/private/tmp/e-*` eval folders were kept (no run used `--keep-temp`).
+- `.local/t2-plan/`, `.local/t23/`, `.local/t24/`, `.local/t25/`, `.local/t26/`: briefs, reviews and raw results;
+  `.local/devrun.sh` and `.local/t24/overlap.py` (the case-wording scan). Private; gitignored.
+- `/private/tmp/think-twice-run`: the staging copy, rebuilt before every run; nothing in it is needed.
+- No kept `/private/tmp/e-*` eval folders remain.
 
 ## Codex threads
 
-All on gpt-6-astra, high effort. Resume with `/cc-suite:continue <thread>`.
+All on gpt-6-astra, high effort. Resume with `--resume <thread>` on the runner.
 
 | Thread | What it reviewed |
 | --- | --- |
 | `01a14e42-3bc6-7750-bd9b-be610089efce` | Requirements v0.4 → v0.7.1 |
 | `01a15259-f481-73d2-8658-a609e2c89b01` | The streamlining proposal; D44 and D45 |
-| `01a15293-dbca-75b0-b297-9ea90c69f2e3` | Rule 9 review of plan.md; then (2026-10-19) best practice for AT-31 and AT-41 |
-| `01a161b1-9ae3-78b2-a37f-75d80937f314` | T1.12: slice 1 review of `git diff 96748d6..HEAD` (2026-10-21) |
+| `01a15293-dbca-75b0-b297-9ea90c69f2e3` | Rule 9 review of plan.md (slice 1); best practice for AT-31 and AT-41 |
+| `01a161b1-9ae3-78b2-a37f-75d80937f314` | T1.12: slice 1 review |
+| `01a1668c-f769-7e60-8f52-38161738a006` | Rule 9 review of the slice 2 plan, and its re-check |
+| `01a1670a-3660-7ae0-9cc0-0b11fad47237` | The first skill draft against the goal, and its re-check |
 
 ## Lessons from this session
 
-- **A grader's context must match its prompt.** The judge sees only the final reply, so a baseline that asks "What do
-  you think?" must say so in its grader, or a requested view is scored as substitution. That error had inflated SC-2's
-  margin.
-- **Carry probe limits into the tests.** P-4 noted that the card check counted `Read` only; the frozen graders missed
-  it until the review. When a probe records a limit, check that a grader covers it.
-- **A gate script needs tests for missing evidence**, not just for wrong results: one run, a missing case, or a
-  manual line overwriting an auto failure all passed before.
-- **The echo model can refuse.** Haiku would not repeat a reply containing a false claim. Re-run that item with
-  another echo model and pool; the whole-reply check guarantees the judge saw the fixed text.
-- **Tag after committing.** A tag marks a commit; tagging before the changes are committed marks the old tests.
-- **Shell and Finder quirks:** in zsh, a word starting with `===` is expanded as a command lookup, so quote such
-  markers. Finder hides `/private/tmp`; open a file there with `open -t <path>`.
+- **Probe before trusting a run location.** Sentinel files showed that `Read` by exact path reaches the plugin root;
+  the denials covered only Glob, Grep, `.git` and results.
+- **"Incomplete" is not "fail".** Counting missing evidence as a failure is safe for the plugin and backwards for a
+  baseline, where failures make SC-2 look better.
+- **Define the words the skill depends on.** "Settled" without a definition made the skill review an ambiguous
+  statement; "first asks" without "and says nothing else" let it review a summary before asking.
+- **A judge can disagree with its own case.** AT-02's two graders pulled against each other on an either/or
+  question. Record such cases for the second grader; do not quietly tune towards them.
+- **Shell quirks:** zsh does not split a word list in `for c in $CASES` (use `bash`); the mac-it-guy-pro guard
+  blocks any Bash command containing `..`, including `...` in a comment (write such files with the Write tool);
+  `set -e` hides a later status line when `claude plugin eval` exits 1, which only means a case scored below its
+  threshold; `claude -p` needs `< /dev/null` inside scripts.
