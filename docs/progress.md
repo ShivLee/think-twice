@@ -142,6 +142,14 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
 - 2026-10-22: **T2.3 done** (SC-1, SC-2; D48 rule 2). Judge calibration on CLI 2.1.309, `opus` = `claude-opus-5-5`
   before and after: 354 verdicts, 0 wrong, no `critical-reply` error, accepted (3 items re-echoed with Sonnet and
   pooled, as in D49). Cost $7.90; [evaluation.md](evaluation.md).
+- 2026-10-22: **T2.4 done** (the slice 2 IDs). First draft of `skills/pause/SKILL.md` (recognition, openings, the
+  quick review, revisions, hints, endings) and `skills/pause/standards.md` (lenses, calibration gate, fact status,
+  verdicts, repairs, hint steps, pressure, lessons), written from REQUIREMENTS. Sizes by the fallback estimate in
+  evals/README.md (4 characters per token; no API key for the counting endpoint): `SKILL.md` about 2,360 tokens
+  (limit 4,400), `standards.md` about 1,400. `standards.md` is loaded with `Read` before the first check only. A
+  4-word-phrase scan against the 26 cases' prompts, dialogues and fixtures, and the slice 2 manual scripts, finds
+  only generic phrases and REQUIREMENTS wording; phrases shared with PASS/FAIL graders all come from REQUIREMENTS.
+  No book attribution, no journal path. RC-06 passes; the freeze diff is empty. Not yet run (T2.5).
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -168,7 +176,8 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T2.4: first draft of `SKILL.md` and `standards.md` from REQUIREMENTS (the slice 2 IDs in the plan.md slice table).
+T2.5: development runs A, recognition and opening (AT-01, AT-02, AT-04, AT-05, AT-39a; FR-0.1, FR-0.2, FR-0.4,
+FR-0.5, FR-0.7, FR-1.2, FR-2.2, QR-1).
 
 ## Waiting on the owner
 
