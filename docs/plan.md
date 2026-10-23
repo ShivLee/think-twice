@@ -173,7 +173,32 @@ then. Do the tasks in this order.
 | T2.14 | Slice review: Codex compares the slice 2 diff with section 1 and the ID list (section 9 rule 11) | All slice 2 IDs; prevents drift | The owner has read the review; every High finding and any critical, privacy or gate failure is fixed before slice 2 closes; a skill change re-runs T2.9–T2.12 |
 | T2.15 | Re-estimate the remaining work from the measured times; revisit whether AT-03, AT-21, AT-22, AT-32, AT-37 and AT-34 (c)/(d) should become Auto (D47) | D47; prevents planning slice 3 on guesses | Estimate written here; the owner's choice recorded, and any change of method made through a decision entry |
 
-**The slice 2 gate command** (written in T2.2): *to be filled in.*
+**The slice 2 gate command** (written in T2.2). Run it with `bash`: zsh does not split the word list. The staging
+copy (T2.1) holds only the 26 slice 2 auto cases, so the eval runs exactly those. `--keep-temp` keeps each run's
+trace, which the contamination check needs.
+
+```sh
+CASES="at01a-before-bare-question at01b-during-in-progress at01c-after-stated-conclusion at02-ambiguous-state
+at04-decision-without-view at05-opt-out at07-sound-conclusion at08-cause-from-sequence at09-colleague-report
+at10-consensus at19a-one-sided-policy at19b-settled-fact at20-hidden-assumption at23-many-small-issues
+at24-complete-argument at25a-lesson-after-repair at25b-sound-no-lesson at29-embedded-instruction
+at30-own-summary-file at35a-overgeneralised-only at35b-circular at35c-two-flaws at35d-overgeneralised-plus
+at36-claude-written-summary at38-missing-file at39a-settled-new-session"
+B=/private/tmp/think-twice-run; OUT="$PWD/.local/<attempt>"   # <attempt>: a new folder per gate attempt
+rm -rf "$B" && mkdir -p "$B/scripts" "$B/evals" "$OUT"
+rsync -a .claude-plugin skills "$B/" && cp scripts/build-histories.py "$B/scripts/"
+for c in $CASES; do rsync -a --exclude history.jsonl "evals/$c" "$B/evals/"; done
+(cd "$B" && python3 scripts/build-histories.py)
+(cd "$B" && claude plugin eval . --no-publish --trust-plugin --scaffold --ablation none --runs 3 -j 3 \
+  --keep-temp --model opus --judge-model opus --json "$OUT/result.json")
+scripts/sc1-gate.py "$OUT/result.json" --root . --manual .local/manual-results.txt --tests \
+  "AT-01 AT-02 AT-04 AT-05 AT-07 AT-08 AT-09 AT-10 AT-11 AT-19 AT-20 AT-21 AT-22 AT-23 AT-24 AT-25 AT-29 AT-30
+   AT-31 AT-34c AT-34d AT-35 AT-36 AT-38 AT-39a AT-41 AT-12 RC-05"
+```
+
+`--root .` judges completeness against the repository's own case folders, so a case missing from the staging copy
+still fails its test. After the second grading (T2.11), the kept `/private/tmp/e-*` folders can be removed: they
+are read-only, so `chmod -R u+w` them first.
 
 ## Slice 6 note: the omission pass (section 7)
 

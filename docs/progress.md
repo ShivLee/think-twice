@@ -130,6 +130,15 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
   where no sentinel is reachable; a smoke run invoked `/think-twice:pause` from it ([evaluation.md](evaluation.md)).
   Two follow-ups added to plan.md: T2.2 fails a run that reads `evals/`, and T2.9 re-runs the probe after a CLI
   change. The CLI moved to **2.1.309** during the session.
+- 2026-10-22: **T2.2 done** (SC-1, QR-8, RC-05, D49 item 2). `scripts/sc1-gate.py` now judges a subcase named in
+  `--tests` (AT-39a, AT-34c) on its own cases; requires every grader each `case.yaml` defines in every run; runs the
+  D49 book check on plugin replies (with no card shipped, naming *Beyond Feelings* or one of its chapters is
+  critical); treats a run whose tools touch an eval folder as critical; and gives any test with incomplete evidence
+  (a missing case, run, grader, trace or reply) the verdict **incomplete**, which never passes the gate and is never
+  counted as a failure, so a baseline cannot look worse than it was (SC-2). Self-test 38/38 (21 earlier checks kept). Checked on
+  two real one-run results: real grader names match `case.yaml`, and a real trace parses with no false hit. The gate
+  command is in [plan.md](plan.md); gate runs need `--keep-temp`. Consequence: earlier result files without kept
+  traces (the T1.11 and D49 baselines) now report incomplete, so T2.9 re-runs the six paired baselines.
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -156,7 +165,7 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T2.2: gate tooling in `scripts/sc1-gate.py` (SC-1, QR-8, RC-05, D49 item 2).
+T2.3: judge calibration on CLI 2.1.309 before any graded result counts (SC-1, SC-2; D48 rule 2). About $8.
 
 ## Waiting on the owner
 
