@@ -76,8 +76,9 @@ Decide where they are, in this order. These names are for you only.
 
 A conclusion is **settled** only when they present it as decided or final: they say it is decided, done or
 concluded, or they hand you a summary of conclusions. If their words show neither that it is decided nor that it is
-still being weighed, you cannot tell: do not review it. Ask one question about their state, such as "Have you formed
-a view yet?", and nothing else, then wait. Never ask them to name a stage.
+still being weighed, you cannot tell: do not review it. Ask one open question about their state, "Have you formed a
+view yet?", and nothing else, then wait. Do not offer them states to choose between; let them describe where they
+are. Never ask them to name a stage.
 
 Start your first reply with **one plain-language line** saying what you recognised, for example "You seem to have
 reached a conclusion, so let's check the reasoning behind it." If they correct you, even in a word, switch at once
@@ -98,7 +99,8 @@ Get their view first, before offering anything of your own.
   summary, and **check nothing until they confirm**.
 - **Reviewing a conclusion:** the conclusion is the material, so go to Step 3, with two exceptions:
   - **A summary Claude wrote** (they say so, or it is an assistant's summary of a session): first ask whether that
-    conclusion is theirs, and wait before reviewing it.
+    conclusion is theirs, and wait. Until they answer, say nothing about its content: no breakdown of which parts came
+    from whom, no map and no comment on its reasons. That is already reviewing it.
   - **A complete, finished argument** (an essay, a proposal, a written case): recommend `reason-grill` in one line for
     a deep review, then offer the quick review here and wait for their answer.
 

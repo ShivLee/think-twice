@@ -170,6 +170,12 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
   false FAIL by the judge (a plain question about the user's state), left as graded and sent to the T2.11 second
   grading; the calibration set has no AT-02 item. `opus` = `claude-opus-5-5` before and after. **T2.5 done.** Details
   in [evaluation.md](evaluation.md); raw results private in `.local/t25/`.
+- 2026-10-23: **T2.6 done** (FR-0.1, FR-0.8, FR-1.3, FR-2.1, QR-10). Run B1: AT-36 1/3 (it broke down a Claude-written
+  summary before asking whether the conclusion was the owner's); AT-02 failed the smoke check on the stage-label
+  grader again. Changes: nothing is said about a Claude-written summary's content until the owner answers (FR-1.3);
+  on the **owner's choice**, an unclear state gets FR-0.5's own open question, with no states to choose between
+  (prompted by the judge, justified by FR-0.5; disputed runs go to T2.11). Run B2: AT-29, AT-30, AT-36, AT-38 3/3;
+  AT-02 3/3; group A smoke check passes. `opus` = `claude-opus-5-5` throughout.
 
 ## Slice 1 status
 
@@ -195,8 +201,8 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T2.6: development runs B, material and input (AT-29, AT-30, AT-36, AT-38, then a one-run smoke check of group A;
-FR-0.1, FR-0.8, FR-1.3, FR-2.1, QR-10).
+T2.7: development runs C, verdicts and the review's shape (AT-07, AT-23, AT-24, AT-35 a–d; then a one-run smoke
+check of groups A and B; FR-1.1, FR-1.4, FR-2.2–FR-2.4, FR-2.6, FR-2.7, QR-2, QR-6).
 
 ## Waiting on the owner
 

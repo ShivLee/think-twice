@@ -454,3 +454,25 @@ no AT-02 item, so it cannot catch this. The after-run model check first returned
 stdin); re-run with `< /dev/null`: `claude-opus-5-5`, so run 2 used one model throughout.
 
 **T2.5 done:** every group A test passes ≥2 of 3 runs with no critical failure, and its cases pass AT-12 and RC-05.
+
+## T2.6: development runs B (material and input)
+
+**Serves:** FR-0.1, FR-0.8, FR-1.3 (Claude-written summary), FR-2.1 (after), QR-10 (plan.md T2.6). Development
+results, not a gate. **CLI:** 2.1.309. **Model and judge:** `opus` = `claude-opus-5-5` before and after.
+
+**Run B1** (skill at `49ff8c0`): AT-29, AT-30, AT-38 3/3; **AT-36 1/3**; AT-12 4/4 cases; RC-05 passed; no critical
+failure. One-run smoke check of group A: six pass, AT-02 fails `fail-asks-for-phase` again (votes FAIL, PASS, FAIL),
+on "Is moving to March already decided, or are you still weighing it?". Changes:
+
+- AT-36 (FR-1.3, "first asks whether that conclusion is mine"): every reply asked, but only after a breakdown of
+  which parts of the summary came from whom, which is already reviewing it. The skill now says nothing about a
+  Claude-written summary's content until the user answers.
+- AT-02 (FR-0.5): two of four runs failed the stage-label grader on an either/or question about the user's state,
+  the same shape as the case's PASS example. **Owner's choice (2026-10-23):** the skill now asks the open question
+  FR-0.5 itself gives, "Have you formed a view yet?", and offers no states to choose between. Recorded honestly: the
+  change is prompted by the judge's behaviour, and justified by FR-0.5's own example; the disputed runs still go to
+  the T2.11 second grading.
+
+**Run B2** (the two changes above, uncommitted): **AT-29, AT-30, AT-36 and AT-38 3/3**; AT-12 4/4 cases; RC-05 passed;
+no critical failure or contamination. AT-02, 3 runs: **3/3**, each asking "Have you formed a view yet?". One-run smoke
+check of the other six group A cases: all pass. **T2.6 done.**
