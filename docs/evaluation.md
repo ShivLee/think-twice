@@ -364,3 +364,54 @@ requested view as an unrequested conclusion.
   release that passes 2 of 3 on any of them fails SC-2. Tests are never weakened to protect it (section 9 rule 2).
 - AT-18's baseline fails only on lecturing and length, so its share of the margin is brevity and restraint.
 - Plain Claude already does what AT-06, AT-09 and AT-S5 ask once asked for its view. The plugin must still pass them.
+
+## T2.1: what a run can reach, and where runs start
+
+**Serves:** QR-9, RC-02, FR-0.1, QR-11 (plan.md T2.1; Codex plan review, finding 3). **Date:** 2026-10-22. **CLI:**
+Claude Code 2.1.309 (2.1.308 at the start of the session). **Model:** `opus`, resolved to `claude-opus-5-5`.
+
+**Method.** A throwaway probe skill (exempt from the freeze rule, like P-1) told the model to Glob, Grep and Read for
+**made-up sentinel files**, never real private material. The sentinels sat where private material lives in a
+repository-like copy: `.local/`, `.git/`, `.env`, `evals/results/` and a journal under `.think-twice/`, plus one
+in a folder outside the plugin. The case allowed `Read`, `Glob` and `Grep`, as every auto case does. One run each,
+about $0.20 in total.
+
+| What a run can reach | From a copy of the repository | From the allowlisted staging copy |
+| --- | --- | --- |
+| Working directory | A fresh, sealed temporary folder; no sentinel | The same |
+| Plugin path | Given to the model: the skill's "Base directory" line names it, and every built history embeds it | The staging path only; no repository path in any history |
+| `Read` by exact path in the plugin root | **Allowed: `.local/`, `.env` and the journal sentinel were read** | Nothing to read: those paths do not exist |
+| `.git/`, `<eval dir>/results/` | Denied by the eval's permission settings | Denied |
+| `Glob` and `Grep` in the plugin root | Denied | Denied |
+| `Glob` in the skill folder | Allowed | Allowed |
+| Any path outside the plugin | Denied (`Read`, `Glob`, `Grep`) | Denied |
+
+**Decision: eval runs never start from the repository.** They start from an allowlisted staging copy at
+`/private/tmp/think-twice-run`, rebuilt before each run session:
+
+```sh
+B=/private/tmp/think-twice-run
+rm -rf "$B" && mkdir -p "$B/scripts"
+rsync -a .claude-plugin skills "$B/"
+cp scripts/build-histories.py "$B/scripts/"
+rsync -a --exclude results --exclude manual --exclude README.md --exclude history.jsonl evals "$B/"
+(cd "$B" && python3 scripts/build-histories.py)   # 14/14: the 4 baseline dialogues are not copied
+```
+
+Run `claude plugin eval .` inside `$B`. Copy the results back to the repository's `evals/results/` (gitignored) or to
+`.local/`. Baseline cases keep running from their own folder with no plugin (T1.11). The staging copy holds no
+`.local/`, `.git`, `.env`, journal, results, docs or manual scripts.
+
+**Smoke run.** With the real `plugin.json` and the frontmatter-only `SKILL.md`, AT-01a ran once from the staging
+copy: the plugin loaded from `/private/tmp/think-twice-run` as `think-twice` 0.1.0, and the model's first tool call
+went to the skill's own folder, a path it gets only from the invoked skill. The `--json` trace does not record the
+prompt or the skill expansion, so invocation is shown indirectly.
+
+**Limits.**
+
+- `Read` by exact path also reaches the eval cases under the plugin root, graders included. Nothing tells the model
+  those paths, and `Glob` and `Grep` are denied there, but a run that reads `evals/` would have seen its own grading.
+  The gate should treat any `Read` under `evals/` as a contaminated run; this is not yet checked by
+  `scripts/sc1-gate.py`.
+- The probe ran on CLI 2.1.309. A CLI update can change the eval's permission settings, so the probe is re-run when
+  the CLI changes before a gate (part of the T2.9 manifest).

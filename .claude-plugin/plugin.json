@@ -1,0 +1,6 @@
+{
+  "name": "think-twice",
+  "version": "0.1.0",
+  "description": "Helps you think, without thinking for you: one manual command, /think-twice:pause, that checks your own reasoning before, during or after you think something through.",
+  "keywords": ["reasoning", "critical-thinking", "coaching", "decision-making"]
+}
