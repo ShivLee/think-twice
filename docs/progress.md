@@ -139,6 +139,9 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
   two real one-run results: real grader names match `case.yaml`, and a real trace parses with no false hit. The gate
   command is in [plan.md](plan.md); gate runs need `--keep-temp`. Consequence: earlier result files without kept
   traces (the T1.11 and D49 baselines) now report incomplete, so T2.9 re-runs the six paired baselines.
+- 2026-10-22: **T2.3 done** (SC-1, SC-2; D48 rule 2). Judge calibration on CLI 2.1.309, `opus` = `claude-opus-5-5`
+  before and after: 354 verdicts, 0 wrong, no `critical-reply` error, accepted (3 items re-echoed with Sonnet and
+  pooled, as in D49). Cost $7.90; [evaluation.md](evaluation.md).
 - No product skill text has been written yet.
 
 ## Slice 1 status
@@ -165,7 +168,7 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T2.3: judge calibration on CLI 2.1.309 before any graded result counts (SC-1, SC-2; D48 rule 2). About $8.
+T2.4: first draft of `SKILL.md` and `standards.md` from REQUIREMENTS (the slice 2 IDs in the plan.md slice table).
 
 ## Waiting on the owner
 

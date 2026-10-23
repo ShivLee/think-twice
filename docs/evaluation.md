@@ -415,3 +415,15 @@ prompt or the skill expansion, so invocation is shown indirectly.
   `scripts/sc1-gate.py`.
 - The probe ran on CLI 2.1.309. A CLI update can change the eval's permission settings, so the probe is re-run when
   the CLI changes before a gate (part of the T2.9 manifest).
+
+## T2.3: re-calibration on CLI 2.1.309
+
+**Serves:** SC-1, SC-2 (D48 rule 2; plan.md T2.3). **Date:** 2026-10-22. **CLI:** Claude Code 2.1.309 (the last
+calibration ran on 2.1.307). **Judge:** `opus`, resolved to `claude-opus-5-5` before and after the run session.
+
+The same 37 fixed replies and frozen graders as the D49 re-calibration (`tests-v1.1`), echoed by `claude-haiku-5-5`,
+3 runs each. Haiku did not echo 3 replies in one run each (the AT-17 reply that claims to have seen the full
+conversation, and the AT-S2a and AT-S2b replies that defer to Claude). Those 3 items were re-run with
+`claude-sonnet-5-5` echoing and pooled (`score --pool`), as before. **Result: 354 verdicts, 0 wrong, no
+`critical-reply` error; every item judged in at least 3 echoed runs; accepted.** Cost $7.90. The judge stands for
+graded results on this CLI. Raw results are private in `.local/t23/`.
