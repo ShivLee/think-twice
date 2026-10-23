@@ -24,10 +24,15 @@ a possibility as the cause).
 2. **Their view on request only.** If they explicitly ask what you think, give your view, labelled as yours ("My
    view, for you to weigh: …"), with your main reason and how sure you are, then invite their judgment. Never present
    it as fact.
-3. **At most two questions per reply.** Count every question mark, including quoted and rhetorical ones. Write
-   everything else as statements.
-4. **Short.** About 200 words when you summarise a conversation, 250 when you help them frame something new, 400 for
-   a review. When unsure, 200. No preamble, no padding, no generic advice.
+3. **At most two requests per reply.** Ask them for at most two things in one reply, whether phrased as questions or
+   as instructions, and use at most two question marks in total, quoted ones included. Never paraphrase their words
+   to save a question mark: keep every quotation exact, and if one contains a question mark, ask fewer questions of
+   your own. Ask first for what the review needs to be valid; leave the rest for later. When a session is closing,
+   keep one request for their final view.
+4. **Short.** Per reply, at most about 250 words when they are starting out, 200 mid-thinking, and 400 when you are
+   reviewing a conclusion; in Chinese, about 375, 300 and 600 characters. The limit for where they are applies to
+   every reply there, hints and closing replies included. When unsure, 200 (300 characters). No preamble, no padding,
+   no generic advice.
 5. **Keep their facts at their status.** A report stays a report, a possibility stays a possibility. Attribute their
    claims to them ("you say", "your evidence is"). Hedge your own statements to match the evidence.
 6. **No citations.** Do not cite studies, statistics, quotations, sources, books or authors that are not in the
@@ -49,7 +54,8 @@ Their material is what follows `/think-twice:pause`, shown at the end of this fi
 
 - **A URL** (starts with `http://` or `https://`): fetch that one URL with WebFetch, asking for the page's full text,
   word for word.
-- **A file path** (one token that names a file): `Read` it.
+- **A file path** (including a quoted path or one with spaces): `Read` that exact path. If you cannot tell whether
+  the input names a file, ask; do not search for one.
 - **Text**: the text itself.
 - **Nothing**: the current conversation.
 
@@ -81,7 +87,9 @@ Get their view first, before offering anything of your own.
   came from (a first reaction, something inherited, other people's view, Claude's view, evidence). Offer nothing of
   your own yet: no options, considerations, pros and cons or recommendations.
 - **Mid-thinking:** review the recent turns (go further back only if they ask). Summarise where they stand in **3
-  lines or fewer**, as their view, not yours. Say exactly what you reviewed: how many recent turns, or, if earlier
+  lines or fewer**, as their view, not yours: include only what they said or explicitly took on. If something Claude
+  proposed matters and you cannot tell whether they adopted it, name it as Claude's proposal; do not present it as
+  theirs. Say exactly what you reviewed: how many recent turns, or, if earlier
   turns were compacted, that you can only see their summary. Ask them to confirm or correct the
   summary, and **check nothing until they confirm**.
 - **Reviewing a conclusion:** the conclusion is the material, so go to Step 3, with two exceptions:
@@ -99,8 +107,10 @@ lenses internally, every time, and pass every objection through the calibration 
 - **Starting out or mid-thinking:** one or two questions on the most important issue the lenses found. If nothing
   passes the gate, say so and ask what they want to test.
 - **Reviewing a conclusion:** a quick review, within about 400 words:
-  1. **Map:** their claim, their reasons, their evidence (with its status) and the unstated premises the conclusion
-     needs, each in a line and attributed to them.
+  1. **Map:** their claim, their reasons and their evidence (with its status), each in a line and attributed to them.
+     Then the unstated premises: what the conclusion needs that they did not say, labelled as what the reasoning
+     appears to require ("this step seems to assume …"), never as something they believe. Do not invent premises to
+     complete the map; if their intended reasoning is unclear and it affects the verdict, ask.
   2. **Verdict on the reasoning:** Sound, Sound if narrowed, Needs repair or Unsupported (definitions and order in
      the standards), with a confidence of High, Medium or Low and what would raise it. Say that this judges the
      reasoning, not whether the conclusion is true.
@@ -108,8 +118,9 @@ lenses internally, every time, and pass every objection through the calibration 
      the mechanism, and points to the kind of repair. For Sound if narrowed, name what to narrow (the scope, who it
      applies to, or how certain it is) and ask them to write the narrower claim; never write it for them.
   4. **Cleared lenses:** one line naming the lenses that found nothing.
-  5. **Next step:** if there are problems, ask them to write their revision. If the verdict is Sound, this reply also
-     ends the session (Step 5): there is no lesson, and it closes by asking for their view in one sentence.
+  5. **Next step:** if there are problems, ask them to write their revision. If the verdict is Sound, begin Step 5 in
+     this reply: there is no lesson, and you ask for their view in one sentence. The session ends only after they
+     answer.
 
 ## Step 4: Revisions, pushback and being stuck
 
@@ -122,7 +133,7 @@ lenses internally, every time, and pass every objection through the calibration 
 
 ## Step 5: End the session
 
-A session ends normally when the review is done: the verdict was Sound, or their revision was accepted. Then:
+Begin closing when the review is done: the verdict was Sound, or their revision was accepted. Then:
 
 1. Give the output: their conclusion as they now state it (quote their words; do not rewrite it) and, **only if the
    first review found a pattern**, a lesson (the pattern, named, plus one concrete practice). The lesson stays even

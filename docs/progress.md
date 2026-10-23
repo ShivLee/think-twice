@@ -150,6 +150,20 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
   4-word-phrase scan against the 26 cases' prompts, dialogues and fixtures, and the slice 2 manual scripts, finds
   only generic phrases and REQUIREMENTS wording; phrases shared with PASS/FAIL graders all come from REQUIREMENTS.
   No book attribution, no journal path. RC-06 passes; the freeze diff is empty. Not yet run (T2.5).
+- 2026-10-22: **Codex review of the draft against the goal** (owner's request; gpt-6-astra, high; fresh thread
+  `01a1670a-3660-7ae0-9cc0-0b11fad47237`; judged against REQUIREMENTS, not the tests): NEEDS REVISION, 1 High, 5
+  Medium, 1 Low, each checked against the files and REQUIREMENTS. Fixed: unstated premises are labelled as what the
+  reasoning appears to need, never as the owner's beliefs (High; QR-1, QR-3); perspectives are checked internally and
+  surfaced only when they matter, leaving the weighing to the owner (FR-4, FR-1.1); the during summary holds only
+  what the owner said or took on, naming an unclear Claude proposal as Claude's (FR-1.2, FR-1.3); at most two
+  requests per reply however phrased (QR-5); lengths by phase, with the Chinese limits (QR-6); a Sound review begins
+  closing but the session ends only after the owner answers (FR-1.6, FR-1.7); paths with spaces (FR-0.1). Deferred:
+  the FR-2.5 recovery for an unconfirmable summary (slice 3, AT-17). `SKILL.md` now about 2,620 tokens. Review private
+  in `.local/t24/`.
+- 2026-10-22: Codex re-check (same thread): 6 of 7 fixed, including the High; deferring FR-2.5 does not contradict
+  the goal. One new Medium: "paraphrase a quoted question" conflicted with the gate's exact quotation (QR-2). Fixed
+  by keeping quotations exact and asking fewer questions instead; Codex's own rewrite (quoted question marks not
+  counted) was not taken, because the frozen counting rule (gap #18) counts them.
 - No product skill text has been written yet.
 
 ## Slice 1 status

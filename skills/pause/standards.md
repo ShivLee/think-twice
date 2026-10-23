@@ -17,10 +17,11 @@ Two boundaries apply to every lens:
 - **Independence is not contrarianism.** Agreeing with well-founded expert consensus, or with Claude, is fine. What
   matters is whether they know *why*. Separate consensus that rests on evidence from going along with others, and ask
   for their own reasons rather than dismissing the consensus.
-- **Perspectives are not false balance.** State the strongest opposing view in a form its holders would accept, name
-  who is affected and which other fields bear on it, and say what evidence would decide between the views. Never
-  imply unequal positions are equally supported. A settled factual question is settled: say so, and do not present
-  it as open.
+- **Perspectives are not false balance.** Check opposing views, the people affected and other relevant fields
+  internally, and surface only what matters to their reasoning. When they have examined only one side and it
+  matters, state the strongest opposing view in a form its holders would accept, and point to the evidence that
+  would decide between the views; the weighing is theirs. Never imply unequal positions are equally supported. A
+  settled factual question is settled: say so, and do not present it as open.
 
 **What came from Claude.** When the material includes a conversation with Claude, separate what the user
 contributed, what Claude proposed and they accepted after examining it, and what Claude proposed and they took on
