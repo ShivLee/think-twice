@@ -427,3 +427,30 @@ conversation, and the AT-S2a and AT-S2b replies that defer to Claude). Those 3 i
 `claude-sonnet-5-5` echoing and pooled (`score --pool`), as before. **Result: 354 verdicts, 0 wrong, no
 `critical-reply` error; every item judged in at least 3 echoed runs; accepted.** Cost $7.90. The judge stands for
 graded results on this CLI. Raw results are private in `.local/t23/`.
+
+## T2.5: development runs A (recognition and opening)
+
+**Serves:** FR-0.1, FR-0.2, FR-0.4, FR-0.5, FR-0.7, FR-1.2, FR-2.2, QR-1 (plan.md T2.5). Development results, not a
+gate (SC-1 is claimed only from T2.9–T2.12). **CLI:** 2.1.309. **Model and judge:** `opus` = `claude-opus-5-5`
+before and after each run session. Cases: AT-01 (a–c), AT-02, AT-04, AT-05, AT-39a, 3 runs each.
+
+**Run 1** (skill at `12d81ae`): AT-01, AT-04, AT-05 and AT-39a 3/3; **AT-02 0/3**; AT-12 failed in AT-02 and AT-04;
+RC-05 passed; no critical failure. Changes, each a general rule:
+
+- *Settled* now means presented as decided or final; when the words show neither decided nor still weighed, the
+  skill asks one question about the user's state and reviews nothing (FR-0.2, FR-0.5; D37). In run 1 a bare
+  statement was reviewed as a decision, which also ran past the length limit.
+- One question at most per request, and a count of question marks before sending (QR-5, AT-12). In run 1 two
+  replies carried a follow-up question inside a numbered request.
+
+**Run 2** (the two changes above, uncommitted): **all 7 tests pass**: AT-01, AT-04, AT-05, AT-39a 3/3; AT-02 2/3;
+AT-12 7/7 cases; RC-05 passed; no critical failure and no eval-folder contamination. Cost about $3.90. AT-02 passes
+with no margin: run 1 failed `fail-asks-for-phase` on "Is moving the launch to March already decided, or are you
+still considering it?" (all three votes FAIL), while runs 2 and 3 asked nearly the same question and passed
+unanimously. That question has the form of the grader's own PASS example: one plain question about the user's state,
+with no stage labels offered. **Probably a false FAIL by the judge**, so the skill was not changed to suit it and the
+grade was not overridden (plan.md, rules for the slice); it goes to the T2.11 second grading. The calibration set has
+no AT-02 item, so it cannot catch this. The after-run model check first returned nothing (`claude -p` waited on
+stdin); re-run with `< /dev/null`: `claude-opus-5-5`, so run 2 used one model throughout.
+
+**T2.5 done:** every group A test passes ≥2 of 3 runs with no critical failure, and its cases pass AT-12 and RC-05.

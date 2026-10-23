@@ -164,7 +164,12 @@ review read by the owner. **Next: plan slice 2** (recognition, core and the quic
   the goal. One new Medium: "paraphrase a quoted question" conflicted with the gate's exact quotation (QR-2). Fixed
   by keeping quotations exact and asking fewer questions instead; Codex's own rewrite (quoted question marks not
   counted) was not taken, because the frozen counting rule (gap #18) counts them.
-- No product skill text has been written yet.
+- 2026-10-22: **T2.5 in progress** (FR-0.1, FR-0.2, FR-0.4, FR-0.5, FR-0.7, FR-1.2, FR-2.2, QR-1). Run 1: 5 of 7
+  (AT-02 0/3; AT-12 failed in AT-02 and AT-04). Two general changes to `SKILL.md` (what "settled" means; one
+  question per request and a count before sending). Run 2: all 7 pass, AT-02 only 2/3; its failing run looks like a
+  false FAIL by the judge (a plain question about the user's state), left as graded and sent to the T2.11 second
+  grading; the calibration set has no AT-02 item. `opus` = `claude-opus-5-5` before and after. **T2.5 done.** Details
+  in [evaluation.md](evaluation.md); raw results private in `.local/t25/`.
 
 ## Slice 1 status
 
@@ -190,8 +195,8 @@ in order, with the proposed T1.9 sample.
 
 ## Next action
 
-T2.5: development runs A, recognition and opening (AT-01, AT-02, AT-04, AT-05, AT-39a; FR-0.1, FR-0.2, FR-0.4,
-FR-0.5, FR-0.7, FR-1.2, FR-2.2, QR-1).
+T2.6: development runs B, material and input (AT-29, AT-30, AT-36, AT-38, then a one-run smoke check of group A;
+FR-0.1, FR-0.8, FR-1.3, FR-2.1, QR-10).
 
 ## Waiting on the owner
 

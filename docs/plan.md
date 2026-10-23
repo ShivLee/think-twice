@@ -198,7 +198,8 @@ scripts/sc1-gate.py "$OUT/result.json" --root . --manual .local/manual-results.t
 
 `--root .` judges completeness against the repository's own case folders, so a case missing from the staging copy
 still fails its test. After the second grading (T2.11), the kept `/private/tmp/e-*` folders can be removed: they
-are read-only, so `chmod -R u+w` them first.
+are read-only: make each folder writable first, then its `sealed/` subfolder (`chmod u+w "$d"; chmod -R u+rwx
+"$d"`), then remove it. Do not run this under `set -e`; a permission message there is harmless.
 
 ## Slice 6 note: the omission pass (section 7)
 
