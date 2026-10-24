@@ -476,3 +476,97 @@ on "Is moving to March already decided, or are you still weighing it?". Changes:
 **Run B2** (the two changes above, uncommitted): **AT-29, AT-30, AT-36 and AT-38 3/3**; AT-12 4/4 cases; RC-05 passed;
 no critical failure or contamination. AT-02, 3 runs: **3/3**, each asking "Have you formed a view yet?". One-run smoke
 check of the other six group A cases: all pass. **T2.6 done.**
+
+## T2.7: development runs C (verdicts and the review's shape)
+
+**Serves:** FR-1.1, FR-1.4, FR-2.2–FR-2.4 (after), FR-2.6, FR-2.7, QR-2, QR-6 (after) (plan.md T2.7); FR-0.2 and
+FR-0.5 for the change to "settled". Development results, not a gate. **CLI:** **2.1.310** (the T2.3 calibration ran on
+2.1.309; evals/README.md requires a re-run before graded results count, so it is re-run before T2.9). **Model and
+judge:** `opus` = `claude-opus-5-5` before and after each run session, except the after-check of C4, which hit the
+account's session limit and returned nothing; C4b's before-check, on the same skill text, resolved to
+`claude-opus-5-5`.
+
+**Run C1** (skill at `f1f982b`): AT-24 3/3; **AT-07 0/3, AT-23 0/3, AT-35 0/3**; AT-12 7/7; RC-05 passed. Critical
+failures in AT-07 (1 run) and AT-35a (2 runs). Cost $4.95. The judges' votes are recorded without reasons, so each
+failing reply was re-judged with its frozen criteria by `opus` for diagnosis only (no grade changed). Changes, each
+a general rule:
+
+- *Settled* (FR-0.2, FR-0.5): AT-35b and AT-35c were never reviewed; the skill asked "Have you formed a view yet?".
+  The T2.5 definition required the user to say "decided" or "final", which is narrower than FR-0.2, where only a
+  tentative view is not settled. A claim stated as the user's own, in full sentences, and argued for now counts as
+  settled; a note, heading or phrase that does not say who holds it or how firmly still gets the open question.
+- At most three problems in the whole reply (FR-1.4): extra ones had slipped in as a "smaller point", inside the
+  cleared-lenses line, or two in one item. Fewer than three when fewer pass the gate; say that they are ranked.
+- Problems match the verdict (FR-2.7, QR-2): AT-35a added a speculative "minor" problem under Sound if narrowed
+  (critical: invented flaw). A guess about what might be true is not a problem; another real problem makes the
+  verdict Needs repair.
+- No arguing in Claude's own voice (QR-1, QR-3): under Sound, AT-07 argued for the conclusion ("without them you
+  couldn't recover at all"; critical: endorsed overstatement), narrated objections it had dropped, and judged the
+  unstated premises plausible.
+- Confidence is about the verdict (FR-2.3): "what would raise it" is what would make the verdict surer (confirming a
+  quoted claim it relies on, clarifying an interpretation), never new evidence for the conclusion and never a doubt
+  for the user to answer. In AT-35b the raise-condition was evidence for the conclusion, which would change an
+  Unsupported verdict rather than raise confidence in it.
+- Unstated premises are each tied to the quoted step they link; cleared lenses are one line with no comments; every
+  quotation is word for word; status is a single word, and any weakness beyond it must pass the gate; one confidence
+  level, never a range; a word count before sending (QR-6: AT-23 replies ran to 443 and 450 words); before keeping a
+  problem, check that the user's own words do not already answer it.
+
+These went in over runs C2 and C3 (C2: AT-35b and AT-35c reviewed, but AT-02 regressed to 1/3 until the "who holds
+it" wording; C3: AT-02, AT-23, AT-24 3/3). Costs $6.38 and $6.10. A wording scan after each change found no new
+4-word phrase shared with the cases; the 3-word "most important first" (in AT-23's grader) was caught by hand and
+replaced. `SKILL.md` is now about 3,340 tokens (limit 4,400).
+
+**Run C4 + C4b** (skill SHA-256 `19333e6f…`, uncommitted; C4 hit the session limit partway, so its errored cases
+were re-run as C4b on the same text, a fill-in for missing evidence, not a retry of failures): **AT-02 3/3, AT-07
+2/3, AT-23 3/3, AT-24 3/3, AT-35 2/3 with one critical failure** (AT-35c run 3, judge votes FAIL FAIL PASS: a third
+problem saying nothing in the reasons points to the 30% figure, although the user's 40% comparison bounds it);
+AT-12 and RC-05 pass. Costs $2.84 and $3.96. **AT-35 is not yet done**, and the smoke check of groups A and B has not
+run.
+
+**Every AT-07 reply read in full** (12 replies). The verdict Sound was graded correctly in every run but one (C3 run 3
+gave "High-to-Medium", fixed). The disputed point is `pass-qr2-gate`: in the re-judged replies the judge treats the
+map's unstated premises (which `pass-map` requires) and the "what would raise confidence" line (which FR-2.3
+requires) as notes that must each pass the gate, and fails obvious premises as not surviving a rebuttal. If the judge
+reasons that way, it is stricter than section 5 ("at most minor notes, each passing the gate") on required parts of
+the review; the reconstructed reasons suggest this but cannot show it, since the judge's own reasons are not
+recorded. The skill
+now satisfies both where it can (quoted premises; a raise-condition tied to a quoted claim), and C4 passes 2/3; the
+failing C4 run's raise-condition was vague and contradicted the reply's own reasoning, a fair failure. The disputed
+runs go to the T2.11 second grading; the calibration set has no AT-07 note item.
+
+**Gate tooling finding** (SC-1, SC-2; for T2.9): `scripts/sc1-gate.py` counts a `critical-` grader whose judge call
+threw (here, the session limit) as a critical failure, so the test reads "fail" rather than "incomplete". For a
+baseline this would inflate SC-2, which T2.2 set out to prevent. Not changed in T2.7.
+
+**Owner's choices (2026-10-24):** continue past the estimate; AT-07's judge question goes to T2.11; the gate tooling
+fix is its own step before T2.9.
+
+**Run C5** (one more general change: when the user's own words answer part of an objection, keep only the part that
+remains, quote what they wrote that bears on it, and never claim nothing in their reasons bears on it; QR-2 condition
+4, FR-1.4; skill SHA-256 `054998dd…`, uncommitted): **AT-23, AT-24 and AT-35 3/3**, no critical failure; AT-12 7/7;
+RC-05 passed. **AT-07 1/3**: both failures are `pass-qr2-gate` on split votes (PASS FAIL FAIL), and both are the
+disputed kind. Run 2 was failed for the unstated premise that the loss "would cost you more than $30 a month",
+nearly the example premise `pass-map` itself requires ("that breaking the contract would be costly"); run 3 for its
+FR-2.3 "what would make me surer" line. Not tuned further: tuning towards a judge that disagrees with its own case is
+what the slice rules forbid. AT-07 has passed 2/3 (C4) and 1/3 (C5) on adjacent skill texts, which are not pooled.
+Cost $5.89.
+
+**One-run smoke check of groups A and B** (same skill text): **all 11 cases pass**, every grader passing, no
+critical failure, contamination or book name; RC-05 passed. Cost $2.15. (The gate script marks AT-12 failing for
+any case with fewer than 3 runs, a "fail" where "incomplete" is meant; it goes with the pre-T2.9 tooling fix.)
+
+**Codex consultation on AT-07** (owner's request; gpt-6-astra, high; fresh thread
+`01a16d25-9f13-70c0-a180-25f1101002f4`; it has seen these outcomes, so T2.11 uses another fresh thread): QR-2 gates
+objections; neutral mapping and genuine confidence conditions are not objections merely because they appear, but an
+alleged weakness anywhere must pass the gate; the frozen grader's "every note" is ambiguous on this (High). Codex
+grades the three C5 replies PASS on `pass-qr2-gate` (Medium). It found two defects that stand on REQUIREMENTS alone:
+the T2.7 rule "new evidence … would change the verdict, not raise confidence in it" is too broad (FR-2.3), and a
+reply added Claude's own risk ranking (QR-3); and one mapping concern: premises restated as "would cost more than $30
+a month" turn a one-off loss into a recurring figure (FR-2.2). Recommended: an owner-approved clarification of the
+AT-07 test with that functional boundary, plus AT-07 calibration items with labels fixed beforehand, keeping T2.11.
+Review private in `.local/t27/`.
+
+**State:** group C meets the T2.5 criterion except AT-07, whose remaining failures are on the disputed grader; the
+smoke check passes. Total cost of T2.7 $32.27. Raw results, re-judging notes and replies are private in
+`.local/t27/`.

@@ -10,9 +10,10 @@ transcripts go here.
 ## Current outcome
 
 **Slice 2 is under way** (recognition, core and the quick after review). Its plan is reviewed (T2.1–T2.15 in
-[plan.md](plan.md)), the skill exists (`skills/pause/SKILL.md`, `standards.md`), and **T2.1–T2.6 are done**:
-development runs for recognition, opening, material and input pass. **Next: T2.7**, development runs for the
-verdicts and the review's shape.
+[plan.md](plan.md)), the skill exists (`skills/pause/SKILL.md`, `standards.md`), **T2.1–T2.6 are done**, and
+**T2.7 is done except AT-07**: development runs for recognition, opening, material, input, verdicts and the review's
+shape pass, apart from AT-07's disputed grader. Next: the AT-07 plan the owner accepted (below), the gate tooling
+fix and the calibration before T2.9, then T2.8.
 
 ## Last verified state
 
@@ -177,6 +178,32 @@ verdicts and the review's shape.
   on the **owner's choice**, an unclear state gets FR-0.5's own open question, with no states to choose between
   (prompted by the judge, justified by FR-0.5; disputed runs go to T2.11). Run B2: AT-29, AT-30, AT-36, AT-38 3/3;
   AT-02 3/3; group A smoke check passes. `opus` = `claude-opus-5-5` throughout.
+- 2026-10-24: start-up checks pass (RC-06; 18/18 dialogues; `sc1-gate.py` self-test 38/38; `judge-calibration.py`
+  self-test; freeze diff empty). `opus` resolves to `claude-opus-5-5`, unchanged; **the CLI is now 2.1.310** (the T2.3
+  calibration ran on 2.1.309), so the calibration is re-run before T2.9; development runs went ahead, as on
+  2026-10-22.
+- 2026-10-24: **T2.7 in progress** (FR-1.1, FR-1.4, FR-2.2–FR-2.4, FR-2.6, FR-2.7, QR-2, QR-6; FR-0.2, FR-0.5).
+  Run C1: AT-24 3/3; AT-07, AT-23, AT-35 0/3. General changes to `SKILL.md` over runs C2–C3: "settled" now matches
+  FR-0.2 (an argued claim stated as the user's own is settled; a bare note still gets FR-0.5's question); at most
+  three problems in the whole reply, ranked and said to be; problems match the verdict; no arguing in Claude's own
+  voice; confidence is about the verdict; quoted premises; a word count before sending. Run C4/C4b (C4 hit the
+  account's session limit; the errored cases were re-run on the same text): AT-02 3/3, AT-07 2/3, AT-23 3/3, AT-24
+  3/3, **AT-35 2/3 with one critical failure** (AT-35c, split vote); AT-12 and RC-05 pass. Every AT-07 reply read:
+  re-judging suggests the judge grades the review's required premises and "what would raise confidence" line as
+  gated notes, which would be stricter than section 5 (the judge's own reasons are not recorded); sent to T2.11.
+  Gate tooling finding: a `critical-` judge call that threw counts as a critical failure, not incomplete (fix before
+  T2.9). Cost $24.23 (estimate was about $8). Details in [evaluation.md](evaluation.md); raw results private in
+  `.local/t27/`.
+- 2026-10-24: T2.7 continued on the owner's choice. One more general change (an objection the user's own words
+  partly answer keeps only the part that remains; QR-2, FR-1.4). Run C5: AT-23, AT-24, AT-35 3/3, no critical
+  failure; **AT-07 1/3**, both failures on `pass-qr2-gate` split votes, the disputed kind (a required premise and the
+  FR-2.3 confidence line graded as notes); not tuned further. One-run smoke check of groups A and B: all 11 pass.
+  T2.7 cost $32.27 in total.
+- 2026-10-24: **Codex consulted on AT-07** (owner's request; gpt-6-astra, high; thread
+  `01a16d25-9f13-70c0-a180-25f1101002f4`): QR-2 gates objections, and the frozen grader's "every note" is ambiguous;
+  it grades the three latest replies PASS; it found two skill defects that stand on REQUIREMENTS (FR-2.3 confidence
+  rule too broad; QR-3, Claude's own claim in a reply) and one mapping concern (FR-2.2). Recommends a clarified AT-07
+  test plus calibration items, keeping T2.11. Details in [evaluation.md](evaluation.md).
 
 ## Slice 1 status
 
@@ -210,16 +237,21 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.4 First draft of the skill | Done 2026-10-22 (Codex goal review fixed) |
 | T2.5 Development runs A | Done 2026-10-22 |
 | T2.6 Development runs B | Done 2026-10-23 |
-| T2.7 Development runs C | Next |
+| T2.7 Development runs C | Done except AT-07 (1/3 on the disputed grader); owner accepted the AT-07 plan (Next action) |
 | T2.8–T2.15 | Not started |
 
 [HANDOFF.md](HANDOFF.md) lists the next steps in order.
 
 ## Next action
 
-T2.7: development runs C, verdicts and the review's shape (AT-07, AT-23, AT-24, AT-35 a–d; then a one-run smoke
-check of groups A and B; FR-1.1, FR-1.4, FR-2.2–FR-2.4, FR-2.6, FR-2.7, QR-2, QR-6).
+The AT-07 plan the owner accepted (2026-10-24), in order: (1) fix the three skill defects Codex found, each from
+REQUIREMENTS alone (FR-2.3 confidence rule, QR-3 no claims of Claude's own, FR-2.2 premises in the user's terms), and
+re-run group C; (2) draft **D50**, a clarification of the AT-07 test (neutral mapping and genuine confidence
+conditions are not objections; any alleged weakness must pass the gate), for owner approval, then tag `tests-v1.2`;
+(3) add AT-07 items to the judge calibration, labels fixed by the owner before the run, and re-run the calibration on
+CLI 2.1.310; (4) T2.11 as planned, in a fresh Codex thread. Also before T2.9: the gate tooling fix (SC-1, SC-2).
+Then T2.8: development runs D (FR-4, FR-2.4 lesson, QR-3, QR-5).
 
 ## Waiting on the owner
 
-- Nothing at the moment.
+- Nothing at the moment. D50 will need the owner's approval when drafted, and the calibration labels before the run.
