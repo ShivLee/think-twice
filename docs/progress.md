@@ -237,20 +237,21 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.4 First draft of the skill | Done 2026-10-22 (Codex goal review fixed) |
 | T2.5 Development runs A | Done 2026-10-22 |
 | T2.6 Development runs B | Done 2026-10-23 |
-| T2.7 Development runs C | Done except AT-07 (1/3 on the disputed grader); owner accepted the AT-07 plan (Next action) |
+| T2.7 Development runs C | Done except AT-07 (1/3 on the disputed grader); owner accepted the AT-07 plan |
+| T2.7a Skill fixes from the AT-07 consultation | Next |
+| T2.7b D50: clarify AT-07's gate grader | Not started (needs owner approval) |
+| T2.7c Gate tooling fix | Not started |
+| T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
 | T2.8–T2.15 | Not started |
 
 [HANDOFF.md](HANDOFF.md) lists the next steps in order.
 
 ## Next action
 
-The AT-07 plan the owner accepted (2026-10-24), in order: (1) fix the three skill defects Codex found, each from
-REQUIREMENTS alone (FR-2.3 confidence rule, QR-3 no claims of Claude's own, FR-2.2 premises in the user's terms), and
-re-run group C; (2) draft **D50**, a clarification of the AT-07 test (neutral mapping and genuine confidence
-conditions are not objections; any alleged weakness must pass the gate), for owner approval, then tag `tests-v1.2`;
-(3) add AT-07 items to the judge calibration, labels fixed by the owner before the run, and re-run the calibration on
-CLI 2.1.310; (4) T2.11 as planned, in a fresh Codex thread. Also before T2.9: the gate tooling fix (SC-1, SC-2).
-Then T2.8: development runs D (FR-4, FR-2.4 lesson, QR-3, QR-5).
+**T2.7a** (FR-2.3, QR-3, FR-2.2): the three skill fixes from the Codex consultation, then group C ×3 and the smoke
+check of groups A and B. Then T2.7b (draft D50 for the owner), T2.7c (gate tooling fix; SC-1, SC-2), T2.8
+(development runs D; FR-4, FR-2.4 lesson, QR-3, QR-5), and T2.7d (calibration with AT-07 items) right before T2.9.
+All are in [plan.md](plan.md), "Slice 2 tasks".
 
 ## Waiting on the owner
 
