@@ -9,11 +9,11 @@ transcripts go here.
 
 ## Current outcome
 
-**Slice 2 is under way** (recognition, core and the quick after review). Its plan is reviewed (T2.1–T2.15 in
-[plan.md](plan.md)), the skill exists (`skills/pause/SKILL.md`, `standards.md`), **T2.1–T2.6 are done**, and
-**T2.7 is done except AT-07**: development runs for recognition, opening, material, input, verdicts and the review's
-shape pass, apart from AT-07's disputed grader. Next: the AT-07 plan the owner accepted (below), the gate tooling
-fix and the calibration before T2.9, then T2.8.
+**Slice 2 is under way** (recognition, core and the quick after review). **T2.1–T2.8 are done**, with T2.7a–T2.7c
+(the AT-07 plan and gate tooling), and the skill is committed as tested (`ee428f8`). Tests are frozen at
+`tests-v1.2` (D50). Left before the gate: **T2.7d**, the judge calibration with AT-07 items, which the owner labels
+first. Then T2.9–T2.15. Carried to the gate: AT-07 (2/3 in its last development run), AT-23 (one split-vote critical
+failure in the last smoke check) and the FR-2.2 premise wording (open).
 
 ## Last verified state
 
@@ -286,10 +286,10 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 
 ## Next action
 
-**T2.7d** (SC-1, SC-2; D48 rule 2): the judge calibration on CLI 2.1.310 with AT-07 items, which the owner labels
-first, run right before **T2.9** (the auto gate: re-run the six paired baselines, the reach probe if the CLI changed,
-fix the two samples, then the 26 cases ×3). AT-23's open smoke failure is decided by T2.9. All are in
-[plan.md](plan.md), "Slice 2 tasks".
+**T2.7d** (SC-1, SC-2; D48 rule 2): draft AT-07 calibration items with no labels; the owner labels them; then build,
+run and score the calibration on the CLI the gate will use. Then **T2.9**, the auto gate (estimate about $25; tell
+the owner first). The exact steps and commands are in [HANDOFF.md](HANDOFF.md), "What to do next time"; the tasks
+are in [plan.md](plan.md), "Slice 2 tasks".
 
 ## Waiting on the owner
 
