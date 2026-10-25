@@ -652,3 +652,112 @@ to incomplete, and AT-12 in C4 and in the T2.7a smoke check from fail to incompl
 unchanged. Unchanged by design: a run whose eval call errored still counts as a failed run (self-test AT-94).
 `evals/README.md` ("Anything missing fails the test") is frozen and was not edited; since T2.2 the script reports
 such evidence as incomplete, which, like a failure, never passes the gate.
+
+## T2.8: development runs D (lenses and lessons)
+
+**Serves:** FR-4, FR-2.4 (lesson), QR-3, QR-5 (plan.md T2.8); FR-0.2 for the change to "settled". Development
+results, not a gate. **CLI:** 2.1.310; **model and judge:** `opus` = `claude-opus-5-5` before and after each run
+session. Tests at `tests-v1.2`.
+
+**Run D1** (skill SHA-256 `a4a26b11…`, commit `8fd472e`): AT-08, AT-09, AT-10, AT-25 3/3; **AT-19 0/3, AT-20 1/3**;
+no critical failure; AT-12 8/8; RC-05 passed. Cost $6.11. Every failing reply read:
+
+- AT-19a: all three runs name no evidence that would decide between the views, and run 1 asks the user to write the
+  strongest opposing case instead of stating it. The standards already said this; the review's problem format did
+  not carry it.
+- AT-19b: run 1 hedges the settled question ("as far as I know … generally considered"), run 3 never says it is
+  settled. Rule 5 asked for hedging to match the evidence, and nothing said a settled question is said to be settled.
+- AT-20: run 1 treated a first-person plan as "starting out" and only asked opening questions: "settled" required
+  arguing for the claim, which is narrower than FR-0.2's "settled … decision". Run 3 surfaced the assumption but gave
+  a repair, not how it could be checked.
+
+Changes, each a general rule:
+
+- *Settled* (FR-0.2): a plan or decision they state, in the first person, as what they will do is settled. A bare
+  note (AT-02's side of the rule) and a decision not yet made (AT-04's) are unaffected; both are re-run with it.
+- Settled questions (FR-4 "Perspectives are not false balance"; section 5 critical failure "false balance on a
+  settled factual question"): hedging matches the evidence, no more and no less; a factual question that
+  well-established evidence settles is said plainly to be settled, with no source cited, and the decision stays
+  theirs.
+- One-sided reasoning (FR-4 Perspectives): the problem states the strongest opposing view itself, in a form its
+  holders would accept, and names the evidence that would decide; the weighing is theirs.
+- Unchecked load-bearing assumptions (FR-4 Overlooked; QR-3): the problem says how it could be checked; in the
+  standards, "ask how it could be checked" now covers assumed claims and unstated premises, and the repair kinds
+  include checking an assumption and weighing the strongest opposing view.
+
+Wording scan: a first draft quoted "my plan", which is in AT-20's prompt, and "that the evidence settles", near
+AT-19b's grader; both were replaced before any run. The only remaining new shared phrases ("what would raise the
+confidence") come from D50's grader text, not the skill, which has used them since T2.7. `SKILL.md` about 3,650
+tokens (limit 4,400), `standards.md` about 1,500.
+
+**Run D2 + D2b** (skill SHA-256 `c044282a…`, uncommitted; D2 hit the account's session limit partway, so its
+affected cases were re-run as D2b on the same text, a fill-in for missing evidence, not a retry of failures; `opus`
+resolved to `claude-opus-5-5` before D2 and before and after D2b; D2's after-check returned nothing at the limit).
+D2: **AT-02 3/3, AT-04 3/3** (the cases on the other side of the "settled" change), AT-08 2/3; AT-09 and AT-10 read
+incomplete because their judge calls threw (the T2.7c fix working as intended); every run of AT-19, AT-20 and AT-25
+errored. D2b: **AT-09, AT-10, AT-19, AT-25 3/3; AT-20 0/3**; AT-12 and RC-05 pass; no critical failure. Costs $3.14
+and $5.58.
+
+- AT-19 now passes: the strongest opposing view is stated, deciding evidence named, the settled question said to
+  be settled.
+- AT-20 surfaces the assumption in every run (the "settled" change works), but all three fail `pass-asks-how-to-check`:
+  the replies say how it could be checked, and add a fallback of Claude's own, instead of asking.
+- AT-08 D2 run 1 fails `pass-asks-what-tells-apart`: it applied the new one-sided rule to a causal claim and listed
+  the deciding evidence itself. A regression from the D1 change (AT-08 was 3/3 in D1).
+
+Changes (FR-4 Overlooked and Perspectives; QR-1, the user does the thinking): an unchecked cause, report or
+assumption gets a question, how they could check it or what would tell the explanations apart, with no list of
+answers; the one-sided rule applies only to a question on which other people hold an opposing position. Lines
+rewrapped. (An earlier start of run D3 was stopped before any result, so the rewrap could go in first.)
+
+**Run D3** (skill SHA-256 `abe66ba5…`, uncommitted): **AT-08, AT-09, AT-10, AT-19, AT-20 3/3; AT-25 1/3 with two
+critical failures** (AT-25a runs 1 and 2, `critical-reply` FAIL FAIL FAIL); AT-12 8/8; RC-05 passed. Cost $6.06.
+Both failing replies accept the user's revision, then add a new point ("worth checking" the user's estimate, once as
+"something to keep in mind", once as a confidence condition) that the user's own margin answers. Re-judging
+(diagnosis only) suggests the judge reads it as an invented flaw. It looks like a regression from widening the
+ungated fact-status check in D1 (AT-25 was 3/3 in D1 and D2b, on texts with fewer of these rules). Both replies also
+spend a paragraph correcting the frozen earlier assistant turn; not flagged by the judge, not changed.
+
+Change (QR-2, FR-1.5 revision handling): a new point after a revision must pass the gate whatever form it takes (a
+caveat, something to keep in mind, a check to make, a confidence condition); the fact-status "ask how it could be
+checked" applies only when a doubt about the claim passes the gate.
+
+**Run D4** (skill SHA-256 `cb4ee8fa…`, standards `8093b6c2…`, uncommitted; `opus` = `claude-opus-5-5` before and
+after): **AT-08, AT-09, AT-10, AT-19, AT-20, AT-25 all 3/3**, no critical failure; AT-12 8/8; RC-05 passed. Cost
+$6.16. Group D meets the T2.5 criterion on this text.
+
+**One-run smoke check of groups A–C** (same text; it hit the account's session limit near the end: AT-35c and AT-35d
+`critical-reply` threw, AT-39a errored; the after-check returned nothing): 13 of the 15 complete cases pass. Cost
+$3.66. Two real failures, both from T2.8's changes:
+
+- AT-23 at 447 words (limit 440 tokens): its first problem stacks three repairs (the strongest opposing view, the
+  deciding evidence and a check question). The added repair rules lengthen problems.
+- AT-29 asks "Have you formed a view yet?" instead of reviewing notes the user calls theirs, with a line labelled
+  as the decision. The skill's "who holds it or how firmly" rule already covers this; one misreading, possibly
+  pushed by the new first-person wording.
+
+**T2.8 so far:** $30.71 over runs D1, D2, D2b, D3, D4 and this smoke check.
+
+Changes after the smoke check (owner's choice: fix both and re-run group D ×3 and the A–C smoke check):
+
+- One kind of repair per problem, never several (the standards' "point to the kind of repair"; QR-6 length).
+- *Settled* (FR-0.2, "a settled … decision … pasted in"): material they call their own in which a decision or
+  conclusion is stated or labelled as one is settled. A bare note that does not say who holds it (AT-02) still gets
+  FR-0.5's question.
+
+Wording scan clean; the case's own words ("my notes", "Decision:") are not in the skill. Paragraph reflowed, no
+wording change. `SKILL.md` about 3,750 tokens (limit 4,400); SHA-256 `39703d89…`, standards `8093b6c2…`.
+
+**Run D5** (skill SHA-256 `39703d89…`, standards `8093b6c2…`; `opus` = `claude-opus-5-5` before and after):
+**AT-08, AT-09, AT-10, AT-19, AT-20, AT-25 all 3/3** (AT-10 run 1 had three question marks; AT-12 still passes 8/8),
+no critical failure; RC-05 passed. Cost $6.06.
+
+**One-run smoke check of groups A–C** (same text): **17 of 18 cases pass**, including AT-23's length and AT-29.
+**AT-23 has one critical failure** on a split vote (`critical-reply` FAIL PASS FAIL). Re-judging (diagnosis only)
+gives PASS, naming as the closest call "You do have relevant support: the research you mention, a real case…":
+calling a reported example "a real case" in Claude's own voice may read as upgrading a report (QR-3). Rule 5 and
+Step 3 already forbid that, so no rule was added; restating a rule after one split vote would be tuning. Cost $4.01.
+
+**State:** group D meets the T2.5 criterion on the final text; the A–C smoke check passes except one split-vote
+critical failure in AT-23 (owner's decision, progress.md). T2.8 cost $40.78 in total (D1 $6.11, D2 $3.14, D2b $5.58,
+D3 $6.06, D4 $6.16, smoke $3.66, D5 $6.06, smoke $4.01). Raw results private in `.local/t28/`.

@@ -1,49 +1,35 @@
-# Handoff: 2026-10-24 (slice 2: T2.1–T2.7 done, except AT-07)
+# Handoff: 2026-10-25 (slice 2: T2.1–T2.8 done; next T2.7d, then the gate)
 
 A snapshot of where things stand and where to pick up. **For live status, read [progress.md](progress.md)**; it wins
 if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice 2 tasks").
 
 ## Where things stand
 
-- **T2.1–T2.7 are done, except AT-07.** Group C (verdicts and the review's shape) passes: AT-23, AT-24 and AT-35
-  (a–d) 3/3 with no critical failure; AT-12 and RC-05 pass; the one-run smoke check of groups A and B passes (11/11).
-  **AT-07 passed 1 of 3** in the last run, both failures on `pass-qr2-gate` split votes, on what looks like a
-  disputed reading of the grader (below). Not tuned further.
-- **The owner accepted a four-step plan for AT-07**, now tasks **T2.7a–T2.7d** in plan.md: skill fixes that rest on
-  REQUIREMENTS alone, a decision entry D50 to clarify the AT-07 test, a gate tooling fix, and a judge calibration
-  with AT-07 items. **Next is T2.7a.**
-- **The skill:** `skills/pause/SKILL.md` (about 3,380 tokens by the fallback estimate; limit 4,400) and
-  `skills/pause/standards.md` (about 1,450), committed at `9edac17` as tested (SHA-256 `054998dd…`).
-- **Tests are frozen at `tests-v1.1`.** `git diff tests-v1.1 --stat -- evals evals-baseline` shows nothing. If the
-  owner approves D50, the AT-07 case and its baseline change and the freeze tag becomes `tests-v1.2`.
-- **Model and CLI:** `opus` = `claude-opus-5-5`; **CLI 2.1.310** (it was 2.1.309 at the last calibration, T2.3). The
-  calibration must be re-run before graded results count: that is T2.7d, right before T2.9.
-- **Git:** the T2.7 skill and results are committed and pushed to `main` (`9edac17`, `0b74e81`); the only later
-  change is this handoff update with plan.md and progress.md. No new tags this slice.
-
-## The AT-07 question, in short
-
-The judge passes and fails almost identical AT-07 replies. Re-judging the stored replies (diagnosis only; the judge
-records votes, not reasons) suggests it grades two **required** parts of the quick review as "notes" that must pass
-the calibration gate: the map's unstated premises (which `pass-map` requires) and FR-2.3's "what would raise the
-confidence" line. Codex (thread `01a16d25-9f13-70c0-a180-25f1101002f4`) agreed that QR-2 gates **objections**, and
-that the frozen grader's "every note" is ambiguous; it graded the three latest replies PASS. It also found three real
-skill defects, which T2.7a fixes. Its recommendation, which the owner accepted: clarify the test with a functional
-boundary (D50), add calibration items, keep the T2.11 second grading. That Codex thread has seen the outcomes, so
-**T2.11 must use a fresh thread.**
+- **T2.1–T2.8 are done**, with three things carried to the gate: AT-07's last runs (2/3 on `tests-v1.2`, the
+  failing run's cause unresolved), AT-23's split-vote critical failure in the last A–C smoke check (owner's choice:
+  T2.9 decides it), and the FR-2.2 premise wording that did not take hold in T2.7a (owner may try again).
+- **The skill:** `skills/pause/SKILL.md` (about 3,750 tokens by the fallback estimate; limit 4,400) and
+  `standards.md` (about 1,530), SHA-256 `39703d89…` and `8093b6c2…`, as tested in D5 and the last smoke check.
+- **Tests are frozen at `tests-v1.2`** (D50, owner approved 2026-10-24: what counts as a note in AT-07's gate
+  grader, identical in both arms). `git diff tests-v1.2 --stat -- evals evals-baseline` shows nothing.
+- **Gate tooling:** `scripts/sc1-gate.py` self-test 44/44. A judge call that threw now reads incomplete (T2.7c). An
+  eval run that errored still counts as a failed run; the owner may want that changed before T2.9.
+- **Model and CLI:** `opus` = `claude-opus-5-5`; **CLI 2.1.310**. The calibration last ran on 2.1.309, so T2.7d
+  re-runs it before any graded result counts.
+- **Git:** commits up to the T2.8 skill and docs are local only; `main` and the `tests-v1.2` tag are **not pushed**.
 
 ## What this session did
 
 | # | What | Where |
 | --- | --- | --- |
-| — | Start-up checks pass; `opus` = `claude-opus-5-5`; CLI now 2.1.310 | progress.md |
-| T2.7 | Runs C1–C5 and a smoke check. General skill changes: an argued claim stated as the user's own is settled (FR-0.2), a bare note still gets FR-0.5's question; at most three problems, ranked, none added to fill the list (FR-1.4); problems match the verdict (FR-2.7); no arguing in Claude's own voice (QR-1, QR-3); confidence about the verdict, one level (FR-2.3); premises tied to quoted steps; a word count before sending (QR-6); an objection the user's own words answer is dropped or narrowed (QR-2). Cost $32.27 (estimate was about $8) | `9edac17`; evaluation.md; `.local/t27/` |
-| — | Two gate tooling problems found in `scripts/sc1-gate.py` (not yet fixed): a judge call that threw reads as a critical failure; a one-run case reads as an AT-12 failure. Both should be "incomplete" | evaluation.md; plan.md T2.7c |
-| — | Codex consultation on AT-07 (owner's request), checked finding by finding; the AT-07 plan accepted | evaluation.md; `0b74e81`; `.local/t27/at07-codex-*` |
-| — | plan.md: tasks T2.7a–T2.7d added; progress.md and this file updated | plan.md; progress.md |
+| — | Start-up checks pass; CLI 2.1.310, `opus` = `claude-opus-5-5` throughout | progress.md |
+| T2.7a | Confidence condition makes the verdict surer without changing it (FR-2.3); no claims of Claude's own (QR-3); premises in the user's terms (FR-2.2; did not take hold). C6: group C passes; smoke A+B 11/11. $8.20 | `8fd472e`; evaluation.md |
+| T2.7b | D50 drafted, approved, applied to both AT-07 arms; tag `tests-v1.2`. AT-07 2/3. $1.34 | `64b1c1b`; decisions.md |
+| T2.7c | Thrown judge calls and one-run AT-12 evidence read incomplete; self-test 44/44 | `2280fc0` |
+| T2.8 | Group D: settled plans and own material (FR-0.2), settled questions, the strongest opposing view, check questions (FR-4), one repair per problem, every new point gated (QR-2). D5: all 3/3; smoke A–C 17/18 (AT-23 open). $40.78 | evaluation.md; `.local/t28/` |
 
-Owner decisions this session: continue T2.7 past the estimate; the AT-07 judge question to T2.11, plus the four-step
-plan (T2.7a–T2.7d); the gate tooling fix as its own step before T2.9.
+Owner decisions this session: leave the premise wording for now (open); approve D50 as drafted; commit T2.7a,
+T2.7c and T2.8; in T2.8, fix and re-run rather than stop, then close with AT-23 left to T2.9.
 
 ## What to do next time, in order
 
@@ -53,46 +39,34 @@ plan (T2.7a–T2.7d); the gate tooling fix as its own step before T2.9.
    ```sh
    scripts/validate-plugin.sh                  # RC-06: pass
    python3 scripts/build-histories.py --check  # 18/18 dialogues parsed
-   python3 scripts/sc1-gate.py --self-test     # 38/38
+   python3 scripts/sc1-gate.py --self-test     # 44/44
    python3 scripts/judge-calibration.py --self-test
-   git diff tests-v1.1 --stat -- evals evals-baseline   # empty
+   git diff tests-v1.2 --stat -- evals evals-baseline   # empty
    ```
 
-2. **Check the model and the CLI.** Note `< /dev/null`: without it, `claude -p` waits on stdin and prints nothing.
+2. **Check the model and the CLI** (`< /dev/null`, or `claude -p` waits on stdin):
 
    ```sh
    claude --version
    claude -p --model opus --output-format json "Reply OK" < /dev/null | python3 -c 'import json,sys; print(*json.load(sys.stdin)["modelUsage"])'
    ```
 
-   If `opus` is no longer `claude-opus-5-5`, D48 applies: re-run the calibration before any graded run. Development
-   runs may go ahead on a new CLI; T2.7d calibrates on the CLI the gate will use.
-3. **T2.7a: skill fixes** (FR-2.3, QR-3, FR-2.2), each from REQUIREMENTS, using no wording from a case:
-   - Step 3's confidence rule is too broad. It now says new evidence "would change the verdict, not raise confidence
-     in it"; evidence that confirms a claim the verdict relies on can raise confidence without changing it.
-   - When explaining a verdict, add no facts, risk rankings or claims of Claude's own.
-   - State unstated premises in the user's own terms, with no invented quantitative rule.
-   - Rewrap the four over-long lines in `SKILL.md` (78, 81, 128, 141).
-
-   Then run the wording scan (`.local/t24/overlap.py`, and check any short phrase by hand against the cases), group C
-   3 runs each, and the A+B smoke check. About $8. Record AT-07 as it falls; do not tune towards the judge.
-4. **T2.7b: draft D50** for the owner (AT-07; QR-2, FR-2.2, FR-2.3; protected item: success criteria). Use the
-   functional boundary in plan.md, never a blanket exemption. Follow the form of D47–D49, with the D40 drift check.
-   Show it to the owner and wait. If approved: edit the AT-07 case and its baseline identically, RC-06, tag
-   `tests-v1.2`, re-run AT-07 3 times.
-5. **T2.7c: gate tooling fix** (SC-1, SC-2), while D50 waits: both problems read "incomplete", each with a new
-   self-test check.
-6. **T2.8: development runs D** (FR-4, FR-2.4 lesson, QR-3, QR-5): AT-08, AT-09, AT-10, AT-19, AT-20, AT-25, then
-   the smoke check of groups A–C.
-7. **T2.7d, then T2.9–T2.15:** the calibration with AT-07 items (the owner labels them first), then the gate as
-   plan.md says (re-run the six paired baselines first; re-run the T2.1 reach probe if the CLI changed).
+3. **Ask the owner** about the open items in progress.md ("Waiting on the owner"): pushing, the errored-run fix,
+   and the premise wording.
+4. **T2.7d: calibration with AT-07 items** (SC-1, SC-2; D48 rule 2), on the CLI the gate will use. Draft the new
+   items (neutral premises, genuine confidence conditions, disguised objections, unsupported additions; the
+   "production-sized data" kind of line is a good candidate), have the **owner label them before the run**, then
+   run `scripts/judge-calibration.py`. About $8–10. If it fails its rule, the owner decides before T2.9.
+5. **T2.9–T2.15** as plan.md says: settle baseline compatibility and re-run the six paired baselines, the reach
+   probe if the CLI changed, fix the two Codex samples, then the 26 auto cases ×3 with the manifest; manual tests
+   (T2.10); Codex second grading in a **fresh** thread (T2.11).
 
 To resume, paste this:
 
 ```text
 In ~/projects/think-twice, read AGENTS.md, docs/HANDOFF.md, docs/progress.md and docs/plan.md
 ("Slice 2 tasks"). Run the start-up checks and record the CLI version and what opus resolves to.
-Then start T2.7a (the skill fixes from the AT-07 consultation), and name the requirement IDs each step serves.
+Then ask me the open questions, and start T2.7d (draft the AT-07 calibration items for me to label).
 ```
 
 ## How to run things
@@ -125,13 +99,15 @@ Then start T2.7a (the skill fixes from the AT-07 consultation), and name the req
 
 ## Open items to keep in view
 
-- **AT-07**: T2.7a–T2.7d, then T2.11 in a fresh Codex thread. SC-2 for AT-07 is non-regression against plain Claude,
-  graded by the same graders; D50 would apply to both arms.
+- **AT-07**: T2.7d (calibration items), then T2.11 in a fresh Codex thread. SC-2 for AT-07 is non-regression
+  against plain Claude, graded by the same graders; D50 applies to both arms, so the AT-07 baseline is re-run in T2.9.
+- **AT-23**: one split-vote critical failure in the last smoke check (re-judging gives PASS); T2.9 decides it.
 - **AT-02's disputed runs** (T2.5–T2.6) still go to T2.11. The calibration set has no AT-02 item.
 - **SC-2 has no margin** (plain Claude passes ≤1 of 3 on exactly 7 of 10). The six paired baselines are re-run in
   T2.9; if a valid new baseline removes a qualifying test, the owner hears about it, and tests are not weakened.
-- **Cost:** T2.7 cost about four times its estimate, because each failing round needed a full group re-run. Expect
-  T2.8 to cost more than its first estimate; say so before going far past it.
+- **Cost:** T2.7 cost $32 and T2.8 $41, because each failing round needed a full group re-run. The gate (T2.9) runs
+  26 cases ×3 plus six baselines; estimate it from the measured cost per case (about $0.25 a case-run) and tell the
+  owner before starting.
 - **FR-2.5** (offer to look further back when a summary can't be confirmed) is deferred to slice 3, with AT-17.
 - **`Read` by exact path reaches the eval cases** under the plugin root; the gate fails any run that touches an eval
   folder.
@@ -150,11 +126,11 @@ Then start T2.7a (the skill fixes from the AT-07 consultation), and name the req
 
 ## Leftovers on this machine
 
-- `.local/t27/`: raw results of runs C1–C5 and the smoke check (`c1`…`c5`, `c4b`, `smokeAB`), `replies.py`,
-  `why.py`, and the Codex brief and answer (`at07-codex-*`). Earlier folders (`t2-plan`, `t23`–`t26`) as before.
-  Private; gitignored.
-- `/private/tmp/e-*`: **140 kept eval folders** (about 26 MB) from T2.7. Keep them until T2.11: they hold the traces
-  of the disputed AT-07 runs.
+- `.local/t27a/` (C6, smoke A+B), `.local/t27b/` (D50 draft, AT-07 on `tests-v1.2`), `.local/t28/` (D1–D5, D2b,
+  two A–C smoke checks); earlier folders (`t2-plan`, `t23`–`t27`) as before. `.local/t27/replies.py` and `why.py`
+  still serve every result file. Private; gitignored.
+- `/private/tmp/e-*`: **358 kept eval folders** (about 61 MB). Keep them until T2.11: they hold the traces of the
+  disputed AT-07 runs.
 - `/private/tmp/think-twice-run`: the staging copy, rebuilt before every run; nothing in it is needed.
 
 ## Codex threads
@@ -173,14 +149,15 @@ All on gpt-6-astra, high effort. Resume with `--resume <thread>` on the runner.
 
 ## Lessons from this session
 
-- **A fix for one test can break another.** Widening "settled" for AT-35 pulled AT-02's bare note into review. Run the
-  case that guards the other side of a rule (here AT-02) with every change to that rule.
-- **The judge records votes, not reasons.** Re-judging a stored reply with its frozen criteria shows a likely reason
-  quickly and cheaply, but it is a reconstruction: write "suggests", not "is". Codex caught an overstatement of this
-  kind in evaluation.md.
-- **A rule written for one verdict can be wrong for another.** The confidence rule written for an Unsupported verdict
-  was too broad for a Sound one. State a rule at the level REQUIREMENTS states it.
-- **The 4-word wording scan misses short phrases.** "most important first" (3 words, from a grader) got past it; check
-  new phrases by hand with `grep` against the cases.
-- **Shell quirks:** `claude -p --tools ""` treats the next argument as a tool list and swallows the prompt, so send
-  the prompt on stdin; there is no PyYAML, so read `case.yaml` blocks with a small parser (as `why.py` does).
+- **Each new review rule can create the next failure.** In T2.8, rules for one lens leaked into others: the
+  one-sided rule was applied to a causal claim (AT-08), an ungated "ask how it could be checked" added a new point
+  after an accepted revision (AT-25a, critical), and several repairs piled into one problem (AT-23, too long). Scope
+  each rule to when it applies, put every new point through the gate, and run the cases that guard the other side.
+- **A smoke check after a group run is worth its cost.** It caught two regressions that group D could not show.
+- **Session limits hit long chains.** D2 and a smoke check were cut short; T2.7c's fix reported thrown judge calls
+  as incomplete, as intended, but errored runs still read as failed. Fill in only the affected cases, on the same
+  text, and say so.
+- **Start background runs with the tool's background mode, never a shell `&`**: an untracked run cannot be waited
+  for, and it had to be stopped.
+- **Re-judging is a reconstruction.** Twice this session it disagreed with the judge's votes (AT-07 run 3, AT-23
+  smoke); record the cause as unresolved rather than tuning towards either.

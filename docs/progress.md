@@ -224,6 +224,17 @@ fix and the calibration before T2.9, then T2.8.
   (the test reads incomplete; a thrown `critical-` grader is not a critical failure), and AT-12 reads incomplete for a
   case with fewer than 3 runs. Self-test 44/44 (six new checks, each failing without the fix); C6 and T2.7b results
   unchanged; C4's session-limit AT-24 now reads incomplete. Details in [evaluation.md](evaluation.md).
+- 2026-10-25: **T2.8 done** (FR-4, FR-2.4 lesson, QR-3, QR-5; FR-0.2, QR-2 for the changes), on the owner's choice
+  with one open smoke failure. General changes to the skill over runs D1–D5: a first-person plan or decision, or
+  material the user calls their own with a decision labelled, is settled (FR-0.2); a factual question that strong
+  evidence settles is said plainly to be settled (FR-4, false balance); for one side of a contested question, the
+  strongest opposing view and the deciding evidence are stated (FR-4 Perspectives); an unchecked cause, report or
+  assumption gets a question, how they could check it, with no list of answers (FR-4 Overlooked, QR-1); one kind of
+  repair per problem; a new point after a revision passes the gate whatever its form (QR-2). Run D5 on the final text
+  (SHA-256 `39703d89…`): AT-08, AT-09, AT-10, AT-19, AT-20, AT-25 3/3, no critical failure; AT-12, RC-05 pass. A–C
+  smoke check: 17/18; **AT-23 one critical failure on a split vote** (re-judging gives PASS; an existing rule covers
+  it, so nothing was added); T2.9 decides it. D2 and the first smoke check hit the session limit; their affected cases
+  were filled in on the same text. Cost $40.78. Details in [evaluation.md](evaluation.md).
 
 ## Slice 1 status
 
@@ -262,17 +273,22 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.7b D50: clarify AT-07's gate grader | Done 2026-10-24 (D50 approved; `tests-v1.2`; AT-07 2/3) |
 | T2.7c Gate tooling fix | Done 2026-10-24 (self-test 44/44) |
 | T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
-| T2.8–T2.15 | Not started |
+| T2.8 Development runs D | Done 2026-10-25 (D5 passes; smoke 17/18, AT-23 open) |
+| T2.9–T2.15 | Not started |
 
 [HANDOFF.md](HANDOFF.md) lists the next steps in order.
 
 ## Next action
 
-**T2.8** (development runs D; FR-4, FR-2.4 lesson, QR-3, QR-5). Then T2.7d (calibration with AT-07 items, on
-`tests-v1.2`) right before T2.9. All are in [plan.md](plan.md), "Slice 2 tasks".
+**T2.7d** (SC-1, SC-2; D48 rule 2): the judge calibration on CLI 2.1.310 with AT-07 items, which the owner labels
+first, run right before **T2.9** (the auto gate: re-run the six paired baselines, the reach probe if the CLI changed,
+fix the two samples, then the 26 cases ×3). AT-23's open smoke failure is decided by T2.9. All are in
+[plan.md](plan.md), "Slice 2 tasks".
 
 ## Waiting on the owner
 
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
-- Committing T2.7c (the gate script and these docs).
 - The AT-07 calibration labels, before T2.7d runs.
+- Pushing `main` and the `tests-v1.2` tag.
+- Whether an errored eval run should also read incomplete in `sc1-gate.py` (it counts as failed; a small fix
+  before T2.9).
