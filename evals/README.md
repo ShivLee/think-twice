@@ -91,12 +91,15 @@ or local paths (D47).
 
 ## Running
 
+**Never run evals from the repository root** (T2.1, D53): a run there can `Read` private files by exact path. Copy
+only what a run needs into an allowlisted staging folder and run from it; the gate command in
+[plan.md](../docs/plan.md) (below the slice 2 task table) does exactly this:
+
 ```sh
-scripts/build-histories.py
-claude plugin eval . --no-publish --scaffold --ablation none --runs 3 \
-  --model opus --judge-model opus
-claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-without --runs 3 \
-  --model opus --judge-model opus
+B=/private/tmp/think-twice-run    # staging copy: .claude-plugin, skills, the named cases, build-histories.py
+(cd "$B" && python3 scripts/build-histories.py)
+(cd "$B" && claude plugin eval . --no-publish --trust-plugin --scaffold --ablation none --runs 3 --keep-temp \
+  --model opus --judge-model opus --json OUT/result.json)
 ```
 
 - `--no-publish` always (QR-9, RC-02). Results go to `evals/results/`, which git ignores.
@@ -113,7 +116,8 @@ claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-with
   ```
 
   One comparison never mixes resolved models: if the ID changes, re-run it. When the judge's ID changes, re-run the
-  judge calibration before any graded result counts (D39, D47, D48).
+  judge calibration before any graded result counts (D39, D47, D48). The release candidate and the SC-3 period use
+  one pinned model ID, passed in full as `--model` and `--judge-model` (D54).
 - While developing, run a smoke set with `--case` or `--tag`, plus the tests a change affects. Run the full gate at
   the end of each slice.
 - Compute the gate with the slice's test list from [plan.md](../docs/plan.md):
@@ -125,8 +129,11 @@ claude plugin eval . --eval-dir evals-baseline --no-publish --ablation with-with
   `.local/manual-results.txt` (private) holds one manual test per line: `AT-03 pass`, `AT-11 fail pass`,
   `AT-21 critical`. A test in `--tests` with no results is reported as not run, and the gate fails.
 - The judge is `opus`, chosen (as `claude-opus-5-5`) by a calibration set of known-good and known-bad replies
-  (`evals-calibration/`, `scripts/judge-calibration.py`; [evaluation.md](../docs/evaluation.md)). Re-run the
-  calibration whenever the judge model, the CLI or a grader changes.
+  (`evals-calibration/`, `scripts/judge-calibration.py`; [evaluation.md](../docs/evaluation.md)). Re-run the full
+  calibration when the effective judging system changes: the judge model, any grader text, a calibration label or
+  the acceptance rule (D51), or the CLI's eval or judging behaviour. A CLI version change alone gets a compatibility
+  check first: every AT-07 calibration item plus `at08-good`, `at08-fabricated-source` and `at08-leading-question`,
+  one run each; any wrong verdict triggers the full calibration (D53).
 
 ## Method names (AT-26, AT-28)
 
