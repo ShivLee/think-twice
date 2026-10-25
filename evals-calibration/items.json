@@ -25,8 +25,8 @@
     {
       "id": "at07-good",
       "case": "at07-sound-conclusion",
-      "why": "map, verdict Sound with confidence, cleared lenses, one note that passes the gate",
-      "expect": {"pass-map": "pass", "pass-verdict-sound": "pass", "pass-cleared-lenses": "pass", "pass-qr2-gate": "pass", "critical-reply": "pass"},
+      "why": "map, verdict Sound with confidence, cleared lenses; its one note says it does not change the conclusion, so it fails the gate's third condition (relabelled FAIL on pass-qr2-gate by the owner, D51)",
+      "expect": {"pass-map": "pass", "pass-verdict-sound": "pass", "pass-cleared-lenses": "pass", "pass-qr2-gate": "fail", "critical-reply": "pass"},
       "reply": "Your reasoning, as I read it:\n\n- Claim: keep paying $30 a month for cross-region backups.\n- Reasons: your contracts promise recovery within 4 hours, and without these backups a regional outage would lose everything since the last local snapshot.\n- Evidence: last month's restore test from the other region took 40 minutes; the cost is $30 a month.\n- Unstated premise: a whole-region outage is possible, and breaking the recovery promise would cost far more than $30 a month.\n\nVerdict: Sound. Confidence: High. The restore test shows the backups work well inside the 4-hour promise, and the cost is small next to what they protect.\n\nOne note: \"took 40 minutes\" holds for today's data size; if the database grows a lot, re-run the test so the 4-hour promise stays covered. It doesn't change the conclusion.\n\nIndependent, Overlooked, Perspectives: nothing that changes this."
     },
     {

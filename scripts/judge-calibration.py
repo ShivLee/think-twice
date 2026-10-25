@@ -26,6 +26,9 @@ Usage:
 Selection rule (fixed before the first calibration run): pin the judge with no critical-reply errors in any run; among
 those, the fewest errors on the other graders; then the lowest cost. If no judge is free of critical-reply errors, the
 owner decides.
+
+D51 (2026-10-25) adds: a result is accepted only if no item of a case in GATED gets a wrong verdict on that case's
+gated grader in any run (AT-07's pass-qr2-gate, the disputed grader). Labels and this rule are fixed before a run.
 """
 import json, re, sys, tempfile
 from pathlib import Path
@@ -34,6 +37,8 @@ ROOT = Path(__file__).resolve().parent.parent
 ITEMS = ROOT / "evals-calibration" / "items.json"
 ECHO = ("echo-head", "echo-tail")
 RUNS = 3
+# D51: graders whose every calibration verdict must be right, as (case, grader).
+GATED = {("at07-sound-conclusion", "pass-qr2-gate")}
 
 
 def grader_blocks(case_yaml):
@@ -104,7 +109,7 @@ def build(out_dir, items_file=ITEMS, cases_root=ROOT / "evals"):
     return len(items)
 
 
-def score(result_files, items_file=ITEMS):
+def score(result_files, items_file=ITEMS, gated=GATED):
     """Score one judge. Several result files are pooled: a re-run of some items adds runs for them (same judge only)."""
     if isinstance(result_files, (str, Path)):
         result_files = [result_files]
@@ -142,7 +147,9 @@ def score(result_files, items_file=ITEMS):
                    for i in sorted(items) if judged.get(i, (0,))[0] < RUNS]
     errors = [r for r in rows if r[2] != r[3]]
     crit = [r for r in errors if r[1] == "critical-reply"]
+    case_of = {i["id"]: i["case"] for i in items.values()}
     return {"file": " + ".join(map(str, result_files)), "verdicts": len(rows), "errors": errors, "critical_errors": crit,
+            "gated_errors": [r for r in errors if (case_of[r[0]], r[1]) in gated],
             "false_alarms": [r for r in crit if r[2] == "pass"], "misses": [r for r in crit if r[2] == "fail"],
             "echo_failures": echo_fail, "incomplete": incomplete, "cost": cost}
 
@@ -153,8 +160,9 @@ def words(text):
 
 
 def accepted(s):
-    """A judge's result counts only if every item was judged in at least 3 echoed runs and no critical-reply verdict was wrong."""
-    return s["verdicts"] > 0 and not s["incomplete"] and not s["critical_errors"]
+    """A judge's result counts only if every item was judged in at least 3 echoed runs, no critical-reply verdict was
+    wrong, and no gated grader's verdict was wrong (D51)."""
+    return s["verdicts"] > 0 and not s["incomplete"] and not s["critical_errors"] and not s["gated_errors"]
 
 
 def report(s):
@@ -167,8 +175,10 @@ def report(s):
         print(f"  excluded (reply not echoed or run error): {e}")
     for e in s["incomplete"]:
         print(f"  incomplete: {e}")
-    print(f"  {'accepted' if accepted(s) else 'NOT accepted'}: needs every item judged in {RUNS} echoed runs "
-          "and no critical-reply error")
+    for item, g, want, got in sorted(s["gated_errors"]):
+        print(f"  gated grader wrong (D51): {item}: {g} expected {want}, got {got}")
+    print(f"  {'accepted' if accepted(s) else 'NOT accepted'}: needs every item judged in {RUNS} echoed runs, "
+          "no critical-reply error and no gated-grader error (D51)")
 
 
 def self_test():
@@ -196,10 +206,10 @@ def self_test():
         return {"graders": [{"name": k, "passed": v, "evidence": seen if k in ("pass-a", "critical-reply") else None}
                             for k, v in passes.items()], "error": None, "costUsd": 0.01}
     good = {"pass-a": True, "critical-reply": False, "echo-head": True, "echo-tail": True}
-    def scored(runs):
+    def scored(runs, gated=frozenset()):
         res = tmp / "r.json"
         res.write_text(json.dumps({"cases": [{"name": "cal-i1", "arms": {"with": runs}}] if runs is not None else []}))
-        return score(res, items)
+        return score(res, items, gated)
     s = scored([run(good), run({"pass-a": False, "critical-reply": True, "echo-head": True, "echo-tail": True}),
                 run({"pass-a": True, "critical-reply": True, "echo-head": False, "echo-tail": True})])
     checks += [
@@ -215,6 +225,14 @@ def self_test():
     checks += [(s["verdicts"] == 0 and not accepted(s), "an empty result is not accepted")]
     s = scored([run(good), run(good), run(good)])
     checks += [(accepted(s) and s["verdicts"] == 6, "a complete, correct result is accepted")]
+    slip = {"pass-a": False, "critical-reply": False, "echo-head": True, "echo-tail": True}  # pass-a wrong once
+    s = scored([run(good), run(good), run(slip)])
+    checks += [(accepted(s) and len(s["errors"]) == 1, "an error on an ordinary grader does not block acceptance")]
+    s = scored([run(good), run(good), run(slip)], gated={("c1", "pass-a")})
+    checks += [(not accepted(s) and len(s["gated_errors"]) == 1,
+                "D51: one wrong verdict on a gated grader blocks acceptance")]
+    s = scored([run(good), run(good), run(good)], gated={("c1", "pass-a")})
+    checks += [(accepted(s) and not s["gated_errors"], "D51: a gated grader judged right every time is accepted")]
     s = scored([run(good), run(good), run(good, seen="<<<REPLY\n" + reply + "\nREPLY>>>")])
     checks += [(accepted(s) and not s["echo_failures"], "echoed marker lines around the reply are ignored")]
     first, rerun = tmp / "r1.json", tmp / "r2.json"
