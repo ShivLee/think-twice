@@ -12,11 +12,12 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
   `standards.md` (about 1,530), SHA-256 `39703d89…` and `8093b6c2…`, as tested in D5 and the last smoke check.
 - **Tests are frozen at `tests-v1.2`** (D50, owner approved 2026-10-24: what counts as a note in AT-07's gate
   grader, identical in both arms). `git diff tests-v1.2 --stat -- evals evals-baseline` shows nothing.
-- **Gate tooling:** `scripts/sc1-gate.py` self-test 44/44. A judge call that threw now reads incomplete (T2.7c). An
-  eval run that errored still counts as a failed run; the owner may want that changed before T2.9.
+- **Gate tooling:** `scripts/sc1-gate.py` self-test 50/50. A judge call that threw, or a run cut off by the session
+  limit, reads incomplete; any other error fails its test until investigated; baselines are graded on their
+  `without` arm (Codex review, 2026-10-25).
 - **Model and CLI:** `opus` = `claude-opus-5-5`; **CLI 2.1.310**. The calibration last ran on 2.1.309, so T2.7d
   re-runs it before any graded result counts.
-- **Git:** commits up to the T2.8 skill and docs are local only; `main` and the `tests-v1.2` tag are **not pushed**.
+- **Git:** `main` and the `tests-v1.2` tag pushed up to `63837b4`; the gate tooling fix after that is local.
 
 ## What this session did
 
@@ -39,7 +40,7 @@ T2.7c and T2.8; in T2.8, fix and re-run rather than stop, then close with AT-23 
    ```sh
    scripts/validate-plugin.sh                  # RC-06: pass
    python3 scripts/build-histories.py --check  # 18/18 dialogues parsed
-   python3 scripts/sc1-gate.py --self-test     # 44/44
+   python3 scripts/sc1-gate.py --self-test     # 50/50
    python3 scripts/judge-calibration.py --self-test
    git diff tests-v1.2 --stat -- evals evals-baseline   # empty
    ```
@@ -51,8 +52,7 @@ T2.7c and T2.8; in T2.8, fix and re-run rather than stop, then close with AT-23 
    claude -p --model opus --output-format json "Reply OK" < /dev/null | python3 -c 'import json,sys; print(*json.load(sys.stdin)["modelUsage"])'
    ```
 
-3. **Ask the owner** about the open items in progress.md ("Waiting on the owner"): pushing, the errored-run fix,
-   and the premise wording.
+3. **Ask the owner** about the open items in progress.md ("Waiting on the owner").
 4. **T2.7d: calibration with AT-07 items** (SC-1, SC-2; D48 rule 2), on the CLI the gate will use. Draft the new
    items (neutral premises, genuine confidence conditions, disguised objections, unsupported additions; the
    "production-sized data" kind of line is a good candidate), have the **owner label them before the run**, then
@@ -88,8 +88,10 @@ Then ask me the open questions, and start T2.7d (draft the AT-07 calibration ite
 - **Gate runs** (T2.9): the command block in plan.md, below the slice 2 task table.
 - **Never run evals from the repository** (T2.1): always from the staging copy.
 - **Account session limits:** a run can hit the limit partway; the affected runs show "You've hit your session
-  limit" as an error or a grader that threw. Re-run only those cases on the same skill text (check the SHA-256), as a
-  fill-in for missing evidence, and say so; never re-run failures.
+  limit" as an error or a grader that threw, and the gate reads them incomplete. Re-run only those cases on the same
+  skill text (check the SHA-256), as a fill-in for missing evidence, and say so; never re-run failures. In a gate
+  attempt, the fill-in supplies only the missing run slots: completed runs of the original stay counted (plan.md,
+  "Fill-ins supply only missing evidence").
 - **Clearing kept eval folders** (`/private/tmp/e-*`, read-only): make the folder writable first, then the rest
   (`chmod u+w "$d"; chmod -R u+rwx "$d"; rm -rf "$d"`), and not under `set -e`.
 - **Codex:** through cc-suite's runner, read-only, from the repository: `node
@@ -146,6 +148,7 @@ All on gpt-6-astra, high effort. Resume with `--resume <thread>` on the runner.
 | `01a1668c-f769-7e60-8f52-38161738a006` | Rule 9 review of the slice 2 plan, and its re-check |
 | `01a1670a-3660-7ae0-9cc0-0b11fad47237` | The first skill draft against the goal, and its re-check |
 | `01a16d25-9f13-70c0-a180-25f1101002f4` | AT-07: is `pass-qr2-gate` stricter than section 5? (has seen outcomes: not for T2.11) |
+| `01a1734d-e06b-7e63-9368-62ca5e82e459` | How the gate counts errored runs; fill-ins (2026-10-25) |
 
 ## Lessons from this session
 

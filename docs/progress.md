@@ -235,6 +235,12 @@ fix and the calibration before T2.9, then T2.8.
   smoke check: 17/18; **AT-23 one critical failure on a split vote** (re-judging gives PASS; an existing rule covers
   it, so nothing was added); T2.9 decides it. D2 and the first smoke check hit the session limit; their affected cases
   were filled in on the same text. Cost $40.78. Details in [evaluation.md](evaluation.md).
+- 2026-10-25: committed and pushed `main` and the `tests-v1.2` tag (owner's request).
+- 2026-10-25: **gate tooling fix after a Codex review** (SC-1, SC-2 validity; AT-12, RC-05; owner's request; fresh
+  thread `01a1734d-e06b-7e63-9368-62ca5e82e459`). Confirmed and fixed in `scripts/sc1-gate.py`: a test with an
+  errored run could pass; a session-limit error now reads incomplete, any other error fails until investigated;
+  baselines graded on their `without` arm; AT-12 and RC-05 need every defined grader. Self-test 50/50. plan.md: a
+  fill-in supplies only missing run slots. Details in [evaluation.md](evaluation.md).
 
 ## Slice 1 status
 
@@ -289,6 +295,3 @@ fix the two samples, then the 26 cases ×3). AT-23's open smoke failure is decid
 
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
 - The AT-07 calibration labels, before T2.7d runs.
-- Pushing `main` and the `tests-v1.2` tag.
-- Whether an errored eval run should also read incomplete in `sc1-gate.py` (it counts as failed; a small fix
-  before T2.9).

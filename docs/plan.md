@@ -126,6 +126,14 @@ gate will use; and while D50 (T2.7b) waits for the owner, T2.7c and T2.8 can go 
   skill versions are never combined.
 - **Every gate attempt is kept** and recorded, pass or fail. Unchanged skill text is never re-run to get a pass. If
   SC-2's zero margin is lost, the owner hears about it; tests are not weakened.
+- **Fill-ins supply only missing evidence** (Codex review, 2026-10-25, thread `01a1734d-e06b-7e63-9368-62ca5e82e459`).
+  A run interrupted by the account limit, or a judge call that threw, reads incomplete in `scripts/sc1-gate.py`; any
+  other error fails its test until investigated. The affected cases are re-run on the same skill text and manifest.
+  Every completed run of the original attempt stays counted, passed, failed or critical; the fill-in supplies only
+  the missing run slots, taken from the re-run in run order (fixed before its results are seen). The script does not
+  merge result files, so the manifest records the combination: for each fill-in, the original result file, the case
+  and run slot, the full error, and the re-run that supplies the slot, plus counts of interrupted runs and thrown
+  graders per arm.
 - **The core works in every phase, as far as slice 2's tests reach.** Recognition (FR-0) and the core (FR-1) are not
   limited to after: AT-01b needs the during summary and the wait for confirmation; AT-04 and AT-05 need my view
   first and the opt-out in before; AT-11 needs the hint steps in before; AT-34d needs "stop" in before. The before

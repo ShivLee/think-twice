@@ -761,3 +761,31 @@ Step 3 already forbid that, so no rule was added; restating a rule after one spl
 **State:** group D meets the T2.5 criterion on the final text; the A–C smoke check passes except one split-vote
 critical failure in AT-23 (owner's decision, progress.md). T2.8 cost $40.78 in total (D1 $6.11, D2 $3.14, D2b $5.58,
 D3 $6.06, D4 $6.16, smoke $3.66, D5 $6.06, smoke $4.01). Raw results private in `.local/t28/`.
+
+## Gate tooling: errored runs and shared-check completeness (before T2.9)
+
+**Serves:** SC-1, SC-2 validity; AT-12, RC-05. **Date:** 2026-10-25. Owner's request: Codex review (gpt-6-astra,
+high; fresh thread `01a1734d-e06b-7e63-9368-62ca5e82e459`; it has not seen the AT-07 outcomes) of how
+`scripts/sc1-gate.py` counts a run whose eval call errored. Each finding checked against the files and reproduced
+in memory before any change:
+
+- **High, confirmed:** two passes plus an errored run (no graders, no trace) read **pass**: nothing checked the
+  errored run for a critical failure, against the README's completeness rule.
+- **High, agreed:** matching bare words ("limit", "timeout", "5xx") could excuse a plugin-caused error.
+- **High, confirmed but latent:** a baseline in a two-arm result file was graded on its `with` arm; the README says
+  only `without` counts (D46). Our baselines run one arm, so no recorded result was affected.
+- **Medium, confirmed:** RC-05 passed with a run missing its `rc05-` grader; AT-12 passed with one of a case's
+  `at12-` graders missing.
+- **Medium, confirmed:** a whole-case fill-in can discard a completed failure from the original attempt, and the
+  script does not merge result files (in D2b nothing was lost: AT-09's two original runs had passed).
+- **Low, confirmed:** notes said "counted as failed" where the verdict was incomplete.
+
+Changes: an error matching an observed interruption signature (only the CLI's session-limit message so far) is
+missing evidence, so the test reads incomplete; any other error is **unclassified** and fails its test, with a note
+to investigate; an errored run never lets a test pass, and a real critical failure still wins. Baseline cases are
+graded on `without` when present. AT-12 and RC-05 need every `at12-`/`rc05-` grader the case defines. Notes say
+"missing evidence" and keep the full error. Self-test **50/50**: six new checks; five fail against the previous
+logic, and the sixth (a critical failure still wins over an interruption) passes on both, as it should. Across all
+25 kept result files, the only verdicts that change are session-limit runs (C4's AT-35; D2's AT-19, AT-20, AT-25)
+and RC-05 where a run was interrupted: fail or pass to incomplete. A plan.md rule now says fill-ins supply only
+missing run slots, with completed runs of the original attempt kept and the combination recorded in the manifest.
