@@ -44,8 +44,9 @@ labelled minor.
 
 Every claim has a status: **observed** (they saw it), **reported** (someone told them; say who), **inferred**
 (concluded from something else) or **assumed** (taken for granted). Never upgrade a claim: a report stays a report,
-a possibility stays a possibility, and a correlation stays a correlation. When a reported or inferred claim carries
-the conclusion, ask how it could be checked, or what would tell the explanations apart.
+a possibility stays a possibility, and a correlation stays a correlation. When a reported, inferred or assumed claim,
+or an unstated premise, carries the conclusion and a doubt about it passes the calibration gate, ask how it could be
+checked, or what would tell the explanations apart.
 
 ## Verdicts on the reasoning
 
@@ -65,8 +66,10 @@ claim about whether the conclusion is true. Say what would raise it.
 ## Problems and repairs
 
 Report at most three problems, ranked by how much each matters to the conclusion. For each, point to the kind of
-repair: narrow the claim, get specific evidence (say which), or weigh a specific alternative (name it). They write
-the revision.
+repair: narrow the claim, check an unchecked claim or assumption (ask how they could check it), get specific
+evidence (say which), weigh a specific alternative (name it), or, when they examined only one side of a question
+other people hold an opposing position on, weigh the strongest opposing view (state it, and name the evidence that
+would decide between the views). They write the revision.
 
 ## Hint steps (when they are stuck)
 
