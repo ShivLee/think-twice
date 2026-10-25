@@ -204,6 +204,22 @@ fix and the calibration before T2.9, then T2.8.
   it grades the three latest replies PASS; it found two skill defects that stand on REQUIREMENTS (FR-2.3 confidence
   rule too broad; QR-3, Claude's own claim in a reply) and one mapping concern (FR-2.2). Recommends a clarified AT-07
   test plus calibration items, keeping T2.11. Details in [evaluation.md](evaluation.md).
+- 2026-10-24 (later session): start-up checks pass (RC-06; 18/18 dialogues; `sc1-gate.py` self-test 38/38;
+  `judge-calibration.py` self-test; freeze diff empty). CLI **2.1.310**, `opus` = `claude-opus-5-5`, both unchanged.
+- 2026-10-24: **T2.7a done** (FR-2.3, QR-3, FR-2.2; then the T2.7 IDs). Three general changes to `SKILL.md` Step 3:
+  a confidence condition makes the verdict surer without changing it (FR-2.3); no facts, rankings of risk or claims
+  of Claude's own when explaining a verdict (QR-3); premises in the user's terms and precision, with no figure,
+  threshold, rate or calculation they did not give (FR-2.2); four long lines rewrapped. Wording scan clean. Run C6:
+  AT-07 2/3 (its failing run looks like a fair failure: a premise that misreads the user's words), AT-23 and AT-24
+  3/3, AT-35 2/3, no critical failure; AT-12 and RC-05 pass. Smoke check of groups A and B: 11/11. The premise fix
+  did not take hold: AT-07 replies still restate a one-off loss against "$30 a month". Cost $8.20. Skill SHA-256
+  `a4a26b11…`, uncommitted. Details in [evaluation.md](evaluation.md); raw results private in `.local/t27a/`.
+- 2026-10-24: **T2.7b done** (AT-07; QR-2, FR-2.2, FR-2.3; SC-1, SC-2 validity). Owner approved **D50** (protected:
+  success criteria): AT-07's `pass-qr2-gate`, identical in both arms, says what a note is (a neutral premise or a
+  genuine confidence condition is not one merely by appearing; any suggested weakness, or a premise contradicting
+  the user's words, is). Committed `64b1c1b`, tagged **`tests-v1.2`**; the freeze is now checked against it. AT-07, 3
+  runs on the T2.7a skill text: 2/3, no critical failure; the failing run's cause is unresolved (re-judging gives PASS
+  against three FAIL votes), sent to T2.7d and T2.11. Cost $1.34. Details in [evaluation.md](evaluation.md).
 
 ## Slice 1 status
 
@@ -238,8 +254,8 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.5 Development runs A | Done 2026-10-22 |
 | T2.6 Development runs B | Done 2026-10-23 |
 | T2.7 Development runs C | Done except AT-07 (1/3 on the disputed grader); owner accepted the AT-07 plan |
-| T2.7a Skill fixes from the AT-07 consultation | Next |
-| T2.7b D50: clarify AT-07's gate grader | Not started (needs owner approval) |
+| T2.7a Skill fixes from the AT-07 consultation | Done 2026-10-24 (C6; premise fix did not take hold) |
+| T2.7b D50: clarify AT-07's gate grader | Done 2026-10-24 (D50 approved; `tests-v1.2`; AT-07 2/3) |
 | T2.7c Gate tooling fix | Not started |
 | T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
 | T2.8–T2.15 | Not started |
@@ -248,11 +264,12 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 
 ## Next action
 
-**T2.7a** (FR-2.3, QR-3, FR-2.2): the three skill fixes from the Codex consultation, then group C ×3 and the smoke
-check of groups A and B. Then T2.7b (draft D50 for the owner), T2.7c (gate tooling fix; SC-1, SC-2), T2.8
-(development runs D; FR-4, FR-2.4 lesson, QR-3, QR-5), and T2.7d (calibration with AT-07 items) right before T2.9.
+**T2.7c** (gate tooling fix; SC-1, SC-2). Then T2.8 (development runs D; FR-4, FR-2.4 lesson, QR-3, QR-5), and
+T2.7d (calibration with AT-07 items, on `tests-v1.2`) right before T2.9.
 All are in [plan.md](plan.md), "Slice 2 tasks".
 
 ## Waiting on the owner
 
-- Nothing at the moment. D50 will need the owner's approval when drafted, and the calibration labels before the run.
+- Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
+- Committing the T2.7a skill change and these docs.
+- The AT-07 calibration labels, before T2.7d runs.

@@ -570,3 +570,65 @@ Review private in `.local/t27/`.
 **State:** group C meets the T2.5 criterion except AT-07, whose remaining failures are on the disputed grader; the
 smoke check passes. Total cost of T2.7 $32.27. Raw results, re-judging notes and replies are private in
 `.local/t27/`.
+
+## T2.7a: skill fixes from the AT-07 consultation
+
+**Serves:** FR-2.3, QR-3, FR-2.2 (plan.md T2.7a); then the T2.7 IDs for the re-runs. **Date:** 2026-10-24. **CLI:**
+2.1.310; `opus` = `claude-opus-5-5` at start-up. Each change rests on REQUIREMENTS alone, not on the judge's votes,
+and uses no wording from a case (4-word scan unchanged; the new short phrases checked by hand against `evals/` and
+`evals-baseline/`: none found).
+
+- **Confidence condition** (FR-2.3: "a confidence … plus what would raise it"). The T2.7 rule said new evidence
+  "would change the verdict, not raise confidence in it", which is too broad: evidence confirming a claim the verdict
+  relies on raises confidence without changing it. Now: what would raise the confidence is what would make the
+  verdict surer without changing it; evidence that would change the verdict (support where there was none, or a new
+  problem) is not a confidence condition.
+- **No additions of Claude's own** (QR-3: its own statements about the user's situation are hedged to match the
+  evidence; a ranking with no support is not). When explaining a verdict, add no facts, rankings of risk or claims
+  about their situation of Claude's own, for or against the conclusion.
+- **Premises in the user's terms** (FR-2.2, QR-3): an unstated premise is stated in their terms and at the precision
+  they used, with no figure, threshold, rate or calculation they did not give.
+- Four over-long lines in `SKILL.md` rewrapped (no wording change).
+
+`SKILL.md` about 3,460 tokens by the fallback estimate (limit 4,400); `standards.md` unchanged. Skill SHA-256
+`a4a26b11…` (`standards.md` `17812288…`), uncommitted.
+
+**Run C6** (group C, 3 runs each; skill SHA-256 `a4a26b11…`; `opus` = `claude-opus-5-5` and CLI 2.1.310 before and
+after): **AT-07 2/3, AT-23 3/3, AT-24 3/3, AT-35 2/3**, no critical failure; AT-12 7/7; RC-05 passed. Cost $6.02.
+
+- **AT-07** (every reply read in full): all three give Sound, confidence High, with a confidence line tied to a quoted
+  claim, and none adds a risk ranking of Claude's own. Run 1 fails `pass-qr2-gate` (votes FAIL FAIL FAIL). Re-judging
+  it (diagnosis only) suggests a **fair failure**, not the disputed kind: its premise and its confidence line read
+  "lose everything since the last local snapshot" as saying the snapshots themselves would be unusable, which
+  contradicts the user's words. No new rule: the skill already forbids inventing premises.
+- **Fix 3 did not take hold:** all three replies still state the premise as the loss costing "more than $30 a month",
+  the one-off-versus-recurring blur Codex flagged (FR-2.2). The model reuses the user's own figure, which the new
+  wording allows. Not changed further in this run; see progress.md.
+- **AT-35c run 3** fails `pass-both-flaws-with-repairs` (FAIL FAIL FAIL): its second problem is anchored on "cheap
+  compared to the alternatives" with the repair "weigh that explanation", not a way to test the price's effect. Not a
+  critical failure; recorded as it falls.
+
+**One-run smoke check of groups A and B** (same skill text): **all 11 cases pass**, every grader passing, no
+critical failure, contamination or book name. Cost $2.18. (The gate script's AT-12 "fail" for one-run cases is the
+known T2.7c problem.)
+
+**State:** the T2.7a done-when is met (changes noted; scan clean; group C ≥2 of 3 with no critical failure; smoke
+check passes). T2.7a cost $8.20 (estimate about $8). Raw results private in `.local/t27a/`.
+
+## T2.7b: D50 and AT-07 on `tests-v1.2`
+
+**Serves:** AT-07 (QR-2, FR-2.2, FR-2.3); the validity of SC-1 and SC-2. **Date:** 2026-10-24. Owner approved **D50**
+as drafted: `pass-qr2-gate` in the AT-07 case and its baseline (identical text) now says what a note is. A neutral
+unstated premise consistent with the user's words, and a genuine confidence condition, are not notes merely because
+they appear; any suggested weakness, or a premise that contradicts the user's words, is a note and must pass the
+gate. Committed `64b1c1b`, tagged **`tests-v1.2`**; RC-06, 18/18 dialogues, `sc1-gate.py` 38/38 and the calibration
+self-test pass. Not pushed.
+
+**AT-07, 3 runs** (development evidence, not a gate result; skill SHA-256 `a4a26b11…`, as C6; CLI 2.1.310, `opus` =
+`claude-opus-5-5` before and after): **2/3**, no critical failure; AT-12 and RC-05 pass. Cost $1.34. Every reply read:
+all give Sound (two High, one Medium) with a confidence line tied to a quoted claim, and add no claim of Claude's own.
+Run 3 fails `pass-qr2-gate` (FAIL FAIL FAIL). Its confidence line asks to confirm that the restore test "used
+production-sized data". Re-judging it (diagnosis only) gives PASS under D50, against the judge's three FAIL votes, so
+the cause is **unresolved**: the line may read as a guess about how the test was run, a disguised doubt (D50 makes
+that a note). Not tuned; it goes to T2.7d (calibration items of this kind) and T2.11. Results on `tests-v1.1` (C1–C6)
+are not pooled with these. All three replies still state the cost premise against "$30 a month" (the T2.7a finding).
