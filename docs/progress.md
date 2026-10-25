@@ -220,6 +220,10 @@ fix and the calibration before T2.9, then T2.8.
   the user's words, is). Committed `64b1c1b`, tagged **`tests-v1.2`**; the freeze is now checked against it. AT-07, 3
   runs on the T2.7a skill text: 2/3, no critical failure; the failing run's cause is unresolved (re-judging gives PASS
   against three FAIL votes), sent to T2.7d and T2.11. Cost $1.34. Details in [evaluation.md](evaluation.md).
+- 2026-10-24: **T2.7c done** (SC-1, SC-2). `scripts/sc1-gate.py`: a grader whose judge call threw is missing evidence
+  (the test reads incomplete; a thrown `critical-` grader is not a critical failure), and AT-12 reads incomplete for a
+  case with fewer than 3 runs. Self-test 44/44 (six new checks, each failing without the fix); C6 and T2.7b results
+  unchanged; C4's session-limit AT-24 now reads incomplete. Details in [evaluation.md](evaluation.md).
 
 ## Slice 1 status
 
@@ -256,7 +260,7 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.7 Development runs C | Done except AT-07 (1/3 on the disputed grader); owner accepted the AT-07 plan |
 | T2.7a Skill fixes from the AT-07 consultation | Done 2026-10-24 (C6; premise fix did not take hold) |
 | T2.7b D50: clarify AT-07's gate grader | Done 2026-10-24 (D50 approved; `tests-v1.2`; AT-07 2/3) |
-| T2.7c Gate tooling fix | Not started |
+| T2.7c Gate tooling fix | Done 2026-10-24 (self-test 44/44) |
 | T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
 | T2.8–T2.15 | Not started |
 
@@ -264,12 +268,11 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 
 ## Next action
 
-**T2.7c** (gate tooling fix; SC-1, SC-2). Then T2.8 (development runs D; FR-4, FR-2.4 lesson, QR-3, QR-5), and
-T2.7d (calibration with AT-07 items, on `tests-v1.2`) right before T2.9.
-All are in [plan.md](plan.md), "Slice 2 tasks".
+**T2.8** (development runs D; FR-4, FR-2.4 lesson, QR-3, QR-5). Then T2.7d (calibration with AT-07 items, on
+`tests-v1.2`) right before T2.9. All are in [plan.md](plan.md), "Slice 2 tasks".
 
 ## Waiting on the owner
 
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
-- Committing the T2.7a skill change and these docs.
+- Committing T2.7c (the gate script and these docs).
 - The AT-07 calibration labels, before T2.7d runs.

@@ -632,3 +632,23 @@ production-sized data". Re-judging it (diagnosis only) gives PASS under D50, aga
 the cause is **unresolved**: the line may read as a guess about how the test was run, a disguised doubt (D50 makes
 that a note). Not tuned; it goes to T2.7d (calibration items of this kind) and T2.11. Results on `tests-v1.1` (C1–C6)
 are not pooled with these. All three replies still state the cost premise against "$30 a month" (the T2.7a finding).
+
+## T2.7c: gate tooling fix
+
+**Serves:** SC-1, SC-2 (plan.md T2.7c; the two findings of T2.7). **Date:** 2026-10-24. `scripts/sc1-gate.py`:
+
+- A grader whose judge call threw (the eval reports `passed: false` with "grader threw: …", for example at a session
+  limit) is missing evidence, not a verdict: the run cannot pass, the test reads **incomplete**, and a thrown
+  `critical-` grader is no longer a critical failure. A survey of every kept result file found the marker only on the
+  8 graders of C4's session-limit runs.
+- AT-12 reads **incomplete** when a case has fewer than 3 runs or an `at12-` grader threw, unless a case with complete
+  evidence fails it, which still fails AT-12 (the same rule as for a test). RC-05 ignores a thrown `rc05-` grader and
+  reads incomplete.
+
+`--self-test` passes **44/44**: the 38 earlier checks, plus six new ones (a thrown `critical-` grader; a thrown
+`pass-` grader; AT-12 with a one-run case; a thrown `at12-` grader, for AT-12 and for its test; a thrown `rc05-`
+grader). With the fix disabled, exactly those six fail. On real results: C4's AT-24 changes from a critical failure
+to incomplete, and AT-12 in C4 and in the T2.7a smoke check from fail to incomplete; C6 and the T2.7b AT-07 run are
+unchanged. Unchanged by design: a run whose eval call errored still counts as a failed run (self-test AT-94).
+`evals/README.md` ("Anything missing fails the test") is frozen and was not edited; since T2.2 the script reports
+such evidence as incomplete, which, like a failure, never passes the gate.

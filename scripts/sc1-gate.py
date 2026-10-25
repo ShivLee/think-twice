@@ -23,6 +23,12 @@ Added for slice 2 (plan.md T2.2, from the Codex plan review):
     --keep-temp. Missing evidence (a case, a run, a grader, a trace or the reply) gives the verdict "incomplete": it
     never passes the gate, and it is never counted as a failure, so a baseline cannot look worse than it was.
 
+Added before the gate (plan.md T2.7c):
+  - A grader whose judge call threw ("grader threw: …", for example at a session limit) is missing evidence, not a
+    verdict: the test reads incomplete, and a thrown `critical-` grader is not a critical failure.
+  - AT-12 reads incomplete, not failing, when a case has fewer than 3 runs or an `at12-` grader threw, unless a case
+    with complete evidence fails it. RC-05 likewise ignores a thrown `rc05-` grader and reads incomplete.
+
 Usage:
   scripts/sc1-gate.py RESULT.json [RESULT.json ...] [--root DIR] [--manual FILE] [--tests "AT-01 AT-02 ..."]
   scripts/sc1-gate.py --self-test
@@ -149,12 +155,17 @@ def reply_of(run):
     return next((g["evidence"] for g in run.get("graders") or [] if g.get("evidence")), None)
 
 
+def threw(grader):
+    """A judge call that failed is no verdict at all (T2.7c)."""
+    return str(grader.get("explanation", "")).startswith("grader threw")
+
+
 def majority(passes, runs):
     return runs > 0 and 3 * passes >= 2 * runs
 
 
 def evaluate(result_files, root=None, manual_lines=(), gate=None):
-    tests, at12, rc05_fail, notes, expected, cache, rc05_seen = {}, {}, [], [], {}, {}, False
+    tests, at12, rc05_fail, notes, expected, cache, rc05_seen, rc05_gap = {}, {}, [], [], {}, {}, False, []
     subcases = {t for t in gate or () if re.fullmatch(r"AT-S?\d+[a-z]", t)}
     chapters = {}
     for path in result_files:
@@ -181,6 +192,7 @@ def evaluate(result_files, root=None, manual_lines=(), gate=None):
                 own = [g for g in graders if g["name"].startswith(OWN)]
                 missing = [p for p in required if not any(g["name"].startswith(p) for g in graders)]
                 absent = [n for n in defined if n not in {g["name"] for g in graders}]
+                thrown = [g["name"] for g in graders if threw(g)]
                 calls = trace_tools(run.get("tracePath"))
                 reply = reply_of(run)
                 extra = []  # critical failures found here, beyond the graders
@@ -196,21 +208,26 @@ def evaluate(result_files, root=None, manual_lines=(), gate=None):
                     notes.append(f"{label}: no {', '.join(missing)} grader; counted as failed")
                 elif absent:
                     notes.append(f"{label}: missing graders {', '.join(absent)}; counted as failed")
+                elif thrown:
+                    notes.append(f"{label}: graders threw ({', '.join(thrown)}); counted as failed")
                 elif incomplete:
                     notes.append(f"{label}: {incomplete}; counted as failed")
-                if not run.get("error") and (missing or absent or incomplete):
+                if not run.get("error") and (missing or absent or thrown or incomplete):
                     gaps.append(label)  # incomplete evidence fails the test, not just the run (evals/README.md)
                 notes += [f"{label}: critical: {e}" for e in extra]
-                passed.append(not run.get("error") and not missing and not absent and not incomplete and not extra
-                              and bool(own) and all(g["passed"] for g in own))
-                critical.append(bool(extra) or any(not g["passed"] for g in graders if g["name"].startswith("critical-")))
+                passed.append(not run.get("error") and not missing and not absent and not thrown and not incomplete
+                              and not extra and bool(own) and all(g["passed"] for g in own))
+                critical.append(bool(extra) or any(not g["passed"] for g in graders
+                                                   if g["name"].startswith("critical-") and not threw(g)))
                 at12_g = [g for g in graders if g["name"].startswith("at12-")]
-                if at12_g:
-                    at12_ok.append(all(g["passed"] for g in at12_g))
+                if at12_g:  # None: no verdict for this run
+                    at12_ok.append(None if any(threw(g) for g in at12_g) else all(g["passed"] for g in at12_g))
                 rc05_g = [g for g in graders if g["name"].startswith("rc05-")]
                 rc05_seen = rc05_seen or bool(rc05_g)
-                if any(not g["passed"] for g in rc05_g):
+                if any(not g["passed"] for g in rc05_g if not threw(g)):
                     rc05_fail.append(f"{case['name']} run {i + 1}")
+                elif any(threw(g) for g in rc05_g):
+                    rc05_gap.append(f"{case['name']} run {i + 1}")
             tests.setdefault(test, []).append({"name": Path(case["dir"]).name, "passed": passed, "critical": critical,
                                               "gaps": gaps})
             if at12_ok:
@@ -235,12 +252,17 @@ def evaluate(result_files, root=None, manual_lines=(), gate=None):
         verdicts[test] = (status, detail)
 
     if at12:
-        bad = [name for name, runs in at12.items() if len(runs) != RUNS or not majority(sum(runs), len(runs))]
-        verdicts["AT-12"] = ("fail" if bad else "pass",
-                             f"{len(at12) - len(bad)}/{len(at12)} cases" + (f"; failing: {', '.join(bad)}" if bad else ""))
+        # As for a test: missing evidence reads incomplete, but a case with complete evidence that fails still fails.
+        short = [name for name, runs in at12.items() if len(runs) != RUNS or None in runs]
+        bad = [name for name, runs in at12.items() if name not in short and not majority(sum(runs), len(runs))]
+        verdicts["AT-12"] = ("fail" if bad else "incomplete" if short else "pass",
+                             f"{len(at12) - len(bad) - len(short)}/{len(at12)} cases" + (
+                                 f"; failing: {', '.join(bad)}" if bad else "") + (
+                                 f"; incomplete evidence: {', '.join(short)}" if short else ""))
     if rc05_seen:  # baseline cases have no rc05- grader, so they say nothing about RC-05
-        verdicts["RC-05"] = ("fail" if rc05_fail else "pass",
-                             "more than 3 cards in " + ", ".join(rc05_fail) if rc05_fail else "no reply loaded more than 3 cards")
+        verdicts["RC-05"] = ("fail", "more than 3 cards in " + ", ".join(rc05_fail)) if rc05_fail else (
+            "incomplete", "rc05- grader threw in " + ", ".join(rc05_gap)) if rc05_gap else (
+            "pass", "no reply loaded more than 3 cards")
 
     for line in manual_lines:
         line = line.split("#")[0].split()
@@ -288,10 +310,13 @@ def self_test():
         peek.write_text(json.dumps({"type": "assistant", "message": {"content": [
             {"type": "tool_use", "name": "Read", "input": {"file_path": "/x/evals/at64/case.yaml"}}]}}) + "\n")
 
-        def run(own=True, crit=True, at12=True, rc05=True, error=None, reply="A plain reply.", trace=clean):
+        def run(own=True, crit=True, at12=True, rc05=True, error=None, reply="A plain reply.", trace=clean, thrown=()):
             r = {"error": error, "tracePath": str(trace) if trace else None,
                  "graders": [{"name": "pass-x", "passed": own}, {"name": "critical-reply", "passed": crit, "evidence": reply},
                              {"name": "at12-questions", "passed": at12}, {"name": "rc05-cards-loaded", "passed": rc05}]}
+            for g in r["graders"]:  # a judge call that failed, as the eval reports it (T2.7c)
+                if g["name"] in thrown:
+                    g.update(passed=False, explanation="grader threw: judge call failed: You've hit your session limit")
             return r
         P, F = run(), run(own=False)
         no_crit = dict(P, graders=[g for g in P["graders"] if not g["name"].startswith("critical-")])
@@ -315,34 +340,44 @@ def self_test():
                  "book-named": ("AT-63", [P, P, run(reply="This is a method from Beyond Feelings.")]),
                  "peeks-evals": ("AT-64", [P, P, run(trace=peek)]),
                  "no-trace": ("AT-65", [P, P, run(trace=None)]),
-                 "other-chapter": ("AT-67", [run(reply="Chapter 11 protects the firm from creditors."), P, P])}
-        data = {"suite": {"root": str(tmp)}, "cases": []}
-        for name, (tag, runs) in cases.items():
-            (tmp / "evals" / name).mkdir(parents=True)
-            tags = f"{tag}, sc2-baseline" if name == "baseline" else f"{tag}, AT-12"
-            defined = names[:2] if name == "baseline" else names + (["pass-y"] if name == "grader-gone" else [])
-            graders = "".join(f"  - type: llm\n    name: {n}\n" for n in defined)
-            (tmp / "evals" / name / "case.yaml").write_text(f"name: {name}\ntags: [{tags}]\ngraders:\n{graders}")
-            data["cases"].append({"name": name, "dir": f"evals/{name}", "arms": {"with": runs}})
+                 "other-chapter": ("AT-67", [run(reply="Chapter 11 protects the firm from creditors."), P, P]),
+                 "threw-critical": ("AT-66", [P, P, run(thrown=("critical-reply",))]),
+                 "threw-pass": ("AT-68", [P, P, run(thrown=("pass-x",))])}
+        # Separate result files, so that AT-12 and RC-05 are judged on these cases alone (T2.7c).
+        short12 = {"short-at12": ("AT-50", [P]), "full-at12": ("AT-51", [P, P, P])}
+        threw12 = {"at12-threw": ("AT-52", [P, P, run(thrown=("at12-questions",))]),
+                   "rc05-threw": ("AT-53", [P, P, run(thrown=("rc05-cards-loaded",))])}
+        for file, group in (("r.json", cases), ("r2.json", short12), ("r3.json", threw12)):
+            data = {"suite": {"root": str(tmp)}, "cases": []}
+            for name, (tag, runs) in group.items():
+                (tmp / "evals" / name).mkdir(parents=True)
+                tags = f"{tag}, sc2-baseline" if name == "baseline" else f"{tag}, AT-12"
+                defined = names[:2] if name == "baseline" else names + (["pass-y"] if name == "grader-gone" else [])
+                graders = "".join(f"  - type: llm\n    name: {n}\n" for n in defined)
+                (tmp / "evals" / name / "case.yaml").write_text(f"name: {name}\ntags: [{tags}]\ngraders:\n{graders}")
+                data["cases"].append({"name": name, "dir": f"evals/{name}", "arms": {"with": runs}})
+            (tmp / file).write_text(json.dumps(data))
         for name, tag in (("partial-a", "AT-81a"), ("sub-b", "AT-60b")):  # cases with no results
             (tmp / "evals" / name).mkdir()
             (tmp / "evals" / name / "case.yaml").write_text(f"name: {name}\ntags: [{tag}, AT-12]\ngraders:\n  - name: pass-x\n")
-        (tmp / "r.json").write_text(json.dumps(data))
         manual = ["AT-70 pass", "AT-71 fail pass", "AT-72 fail fail", "AT-73 critical pass", "# a comment",
                   "AT-82 pass", "AT-83 fail fail", "AT-34c pass", "AT-34d fail pass"]
         verdicts, _, gate_ok, _ = evaluate([tmp / "r.json"], manual_lines=manual,
                                            gate=["AT-91", "AT-70", "AT-71", "AT-99"])
         sub, _, sub_ok, _ = evaluate([tmp / "r.json"], manual_lines=manual, gate=["AT-60a", "AT-34c", "AT-34d"])
+        v2, _, _, _ = evaluate([tmp / "r2.json"])
+        v3, _, _, _ = evaluate([tmp / "r3.json"])
     expect = {"AT-90": "fail", "AT-91": "pass", "AT-92": "fail", "AT-93": "fail", "AT-94": "fail", "AT-95": "pass",
               "AT-96": "pass", "AT-12": "fail", "RC-05": "fail", "AT-70": "pass", "AT-71": "pass", "AT-72": "fail",
               "AT-73": "fail", "AT-99": "not run", "AT-80": "incomplete", "AT-81": "incomplete", "AT-82": "fail", "AT-83": "fail",
               "AT-84": "incomplete", "AT-85": "pass", "AT-60": "incomplete", "AT-61": "incomplete", "AT-62": "fail", "AT-63": "fail",
-              "AT-64": "fail", "AT-65": "incomplete", "AT-67": "pass", "AT-34c": "pass", "AT-34d": "pass"}
+              "AT-64": "fail", "AT-65": "incomplete", "AT-67": "pass", "AT-34c": "pass", "AT-34d": "pass",
+              "AT-66": "incomplete", "AT-68": "incomplete"}
     why = {"AT-90": "1 of 3 runs passing fails the test", "AT-91": "2 of 3 runs passing passes it",
            "AT-92": "a critical failure in one run fails it, though the other two pass",
            "AT-93": "two cases each passing 2 of 3, but together only in 1 run, fail",
            "AT-94": "an errored run counts as failed", "AT-95": "AT-12 is counted apart from the test's own result",
-           "AT-96": "RC-05 is counted apart from the test's own result", "AT-12": "one case fails AT-12 in 2 of 3 runs",
+           "AT-96": "RC-05 is counted apart from the test's own result", "AT-12": "one case fails AT-12 in 2 of 3 runs, though another has 1 run",
            "RC-05": "one run loaded more than 3 cards", "AT-70": "manual: first run passes",
            "AT-71": "manual: fails, re-run passes", "AT-72": "manual: fails twice",
            "AT-73": "manual: a critical failure fails it, though the re-run passes",
@@ -359,7 +394,9 @@ def self_test():
            "AT-64": "a run that reads an eval folder is critical",
            "AT-65": "one run with no trace makes the test incomplete, not passed",
            "AT-67": "a chapter that is not the book's is not flagged",
-           "AT-34c": "manual subcase result counts", "AT-34d": "manual subcase: fails, re-run passes"}
+           "AT-34c": "manual subcase result counts", "AT-34d": "manual subcase: fails, re-run passes",
+           "AT-66": "a critical- grader that threw makes the test incomplete, not a critical failure",
+           "AT-68": "a pass- grader that threw makes the test incomplete, not failed"}
     sub_expect = {"AT-60a": ("pass", "a complete AT-60a passes alone when the gate names it"),
                   "AT-34c": ("pass", "a manual subcase in the gate"), "AT-34d": ("pass", "a manual subcase in the gate")}
     unit = [(book_problems("Beyond Feelings, chapter 1, describes it.", {1}) == [], "a chapter a card cites is fine"),
@@ -375,6 +412,10 @@ def self_test():
         got = sub.get(t, ("missing",))[0]
         bad += got != want; total += 1
         print(f"{'ok  ' if got == want else 'FAIL'}  {t}: {got:8} {reason}")
+    unit += [(v2.get("AT-12", ("missing",))[0] == "incomplete", "AT-12: a case with 1 run makes it incomplete, not failed"),
+             (v3.get("AT-12", ("missing",))[0] == "incomplete", "AT-12: an at12- grader that threw makes it incomplete"),
+             (v3.get("RC-05", ("missing",))[0] == "incomplete", "RC-05: an rc05- grader that threw makes it incomplete"),
+             (v3.get("AT-52", ("missing",))[0] == "incomplete", "a run whose at12- grader threw leaves its test incomplete")]
     for ok, reason in unit + [(gate_ok is False, "the gate fails, because AT-99 was not run"),
                               (sub_ok is True, "the subcase gate passes")]:
         bad += not ok; total += 1
