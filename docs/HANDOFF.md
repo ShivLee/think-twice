@@ -73,7 +73,8 @@ commit and push everything.
       and do not pick items to vindicate the plugin. The file is not part of the freeze, but it is public: no
       private material.
    2. **The owner labels every new item** (`pass` or `fail` per grader, at least `pass-qr2-gate` and
-      `critical-reply`) **before any run**. Record that the labels came first.
+      `critical-reply`) **before any run**. Record that the labels came first. Include at least one item whose note
+      genuinely passes the gate (D51: `at07-good` is now a FAIL example).
    3. **Build and run**, from the repository. `SCRATCH` is any folder outside the repository (the session's
       scratchpad); each built case already carries `runs: 3`.
 
@@ -88,9 +89,11 @@ commit and push everything.
       Haiku only echoes the fixed replies; `opus` is the judge being calibrated. Items Haiku fails to echo are
       re-run with `--model claude-sonnet-5-5` and pooled (`score --pool`), as in T2.3. Record the CLI and the
       resolved model before and after (D48). Cost about $8–10 (T2.3: $7.90 for 37 items).
-   4. **Accept** only under the selection rule in `scripts/judge-calibration.py` (no `critical-reply` error;
-      every item judged in at least 3 echoed runs). If it fails, **the owner decides before T2.9**. Record the
-      result in evaluation.md and progress.md.
+   4. **Accept** only under the selection rule in `scripts/judge-calibration.py`: no `critical-reply` error, every
+      item judged in at least 3 echoed runs, and (D51) **no wrong `pass-qr2-gate` verdict on any AT-07 item**. The
+      T2.3 calibration, re-scored under D51, would fail (Opus passed `at07-good`'s note 3/3), so be ready for that.
+      If it fails, **the owner decides before T2.9**, and AT-07's graded results wait for T2.11. Record the result
+      in evaluation.md and progress.md.
 5. **T2.9: the auto gate.** Tell the owner the estimate before starting: about $25 (26 cases ×3 at about $0.25
    a case-run, plus six baselines ×3). In order: settle baseline compatibility and re-run the six paired baselines
    (AT-04, AT-07, AT-08, AT-09, AT-10, AT-19; one arm, from a copy of `evals-baseline/` with no plugin, as
@@ -147,6 +150,8 @@ Then ask me the open question, and start T2.7d: draft the AT-07 calibration item
 
 - **AT-07**: T2.7d (calibration items), then T2.11 in a fresh Codex thread. SC-2 for AT-07 is non-regression
   against plain Claude, graded by the same graders; D50 applies to both arms, so the AT-07 baseline is re-run in T2.9.
+- **Drift review (2026-10-25):** real use once before the gate, four product rules to revisit, and the README
+  "Running" recipe are open; see progress.md.
 - **AT-23**: one split-vote critical failure in the last smoke check (re-judging gives PASS; an existing rule covers
   it, so nothing was added); T2.9 decides it.
 - **AT-02's disputed runs** (T2.5–T2.6) still go to T2.11. The calibration set has no AT-02 item.
@@ -195,6 +200,7 @@ All on gpt-6-astra, high effort. Resume with `--resume <thread>` on the runner. 
 | `01a1670a-3660-7ae0-9cc0-0b11fad47237` | The first skill draft against the goal, and its re-check |
 | `01a16d25-9f13-70c0-a180-25f1101002f4` | AT-07: is `pass-qr2-gate` stricter than section 5? (has seen outcomes: not for T2.11) |
 | `01a1734d-e06b-7e63-9368-62ca5e82e459` | How the gate counts errored runs; fill-ins (2026-10-25) |
+| `01a1736c-f570-74d0-a9e9-9e5e50bfaf2a` | Drift review against section 1; led to D51 (2026-10-25) |
 
 ## Lessons from this session
 

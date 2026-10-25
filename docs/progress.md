@@ -241,6 +241,12 @@ failure in the last smoke check) and the FR-2.2 premise wording (open).
   errored run could pass; a session-limit error now reads incomplete, any other error fails until investigated;
   baselines graded on their `without` arm; AT-12 and RC-05 need every defined grader. Self-test 50/50. plan.md: a
   fill-in supplies only missing run slots. Details in [evaluation.md](evaluation.md).
+- 2026-10-25: **drift review** (owner's request; my assessment, then Codex in a fresh thread
+  `01a1736c-f570-74d0-a9e9-9e5e50bfaf2a`): no abandonment of the goal; Medium drift in practice towards optimising
+  graded replies. Owner approved **D51** (protected: success criteria): `at07-good` relabelled FAIL on
+  `pass-qr2-gate`, and a calibration is accepted only with no wrong AT-07 `pass-qr2-gate` verdict.
+  `judge-calibration.py` self-test passes with three new checks. Re-scored under D51, the T2.3 calibration would not
+  be accepted (Opus passed that note 3/3), so T2.7d may fail its rule. Details in [evaluation.md](evaluation.md).
 
 ## Slice 1 status
 
@@ -279,7 +285,7 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.7b D50: clarify AT-07's gate grader | Done 2026-10-24 (D50 approved; `tests-v1.2`; AT-07 2/3) |
 | T2.7c Gate tooling fix | Done 2026-10-24 (self-test 44/44) |
 | T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
-| T2.8 Development runs D | Done 2026-10-25 (D5 passes; smoke 17/18, AT-23 open) |
+| T2.8 Development runs D | Development done 2026-10-25 (D5 passes); smoke check not passed: 17/18, AT-23 open |
 | T2.9–T2.15 | Not started |
 
 [HANDOFF.md](HANDOFF.md) lists the next steps in order.
@@ -295,3 +301,6 @@ are in [plan.md](plan.md), "Slice 2 tasks".
 
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
 - The AT-07 calibration labels, before T2.7d runs.
+- From the drift review, not yet acted on: real use once before the gate (feedback only); four product rules to
+  revisit at T2.13–T2.14 (evaluation.md, "Drift review and D51"); the frozen `evals/README.md` "Running" recipe,
+  which still runs from the repository root (fixing it needs a decision entry).

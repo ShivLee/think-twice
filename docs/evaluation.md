@@ -789,3 +789,25 @@ logic, and the sixth (a critical failure still wins over an interruption) passes
 25 kept result files, the only verdicts that change are session-limit runs (C4's AT-35; D2's AT-19, AT-20, AT-25)
 and RC-05 where a run was interrupted: fail or pass to incomplete. A plan.md rule now says fill-ins supply only
 missing run slots, with completed runs of the original attempt kept and the combination recorded in the manifest.
+
+## Drift review and D51 (2026-10-25)
+
+**Owner's request:** an assessment of goal drift. My own assessment, then a Codex review (gpt-6-astra, high; fresh
+thread `01a1736c-f570-74d0-a9e9-9e5e50bfaf2a`, briefed without my findings). Both verdicts: **no abandonment of the
+goal, but Medium drift in practice towards optimising graded replies.** REQUIREMENTS changed only through D44–D48
+(measurement method); the four questions, thresholds, delivery form, privacy and the book's role are unchanged; the
+skill still guards ownership. Risks named by both: the judge as the day-to-day target, with no real use yet; the
+QR-13 budget (`SKILL.md` about 3,740 tokens by the fallback estimate, up 58% in slice 2, with slices 3–6 still to
+add); SC-2's zero margin, with six of its ten tests still ahead. Codex also found, each checked against the files:
+the `at07-good` calibration label; an acceptance rule that ignored `pass-qr2-gate`; the frozen `evals/README.md`
+"Running" recipe that still runs from the repository root; two commits naming no ID (`3bc95ff`, `96748d6`, both
+docs); and four product rules worth revisiting after real use (quoted question marks counted against the question
+limit; "settled" said without a source; an argued first-person position read as settled; "do not list the answers").
+
+**D51 applied** (owner approved): `at07-good` relabelled FAIL on `pass-qr2-gate` (its note says it does not change
+the conclusion); `scripts/judge-calibration.py` accepts a judge only if no AT-07 item gets a wrong `pass-qr2-gate`
+verdict (`GATED`), with three new self-test checks (an ordinary-grader error still allowed; one gated error blocks;
+a gated grader right every time is accepted). Re-scoring the T2.3 calibration with the new label and rule: 3 wrong
+`pass-qr2-gate` verdicts (Opus passed that note in all 3 runs), so it **would not be accepted**. That run used the
+`tests-v1.1` grader, before D50, so it is a warning for T2.7d, not a prediction. No test changed; the freeze diff
+against `tests-v1.2` is empty.
