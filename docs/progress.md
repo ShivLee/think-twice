@@ -11,9 +11,12 @@ transcripts go here.
 
 **Slice 2 is under way** (recognition, core and the quick after review). **T2.1–T2.8 are done**, with T2.7a–T2.7c
 (the AT-07 plan and gate tooling), and the skill is committed as tested (`ee428f8`). Tests are frozen at
-`tests-v1.2` (D50). Left before the gate: **T2.7d**, the judge calibration with AT-07 items, which the owner labels
-first. Then T2.9–T2.15. Carried to the gate: AT-07 (2/3 in its last development run), AT-23 (one split-vote critical
-failure in the last smoke check) and the FR-2.2 premise wording (open).
+`tests-v1.3` (D53). Left before the gate: **T2.7d** (the judge calibration with AT-07 items, which the owner labels
+first; accepted only under D51) and **T2.8b** (all 14 baselines, SC-2 feasibility). Then T2.9–T2.15. The path to
+1.0.0 now follows D52–D54: combined gates for slices 3+4 and 5+6, the release candidate accepted before SC-3, and
+one pinned model for the release candidate and the SC-3 period. Carried to the gate: AT-07 (2/3 in its last
+development run), AT-23 (one split-vote critical failure in the last smoke check) and the FR-2.2 premise wording
+(open).
 
 ## Last verified state
 
@@ -253,6 +256,9 @@ failure in the last smoke check) and the FR-2.2 premise wording (open).
   before SC-3; one plan review for slices 3–7; T2.8b SC-2 feasibility after T2.7d; development loop), **D53**
   (calibration triggers; README run recipe from staging), **D54** (pinned model for the release candidate and SC-3).
   REQUIREMENTS, plan.md and evals/README.md updated; a private real-use log template in `.local/real-use-log.md`.
+- 2026-10-25: all D52–D54 changes committed and pushed (`09fd37d`, `4cce1ef`); tag **`tests-v1.3`** created on
+  `09fd37d` and pushed (owner's request); the freeze diff against it is empty. HANDOFF.md rewritten for resuming at
+  T2.7d.
 
 ## Slice 1 status
 
@@ -301,7 +307,7 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 
 **T2.7d** (SC-1, SC-2; D48 rule 2, D51): draft AT-07 calibration items with no labels; the owner labels them; then
 build, run and score on the CLI the gate will use. Then **T2.8b** (SC-2; D52): all 14 baselines ×3, about $10.50,
-to confirm SC-2 is still reachable. Then **T2.9**, the auto gate (about $25; tell the owner first). The steps and
+to confirm SC-2 is still reachable. Then **T2.9**, the auto gate (about $20; tell the owner first). The steps and
 commands are in [HANDOFF.md](HANDOFF.md), "What to do next time".
 
 ## Waiting on the owner
@@ -310,4 +316,3 @@ commands are in [HANDOFF.md](HANDOFF.md), "What to do next time".
 - The AT-07 calibration labels, before T2.7d runs.
 - Real use once before the gate, as feedback (`.local/real-use-log.md` has the template).
 - Four product rules from the drift review, to revisit at T2.13–T2.14 (evaluation.md, "Drift review and D51").
-- Committing D52–D54 and tagging `tests-v1.3` (evals/README.md changed under D53).

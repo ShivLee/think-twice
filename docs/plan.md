@@ -133,8 +133,8 @@ ahead.
 
 **Rules for the slice:**
 
-- **Tests stay frozen.** `git diff tests-v1.2 --stat -- evals evals-baseline` is empty at the end of every task
-  (`tests-v1.1` until D50, 2026-10-24). A failing test is fixed in the skill. If a test itself looks wrong, stop and
+- **Tests stay frozen.** `git diff tests-v1.3 --stat -- evals evals-baseline` is empty at the end of every task
+  (`tests-v1.1` until D50, `tests-v1.2` until D53). A failing test is fixed in the skill. If a test itself looks wrong, stop and
   bring a decision entry to the owner.
 - **The skill is written from REQUIREMENTS; the tests check it.** `SKILL.md` and `standards.md` contain no names,
   numbers or wording from a case prompt, dialogue or fixture, and no instruction that applies to one case's content.
