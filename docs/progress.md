@@ -247,6 +247,12 @@ failure in the last smoke check) and the FR-2.2 premise wording (open).
   `pass-qr2-gate`, and a calibration is accepted only with no wrong AT-07 `pass-qr2-gate` verdict.
   `judge-calibration.py` self-test passes with three new checks. Re-scored under D51, the T2.3 calibration would not
   be accepted (Opus passed that note 3/3), so T2.7d may fail its rule. Details in [evaluation.md](evaluation.md).
+- 2026-10-25: **speed-up review** (owner's request; Codex fresh thread `01a17392-1a16-76b3-be51-0d153ff493f4`):
+  tiered regression and replacing live manual tests rejected; fewer, full gates kept. Owner asked for Claude's
+  recommendation and all revisions to follow it: **D52** (combined gates 3+4 and 5+6; release-candidate acceptance
+  before SC-3; one plan review for slices 3–7; T2.8b SC-2 feasibility after T2.7d; development loop), **D53**
+  (calibration triggers; README run recipe from staging), **D54** (pinned model for the release candidate and SC-3).
+  REQUIREMENTS, plan.md and evals/README.md updated; a private real-use log template in `.local/real-use-log.md`.
 
 ## Slice 1 status
 
@@ -285,6 +291,7 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.7b D50: clarify AT-07's gate grader | Done 2026-10-24 (D50 approved; `tests-v1.2`; AT-07 2/3) |
 | T2.7c Gate tooling fix | Done 2026-10-24 (self-test 44/44) |
 | T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
+| T2.8b SC-2 feasibility: all 14 baselines | Not started (after T2.7d; D52) |
 | T2.8 Development runs D | Development done 2026-10-25 (D5 passes); smoke check not passed: 17/18, AT-23 open |
 | T2.9–T2.15 | Not started |
 
@@ -292,15 +299,15 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 
 ## Next action
 
-**T2.7d** (SC-1, SC-2; D48 rule 2): draft AT-07 calibration items with no labels; the owner labels them; then build,
-run and score the calibration on the CLI the gate will use. Then **T2.9**, the auto gate (estimate about $25; tell
-the owner first). The exact steps and commands are in [HANDOFF.md](HANDOFF.md), "What to do next time"; the tasks
-are in [plan.md](plan.md), "Slice 2 tasks".
+**T2.7d** (SC-1, SC-2; D48 rule 2, D51): draft AT-07 calibration items with no labels; the owner labels them; then
+build, run and score on the CLI the gate will use. Then **T2.8b** (SC-2; D52): all 14 baselines ×3, about $10.50,
+to confirm SC-2 is still reachable. Then **T2.9**, the auto gate (about $25; tell the owner first). The steps and
+commands are in [HANDOFF.md](HANDOFF.md), "What to do next time".
 
 ## Waiting on the owner
 
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
 - The AT-07 calibration labels, before T2.7d runs.
-- From the drift review, not yet acted on: real use once before the gate (feedback only); four product rules to
-  revisit at T2.13–T2.14 (evaluation.md, "Drift review and D51"); the frozen `evals/README.md` "Running" recipe,
-  which still runs from the repository root (fixing it needs a decision entry).
+- Real use once before the gate, as feedback (`.local/real-use-log.md` has the template).
+- Four product rules from the drift review, to revisit at T2.13–T2.14 (evaluation.md, "Drift review and D51").
+- Committing D52–D54 and tagging `tests-v1.3` (evals/README.md changed under D53).

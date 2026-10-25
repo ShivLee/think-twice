@@ -811,3 +811,22 @@ a gated grader right every time is accepted). Re-scoring the T2.3 calibration wi
 `pass-qr2-gate` verdicts (Opus passed that note in all 3 runs), so it **would not be accepted**. That run used the
 `tests-v1.1` grader, before D50, so it is a warning for T2.7d, not a prediction. No test changed; the freeze diff
 against `tests-v1.2` is empty.
+
+## Speed-up review, and D52–D54 (2026-10-25)
+
+**Owner's request:** a shorter path to 1.0.0 that keeps the quality bar. Claude's proposal (eight changes, and an
+answer on manual testing) went to Codex as options to test (gpt-6-astra, high; fresh thread
+`01a17392-1a16-76b3-be51-0d153ff493f4`). Codex's corrections, each checked: tiered regression saves only about
+$10.50 per gate (21 cases × 2 fewer runs × $0.25), not the larger figure claimed, and risks cross-case regressions
+this skill has shown, so it was **rejected** in favour of fewer, full gates; frozen dialogues cannot replace live
+manual tests (a supplied history can hold earlier turns the skill would not produce), so they are **diagnostics
+only**; the owner's ruling on a disputed verdict is diagnosis, never a score; T2.11 stays. Codex added: check SC-2
+feasibility early; move all release evidence before the SC-3 clock; protect the period from model releases. The
+owner asked for Claude's recommendation on pinning and for all revisions to follow it.
+
+Applied: **D52** (combined gates 3+4 and 5+6; release-candidate acceptance before SC-3; one plan review for slices
+3–7; T2.8b, the SC-2 feasibility check after T2.7d; the development loop and dispute rules), **D53** (full
+calibration on an effective judging change, a compatibility check on a CLI change; the README run recipe now starts
+from the staging copy), **D54** (one pinned model for the release candidate and the SC-3 period; development stays
+on `opus`). REQUIREMENTS cites D52 and D54 (section 5 "Model", SC-3 counting, section 8 order, section 9 rule 10);
+`evals/README.md` changes under D53, so the tests are tagged `tests-v1.3` when committed.

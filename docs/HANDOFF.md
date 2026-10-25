@@ -5,23 +5,28 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
 
 ## Where things stand
 
-- **T2.1–T2.8 and T2.7a–T2.7c are done.** Left before the gate: **T2.7d** (judge calibration with AT-07 items).
-  Then **T2.9–T2.15** close slice 2.
+- **T2.1–T2.8 and T2.7a–T2.7c are done.** Left before the gate: **T2.7d** (judge calibration with AT-07 items) and
+  **T2.8b** (all 14 baselines, to confirm SC-2 is still reachable; D52). Then **T2.9–T2.15** close slice 2.
+- **The path to 1.0.0 changed on 2026-10-25 (D52–D54):** slices 3+4 and 5+6 each share one gate; the release
+  candidate passes the full suite, live manual tests, baselines, blind grading and the install check **before** SC-3
+  starts; development stays on `opus`, but the release candidate and the SC-3 period use one **pinned** model ID;
+  calibration re-runs on an effective judging change, with a cheap check for a CLI update.
 - **Carried to the gate (T2.9), not fixed:** AT-07's last 3 runs passed 2/3 on `tests-v1.2` (the failing run's cause
   is unresolved); AT-23 had one split-vote critical failure in the last A–C smoke check (owner: let T2.9 decide); the
   FR-2.2 premise wording from T2.7a did not take hold (owner may try again; open).
 - **The skill:** `skills/pause/SKILL.md` (about 3,750 tokens by the fallback estimate; limit 4,400) and
   `standards.md` (about 1,530), SHA-256 `39703d89…` and `8093b6c2…`, committed at `ee428f8` as tested in run D5
   and the last smoke check.
-- **Tests are frozen at `tests-v1.2`** (D50, owner approved 2026-10-24: what counts as a note in AT-07's gate
-  grader, identical in both arms). `git diff tests-v1.2 --stat -- evals evals-baseline` shows nothing.
+- **Tests are frozen at `tests-v1.2`** (D50: what counts as a note in AT-07's gate grader). D53 changed
+  `evals/README.md` (run recipe, calibration trigger), so once committed the tag is **`tests-v1.3`**, and the freeze
+  is checked against that tag from then on. If the tag does not exist yet, ask the owner to commit and tag first.
 - **Gate tooling:** `scripts/sc1-gate.py` self-test 50/50 (Codex review, 2026-10-25). A judge call that threw, or a
   run cut off by the session limit, reads incomplete; any other error fails its test until investigated; an errored
   run never lets a test pass; baselines are graded on their `without` arm; AT-12 and RC-05 need every grader a case
   defines.
 - **Model and CLI:** `opus` = `claude-opus-5-5`; **CLI 2.1.310**. The calibration last ran on 2.1.309, and D50
   changed a grader since, so T2.7d must run before any graded result counts.
-- **Git:** everything committed and pushed; `main` = `origin/main` at `d887a26` or later; tag `tests-v1.2` pushed.
+- **Git:** pushed up to `7e300c3`; D52–D54 and their document changes may still be uncommitted (check `git status`).
 
 ## What this session did (2026-10-24 to 2026-10-25)
 
@@ -48,7 +53,7 @@ commit and push everything.
    python3 scripts/build-histories.py --check  # 18/18 dialogues parsed
    python3 scripts/sc1-gate.py --self-test     # 50/50
    python3 scripts/judge-calibration.py --self-test
-   git diff tests-v1.2 --stat -- evals evals-baseline   # empty
+   git diff tests-v1.3 --stat -- evals evals-baseline   # empty (tests-v1.2 if v1.3 is not tagged yet)
    git status -sb                              # clean, main...origin/main
    ```
 
@@ -94,14 +99,23 @@ commit and push everything.
       T2.3 calibration, re-scored under D51, would fail (Opus passed `at07-good`'s note 3/3), so be ready for that.
       If it fails, **the owner decides before T2.9**, and AT-07's graded results wait for T2.11. Record the result
       in evaluation.md and progress.md.
-5. **T2.9: the auto gate.** Tell the owner the estimate before starting: about $25 (26 cases ×3 at about $0.25
-   a case-run, plus six baselines ×3). In order: settle baseline compatibility and re-run the six paired baselines
-   (AT-04, AT-07, AT-08, AT-09, AT-10, AT-19; one arm, from a copy of `evals-baseline/` with no plugin, as
-   evals/README.md says); the T2.1 reach probe if the CLI changed; fix the two Codex samples (plan.md, "A second
+5. **T2.8b: SC-2 feasibility** (D52). Right after T2.7d is accepted: all 14 baseline cases ×3, one arm, from a copy
+   of `evals-baseline/` in a folder with no plugin (`--ablation none --trust-plugin --keep-temp`, as
+   evals/README.md says). About $10.50. Record plain Claude's pass count for each of the 10 SC-2 tests; if fewer
+   than 7 still have plain Claude at ≤1 of 3, tell the owner before T2.9 and weaken nothing.
+6. **T2.9: the auto gate.** Tell the owner the estimate before starting: about $20 (26 cases ×3 at about $0.25 a
+   case-run). In order: reuse T2.8b's baselines for the six paired tests if compatible (D48 rule 1); the T2.1 reach probe if the CLI changed; fix the two Codex samples (plan.md, "A second
    grader"); then the gate command block in plan.md, with the manifest in `.local/<attempt>/`. Fill-ins after a
    session limit follow plan.md, "Fill-ins supply only missing evidence".
-6. **T2.10–T2.15** as plan.md says: manual tests driven by Claude and graded by the owner; Codex second grading in
-   a **fresh** thread (T2.11); the SC-1 gate and SC-2 comparison; real use; slice review; re-estimate.
+7. **T2.10–T2.15** as plan.md says: manual tests driven by Claude and graded by the owner (time each one: T2.15
+   needs it); Codex second grading in a **fresh** thread (T2.11); the SC-1 gate and SC-2 comparison; real use;
+   T2.14's slice review **plus the one plan review for slices 3–7** (D52); re-estimate.
+
+**How to work from now on (D52):** in development, run affected and guard cases once while diagnosing and 3 times
+only for a clean candidate; change the skill only for a requirement breach read in the reply; after three failed
+rounds, stop and diagnose. A disputed verdict can go to the owner, whose ruling is diagnosis next to the original
+verdict, never a score. The owner can use the plugin at any time as feedback (`claude --plugin-dir
+~/projects/think-twice`; log in `.local/real-use-log.md`).
 
 To resume, paste this:
 
@@ -168,7 +182,7 @@ Then ask me the open question, and start T2.7d: draft the AT-07 calibration item
 ## Rules that apply from now on
 
 - REQUIREMENTS v1.0 is frozen; every change cites a decision entry with the D40 drift check.
-- Tests are frozen at `tests-v1.2` and never weakened. A failing test is fixed in the skill; every skill change is
+- Tests are frozen (`tests-v1.3` after D53) and never weakened. A failing test is fixed in the skill; every skill change is
   noted in evaluation.md with the general rule and ID it implements, and uses no wording from a case. When a judge
   disagrees with its own case, record it for the second grader; do not tune towards it.
 - Every gate attempt is kept; unchanged skill text is never re-run to get a pass.
@@ -201,6 +215,7 @@ All on gpt-6-astra, high effort. Resume with `--resume <thread>` on the runner. 
 | `01a16d25-9f13-70c0-a180-25f1101002f4` | AT-07: is `pass-qr2-gate` stricter than section 5? (has seen outcomes: not for T2.11) |
 | `01a1734d-e06b-7e63-9368-62ca5e82e459` | How the gate counts errored runs; fill-ins (2026-10-25) |
 | `01a1736c-f570-74d0-a9e9-9e5e50bfaf2a` | Drift review against section 1; led to D51 (2026-10-25) |
+| `01a17392-1a16-76b3-be51-0d153ff493f4` | Speed-up review; led to D52–D54 (2026-10-25) |
 
 ## Lessons from this session
 
