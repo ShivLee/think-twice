@@ -1,6 +1,6 @@
 # think-twice: product requirements
 
-**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D47 are included (see
+**Status:** **Approved v1.0** (2026-10-18), tagged `requirements-v1.0`. Owner decisions D0–D55 are included (see
 [decisions.md](decisions.md)). The feature discussion closed when Codex found no High-severity consistency or
 ambiguity issue (v0.7.1). Current work and its status are in [progress.md](progress.md).
 **Authority:** this file is the single source of truth for what gets built. Every change cites a decision entry. See
@@ -220,7 +220,10 @@ Each test turns a requirement into a check that can be observed. "Auto" tests us
 sanitized session; a case graded after an earlier `/think-twice:pause` turn gets the current skill text filled in
 before each run (D47). SC-2's plain-Claude runs use separate baseline cases (D46). "Manual" tests need several live
 turns and follow a fixed script. The concrete prompts are written and **frozen before** any skill text is written.
-Each case declares the requirement IDs it covers, its
+**Active tests (D55):** during development only the active tests run (listed in [progress.md](progress.md)); the
+others are kept unchanged in `archive/` and run again at the release candidate. A test is added or changed only for a
+requirement breach the owner saw in real use (citing its `docs/reactions.md` entry), or with the owner's explicit
+approval, and never weakened so that it passes. Each case declares the requirement IDs it covers, its
 **dialogue state** (which earlier turns are supplied, including any confirmation I have given) and **which reply is
 graded**. A letter suffix such as AT-27d cites one subcase; RC-06 accepts it only if that case defines the subcase.
 A parent ID or range (FR-2, FR-5.1–5.6, AT-S1–S6) covers every ID under it or within it.
@@ -385,9 +388,9 @@ apply to it.
 
 | ID | Criterion | Target |
 | --- | --- | --- |
-| **SC-1 Behaviour** | All acceptance tests and release checks | Each auto test passes in ≥2 of 3 runs; no critical failure in any run; every manual test passes (run once, re-run once on failure); every release check passes |
+| **SC-1 Behaviour** | All acceptance tests and release checks, **at the release candidate only** (D55; not a development gate) | Each auto test passes in ≥2 of 3 runs; no critical failure in any run; every manual test passes (run once, re-run once on failure); every release check passes |
 | **SC-2 Added value** | Each plugin case against its own plain-Claude baseline case (D46) on AT-04, AT-06, AT-08, AT-09, AT-10, AT-14, AT-18, AT-S1, AT-S2, AT-S5 (10 tests) | On **each** of the 10, the plugin passes ≥2 of 3 runs. On **at least 7** of the 10, plain Claude passes ≤1 of 3. On AT-07 and AT-19, the plugin passes at least as many runs as plain Claude. **Fair baseline (D39):** the plain-Claude run gets the same material and the words I would naturally type without the plugin; each baseline case states that wording, which contains no coaching cue, and runs without the plugin (D46). A case with several prompts passes a run only if every prompt passes. SC-2 therefore measures value over my **ordinary** use of Claude, not over a Claude that has been asked to coach. |
-| **SC-3 Real use** (decides 1.0.0) | I use it on ≥10 real situations over about 3 weeks, covering all three phases. For each, I log: what it surfaced, whether my conclusion, confidence or plan changed, whether it pushed its own view, whether it recognised where I was, whether I applied a practice from an earlier lesson without being prompted, and minutes spent | ≥6 of 10 surfaced something I valued; 0 pushed its own view; phase and situation right, or corrected in one word, in ≥9 of 10; median during checkpoint ≤2 minutes; **in ≥3 of the 10, I applied a practice from an earlier lesson without being prompted** (G5; evidence in the real-use log). **Counting (D45):** starts when slice 6 passes its tests and the release candidate is accepted (D52), on one pinned model (D54); every real situation in the period counts; a material change restarts the period |
+| **SC-3 Real use** (decides 1.0.0) | I use it on ≥10 real situations over about 3 weeks, covering all three phases. For each, I log: what it surfaced, whether my conclusion, confidence or plan changed, whether it pushed its own view, whether it recognised where I was, whether I applied a practice from an earlier lesson without being prompted, and minutes spent | ≥6 of 10 surfaced something I valued; 0 pushed its own view; phase and situation right, or corrected in one word, in ≥9 of 10; median during checkpoint ≤2 minutes; **in ≥3 of the 10, I applied a practice from an earlier lesson without being prompted** (G5; evidence in the real-use log). **Counting (D45):** starts when the release candidate is accepted (D52, D55), on one pinned model (D54); every real situation in the period counts; a material change restarts the period |
 | **SC-4 Release quality** | Packaging | Validation script passes (including RC-01–RC-06); in a fresh session, adding the marketplace (`/plugin marketplace add ShivLee/think-twice`), installing the plugin from it and running `/think-twice:pause` all succeed; README (including the D16 note on Mauboussin's *Think Twice*), LICENSE (MIT), CHANGELOG and version in place |
 
 SC-2 measures **behaviour**, not knowledge. book-experts asked whether the book made Claude's *answers* better. Here
@@ -429,11 +432,12 @@ think-twice/
 ├── skills/pause/standards.md           lenses, calibration gate, hint steps, verdicts, output and journal formats
 ├── skills/pause/glossary.md            bilingual method names (English / Chinese)
 ├── skills/pause/methods/<card>.md      Beyond Feelings method cards (paraphrased, cited), loaded on demand
-├── evals/<case>/                       acceptance tests for `claude plugin eval`, each declaring its IDs
-├── evals-baseline/<case>/              plain-Claude baseline cases for SC-2 (D46)
-├── scripts/validate-plugin.sh          structure, release checks RC-01–RC-06 (development only)
-├── scripts/                            SC-1 calculation and history filling (development only; D47)
-├── docs/REQUIREMENTS.md, decisions.md, progress.md, evaluation.md
+├── evals/<case>/                       active acceptance tests for `claude plugin eval`, each declaring its IDs (D55)
+├── archive/                            the other tests, the SC-2 baselines (D46) and the release scripts
+│                                       (validate-plugin.sh: RC-01–RC-06; sc1-gate.py: SC-1), kept unchanged
+│                                       during development and restored for the release candidate (D55)
+├── scripts/                            history filling (development only; D47)
+├── docs/REQUIREMENTS.md, decisions.md, progress.md, evaluation.md, reactions.md (D55)
 ├── .github/pull_request_template.md    "Requirement IDs served" field
 ├── AGENTS.md, CLAUDE.md, CONTRIBUTING.md
 └── README.md, CHANGELOG.md, LICENSE
@@ -446,7 +450,7 @@ Card review records are kept next to each card, as a short block that contains n
 - **Later (v2 candidates):** Codex CLI port; a deep multi-agent after mode; a **read-only helper subagent** (D29).
   The subagent is added only on evidence, through a decision entry, because it changes RC-01:
   - **Fresh-eyes review:** if, in real use, the inline check repeatedly defends Claude's own earlier proposals
-    (AT-06 or AT-36 failing repeatedly, or the real-use log showing it). It would receive the owner's stated
+    (`docs/reactions.md` or the real-use log showing it; AT-06 and AT-36 confirm it at the release candidate, D55). It would receive the owner's stated
     conclusion, not Claude's summary.
   - **Long material:** if long documents, long saved summaries or a long journal swamp the owner's conversation.
     It would read them in its own context and return a compact map.
@@ -456,10 +460,13 @@ Card review records are kept next to each card, as a short block that contains n
 
 ### Implementation order
 
-Each slice ends with its tests passing **and** the owner using it once on something real (slice 1, which builds no
-product feature, ends with an owner test review instead; D44). A slice is split into
-tasks that each fit one session, serve named IDs and end with named tests passing (section 9, rule 9). Each slice
-ships the method cards and glossary entries its own tests need; no card is written ahead of the slice that needs it.
+**Real use drives the work (D55).** From slice 2 on, the owner uses the plugin on real situations, and what is built
+next is what real use shows is needed: a breach of a requirement, or a requirement it needed and does not yet meet,
+recorded in `docs/reactions.md`. The slices below are the feature groups and their order, not gates: a slice ends
+when the owner has used it on something real (slice 1, which builds no product feature, ended with an owner test
+review instead; D44). A slice is split into tasks that each fit one session and serve named IDs (section 9, rule 9);
+no task is closed on a test pass rate. Each slice ships the method cards and glossary entries it needs; no card is
+written ahead of the slice that needs it.
 
 1. Test feasibility probe (5.1), the validation script with RC-06, and `docs/progress.md` in use.
 2. Recognition, core and the quick after review.
@@ -469,9 +476,10 @@ ships the method cards and glossary entries its own tests need; no card is writt
 6. Remaining method cards and glossary completeness (RC-03, RC-04).
 7. Packaging and release (RC-01–RC-05, SC-4).
 
-Slices 3 and 4 share one gate, and so do slices 5 and 6. Before SC-3 starts, the release candidate passes the full
-suite, the live manual tests, the paired baselines and the install check; packaging that cannot change behaviour runs
-during SC-3 (D52).
+Slices 3 and 4 are used together, and so are slices 5 and 6 (D52). The SC-1 gate runs once, at the release
+candidate (D55): before SC-3 starts, the release candidate passes the full suite (the active tests and those restored
+from `archive/`), the live manual tests, the paired baselines and the install check; packaging that cannot change
+behaviour runs during SC-3 (D52).
 
 ### Out of scope for v1.0
 
@@ -487,7 +495,8 @@ during SC-3 (D52).
 
 | # | Question |
 | --- | --- |
-| — | None. Known test-level gaps are tracked in [progress.md](progress.md) and settled in slice 1. |
+| — | Known test-level gaps are tracked in [progress.md](progress.md) and settled in slice 1. |
+| D55 | A requirement that real use has not called for by the time of the release candidate: either it is built for the release, or it moves out of v1.0 through a decision entry. Not yet decided. |
 
 ---
 
@@ -497,9 +506,12 @@ during SC-3 (D52).
 
 1. **This file is the authority.** Every task, commit and pull request names the FR, QR, AT or RC IDs it serves.
    Infrastructure work names the failure it prevents.
-2. **Tests before prompts.** The acceptance prompts and graders are frozen before skill text is written. Changing a
-   frozen test needs a decision entry.
-3. **Build only what a test requires.** If no failing test or real-use log entry needs a feature, it waits.
+2. **Tests before fixes.** The acceptance prompts and graders are frozen. A test is added or changed only for a
+   requirement breach the owner saw in real use (citing its `docs/reactions.md` entry), or with the owner's explicit
+   approval, and before the skill change it checks. No test is weakened so that it passes (D55).
+3. **Build only what real use requires.** If real use has not shown a need for a feature (an entry in
+   `docs/reactions.md`), it waits (D55). Entries are one line each: the date, the requirement ID and the breach, with
+   no personal reasoning or conversation content; fuller notes stay private.
 4. **Changes of direction go to the owner first.** This covers changes to the goal, the four questions, the success
    criteria, the delivery form, privacy, or the role of the book. Each is proposed as a decision entry (old, new,
    evidence, trade-off, what it serves, and whether it touches a protected item; D40) in `docs/decisions.md`, approved by the owner, and only then reflected in this file.
@@ -512,13 +524,14 @@ during SC-3 (D52).
 
 7. **Freeze.** When approved, this file is marked "Approved v1.0", committed and tagged `requirements-v1.0`. A diff
    against the tag shows any drift. Every later change to this file cites a decision entry.
-8. **Mechanical traceability.** RC-06 runs in the validation script, so a requirement without a test, or a test
-   citing a nonexistent ID, fails the build.
-9. **Traceable plan.** The implementation plan lists tasks, each with "serves IDs …; done when tests … pass". Codex
-   reviews the plan against this file before implementation starts.
-10. **Slices, each used for real.** Work follows the implementation order in section 8. A slice is done only when its
-    tests pass and the owner has used it once on something real (for slice 1, an owner test review; D44). Slices
-    that share a gate are used once together, in a way that exercises both (D52).
+8. **Mechanical traceability.** RC-06 runs in the validation script at the release candidate (D55), so a requirement
+   without a test, or a test citing a nonexistent ID, fails the release.
+9. **Traceable plan.** The implementation plan lists tasks, each with "serves IDs …; done when …". No development
+   task is done because of a test pass rate (D55). Codex reviews the plan against this file before implementation
+   starts.
+10. **Slices, each used for real.** Work follows the implementation order in section 8. A slice is done only when the
+    owner has used it on something real (for slice 1, an owner test review; D44); its tests pass at the release
+    candidate (D55). Slices that are used together are used once together, in a way that exercises both (D52).
 11. **Warning signs, checked at each slice.** These are: work that names no ID; a test edited so that it passes; the
     skill growing past QR-13; think-twice giving conclusions in real use; scripts, hooks or agents appearing. At the
     end of each slice, Codex compares the changes with section 1 and the ID list, and the owner reads that review
