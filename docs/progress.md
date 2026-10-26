@@ -288,6 +288,7 @@ the FR-2.2 premise wording.
   logging prompt; an entry is drafted by Claude only on the owner's request and appended after the owner confirms.
   AGENTS.md, CONTRIBUTING.md, REQUIREMENTS (section 8 tree, rule 3), plan.md, HANDOFF.md and this file updated;
   committed and pushed (owner's request). The local file holds the owner's step-by-step guide and logging prompt.
+- 2026-10-25: tag `pre-reset` (`3166e25`, the state before the archive move) pushed to `origin` (owner's request).
 
 ## Slice 1 status
 

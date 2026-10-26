@@ -12,7 +12,7 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
 - **Active tests:** AT-04, AT-05, AT-07, AT-08, AT-10, AT-19 (a, b), AT-20, AT-35 (a, c) in `evals/`, and the manual
   AT-11 and AT-21 in `evals/manual/`, unchanged since `tests-v1.3`. Everything else (the other cases and manual
   scripts, the 14 baselines, `evals-calibration/`, `sc1-gate.py`, `validate-plugin.sh`, `judge-calibration.py`) is in
-  `archive/`, unchanged, in its old layout; the local tag `pre-reset` (`3166e25`) marks the state before the move.
+  `archive/`, unchanged, in its old layout; the tag `pre-reset` (`3166e25`, pushed) marks the state before the move.
 - **Postponed until the release candidate:** T2.7d, T2.8b and T2.9–T2.12, and with them the judge calibration, the
   baselines, the blind second grading and the self-tests. D52–D54 still govern the release candidate and SC-3.
 - **Open from before D55** (looked at again at the release candidate, or sooner if real use shows them): AT-07's last
@@ -25,7 +25,7 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
   by D55.
 - **Model and CLI:** `opus` = `claude-opus-5-5`; CLI 2.1.310 when last checked.
 - **Git:** D55, the archive move and the doc changes are committed in three commits and pushed to `origin/main`
-  (owner's request, 2026-10-25), then D56 in one more commit. Tag `pre-reset` (`3166e25`) is local, not pushed.
+  (owner's request, 2026-10-25), then D56 in one more commit. Tag `pre-reset` (`3166e25`) is pushed too (owner's request).
   `docs/reactions.md` is local only (gitignored).
 
 ## What this session did (2026-10-24 to 2026-10-25)

@@ -843,7 +843,7 @@ that the next three planned steps (T2.7d, T2.8b, T2.9; about $40) tested the tes
 the owner had not yet used the plugin.
 
 Applied: **D55**. Real use (T2.13) comes first; SC-1 is a release gate only; the CORE items stay active and
-everything else moves unchanged to `archive/` after the local tag `pre-reset`; the calibration and self-tests are
+everything else moves unchanged to `archive/` after the tag `pre-reset` (`3166e25`); the calibration and self-tests are
 retired until release; T2.7d, T2.8b and T2.9–T2.12 are postponed; features are built, and tests added or changed,
 only for a breach recorded in `docs/reactions.md` (tests also with the owner's explicit approval). No graded run, no
 cost. Checked: the active tests are unchanged against `tests-v1.3` (`evals/README.md` excepted, whose counting rules
