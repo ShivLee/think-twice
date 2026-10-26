@@ -4,6 +4,9 @@
 *.log
 .tokenize/
 
+# Private: the owner's real-use log, local only (D56)
+docs/reactions.md
+
 # Private: think-twice journal entries must never be committed (FR-5.7)
 .think-twice/
 think-twice-journal*.md

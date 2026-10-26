@@ -7,7 +7,7 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
 
 - **D55 (2026-10-25) changed how the work runs.** Real use drives it: the owner uses the plugin for real (T2.13,
   the current task), and a feature is built, or a test added or changed, only for a breach recorded in
-  [reactions.md](reactions.md) (or, for a test, with the owner's explicit approval). The SC-1 gate is a release gate
+  `docs/reactions.md` (local, D56; or, for a test, with the owner's explicit approval). The SC-1 gate is a release gate
   only; no development task closes on a pass rate.
 - **Active tests:** AT-04, AT-05, AT-07, AT-08, AT-10, AT-19 (a, b), AT-20, AT-35 (a, c) in `evals/`, and the manual
   AT-11 and AT-21 in `evals/manual/`, unchanged since `tests-v1.3`. Everything else (the other cases and manual
@@ -25,7 +25,8 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
   by D55.
 - **Model and CLI:** `opus` = `claude-opus-5-5`; CLI 2.1.310 when last checked.
 - **Git:** D55, the archive move and the doc changes are committed in three commits and pushed to `origin/main`
-  (owner's request, 2026-10-25). Tag `pre-reset` (`3166e25`) is local, not pushed.
+  (owner's request, 2026-10-25), then D56 in one more commit. Tag `pre-reset` (`3166e25`) is local, not pushed.
+  `docs/reactions.md` is local only (gitignored).
 
 ## What this session did (2026-10-24 to 2026-10-25)
 
@@ -41,6 +42,7 @@ if the two ever disagree. The slices and tasks are in [plan.md](plan.md) ("Slice
 | — | Speed-up review (`01a17392…`): **D52** (combined gates, release candidate before SC-3, one plan review, T2.8b, development loop), **D53** (calibration triggers, README run recipe), **D54** (pinned model for release and SC-3). Tag `tests-v1.3` | `09fd37d`, `4cce1ef` |
 | — | Test audit: each test, eval and script classed CORE, LATER or CUT; ten CORE items; the doc instructions that made passing the frozen tests the goal listed | — |
 | D55 | Real use first; SC-1 at release only; ten active tests, the rest archived after tag `pre-reset`; the test rule; REQUIREMENTS (sections 5, 6, 8, 9), AGENTS, CONTRIBUTING, `evals/README.md`, plan, progress, evaluation.md and README brought in line; `docs/reactions.md` created | three commits after `3166e25` |
+| D56 | `docs/reactions.md` made the one private real-use log (gitignored, untracked; replaces `.local/real-use-log.md`), with a step-by-step guide and a logging prompt; entries written only on the owner's request and confirmation | one commit after D55 |
 
 Owner decisions: leave the premise wording for now (open); approve D50 as drafted; close T2.8 with AT-23 left to
 T2.9; apply Codex's narrowed option for errored runs; D51 with `at07-good` relabelled FAIL and zero wrong verdicts
@@ -69,8 +71,9 @@ the owner wrote it, with the follow-ups recorded in its entry.
 
 3. **Real use first (T2.13, D55).** Ask the owner what they have used the plugin on since the last session, and
    whether anything in `docs/reactions.md` is new. The owner runs `claude --plugin-dir ~/projects/think-twice`, then
-   `/think-twice:pause …`. Entries in `docs/reactions.md` are one line each: date, requirement ID, the breach; no
-   personal reasoning or conversation content (D3). Fuller notes stay in `.local/real-use-log.md`.
+   `/think-twice:pause …`. `docs/reactions.md` is the one real-use log, private and local (gitignored; D56). At the
+   end of a session the owner asks Claude to draft an entry from its template; it is appended only after the owner
+   confirms. Never copy an entry's content into anything committed.
 4. **For each new reactions entry that shows a requirement breach:**
    1. Check whether an active test already covers it. If not, write or change a test only for that breach, citing
       the entry (D55), or with the owner's explicit approval. Never weaken a test.
@@ -132,7 +135,7 @@ docs/reactions.md.
 
 ## Open items to keep in view
 
-- **Real use is the check now** (D55). Every breach goes in `docs/reactions.md` as one line; the first entries will
+- **Real use is the check now** (D55). Every real situation goes in `docs/reactions.md` (local, D56); the first entries will
   show what to work on next.
 - **At the release candidate** (unless real use raises them sooner): AT-07 (T2.7d's calibration items under D51,
   then T2.11 in a fresh Codex thread; its baseline is re-run because D50 applies to both arms); AT-23's split-vote
@@ -167,15 +170,16 @@ docs/reactions.md.
 - Every gate attempt is kept; unchanged skill text is never re-run to get a pass.
 - Every eval run uses `--no-publish` and starts from the staging copy. Record the CLI and the resolved model before
   and after each run session (D48).
-- Real-use logs, manual results, raw eval results and Codex reviews stay private in `.local/`. The one exception is
-  `docs/reactions.md` (D55): one line per breach (date, requirement ID, the breach), with no personal content.
+- Real-use logs, manual results, raw eval results and Codex reviews stay private: in `.local/`, and the real-use log
+  in `docs/reactions.md`, which is gitignored (D56). A test or commit that follows from an entry cites it by date and
+  number only.
 - No commit, push, tag or release unless the owner asks. Stage files individually.
 
 ## Leftovers on this machine
 
 - `.local/t27a/` (C6, smoke A+B), `.local/t27b/` (D50 draft, AT-07 on `tests-v1.2`), `.local/t27e/` (errored-run
   brief and answer), `.local/t28/` (D1–D5, D2b, two A–C smoke checks), `.local/t2-drift/` (drift brief, answer, D51
-  draft), `.local/t2-speed/` (speed-up brief and answer), `.local/real-use-log.md` (the template for real-use notes);
+  draft), `.local/t2-speed/` (speed-up brief and answer), `.local/real-use-log.md` (empty template, replaced by `docs/reactions.md`, D56);
   earlier folders (`t2-plan`, `t23`–`t27`) as before. Private; gitignored.
 - `/private/tmp/e-*`: **358 kept eval folders** (about 61 MB), with the traces of the disputed AT-07 runs for
   T2.11, which is now at the release candidate (D55). `/private/tmp` may be cleared on restart; copy them into

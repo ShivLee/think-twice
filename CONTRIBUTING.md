@@ -14,9 +14,9 @@ How to change this project. *What* the product does is defined in
   rest are kept unchanged in `archive/` for the release candidate (D55).
 - Changes to the goal, the four questions, the success criteria, the delivery form, privacy or the role of the book
   need an owner-approved entry in `docs/decisions.md` first.
-- Never commit book text, journal entries or other personal reasoning content. An entry in `docs/reactions.md` is one
-  line: the date, the requirement ID and the breach, with no personal reasoning or conversation content; fuller
-  notes stay private in `.local/`.
+- Never commit book text, journal entries or other personal reasoning content. `docs/reactions.md`, the real-use
+  log, is private and local (gitignored, never committed; D56): a test or commit that follows from an entry cites it
+  by date and number only and uses invented material, never the entry's content.
 
 ## Adding a situation
 

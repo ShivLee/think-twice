@@ -22,8 +22,10 @@ and ask the owner. Do not resolve the conflict yourself.
 - Freeze acceptance tests before writing or tuning skill text. Never weaken a test so that it passes.
 - Build only what real use shows is needed (an entry in `docs/reactions.md`). Add or change a test only for a
   requirement breach seen in real use, citing its entry, or with the owner's explicit approval (D55).
-- This repository is public. An entry in `docs/reactions.md` is one line (date, requirement ID, the breach) with no
-  personal reasoning or conversation content; fuller real-use notes stay private in `.local/`.
+- This repository is public. `docs/reactions.md`, the owner's real-use log, is private and local: it is gitignored
+  and never committed (D56). A public test or commit that follows from an entry cites it by date and number only and
+  uses invented material, never the entry's content. Write an entry only when the owner asks, and only after they
+  confirm it.
 - Before adding or changing a situation, method card or acceptance test, follow `CONTRIBUTING.md`.
 
 ## Content

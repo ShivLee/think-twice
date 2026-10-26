@@ -5,7 +5,7 @@ and the tests or checks that mark it done. **What gets built** is defined in REQ
 is in [progress.md](progress.md). This file says **what comes next and how we know it is done**.
 
 Slice 2 is planned task by task. **Later slices are planned when real use calls for them** (D55): a slice's tasks
-are written here, each with its IDs and done-when, once a recorded breach in [reactions.md](reactions.md) needs that
+are written here, each with its IDs and done-when, once a recorded breach in `docs/reactions.md` (local, D56) needs that
 slice's features, and Codex reviews them against REQUIREMENTS before the work starts (section 9 rule 9); a later
 material deviation is reviewed when it happens. That plan review is separate from the review at the end of each
 slice (section 9 rule 11).
@@ -55,13 +55,14 @@ change that might is treated as material and restarts the period.
   classification, cost, next step); HANDOFF.md rewritten at session end only. Every gate attempt, manifest,
   unresolved finding and decision stays recorded.
 - **Real use now** (T2.13, D55): the owner uses the plugin for real (`claude --plugin-dir ~/projects/think-twice`);
-  it does not count towards SC-3 (D45). Each breach is one line in [reactions.md](reactions.md) (date, requirement
-  ID, the breach; no personal content, D3); fuller notes go in `.local/real-use-log.md`.
+  it does not count towards SC-3 (D45). Each real situation is an entry in `docs/reactions.md`, the one real-use
+  log, which is private and local (D56); Claude drafts it at the end of the session when the owner asks, and appends
+  it only after the owner confirms.
 - The SC-2 paired comparison runs at the release candidate only, on all 14 baselines (D52, D55).
 - Check `SKILL.md` and card sizes against QR-13 at the end of every slice (section 9 rule 11).
 - Slice reviews by Codex cover the diff, not the whole repository.
-- Real use before the SC-3 start is feedback only (D45). The real-use log stays private in `.local/`; only the
-  one-line entries in `docs/reactions.md` are public (D55).
+- Real use before the SC-3 start is feedback only (D45). The real-use log, `docs/reactions.md`, is gitignored and
+  never committed (D56).
 - Runs use the latest Opus as both model and judge (`opus`, D48), with the resolved ID recorded; the release
   candidate and the SC-3 period use one pinned ID (D54). The judge was chosen by a calibration set (evaluation.md,
   2026-10-20), because one false critical failure fails a test. Re-run the full calibration when the effective
@@ -209,7 +210,7 @@ ahead of T2.7d–T2.12**, and T2.7d, T2.8b and T2.9–T2.12 are postponed until 
 | T2.10 | Manual tests on the same manifest, driven by Claude: AT-11, AT-21 (a, b), AT-22, AT-31 (a, b), AT-34 (c, d), AT-41, with the AT-31 and AT-41 preflights first. The owner grades the transcripts | QR-5, FR-1.5, QR-4, FR-1.4, QR-2, FR-0.1, FR-0.8, QR-10, FR-1.6, FR-1.7 | **Postponed until the release candidate (D55)**, except AT-11 and AT-21, which stay active and may run during development. Each script run as written and re-run once on failure; the owner's ticks in `.local/manual-tests.md` and the results in `.local/manual-results.txt`; a critical failure in any run recorded as one |
 | T2.11 | Second grading by Codex of the two samples fixed in T2.9 | SC-1, SC-2 validity; QR-1, QR-2, QR-3 | **Postponed until the release candidate (D55).** Every sampled reply graded; agreement with the judge recorded; each disagreement explained and decided by the owner before T2.12 |
 | T2.12 | SC-1 gate and SC-2 comparison: the gate command on T2.9's results and T2.10's file. Paired comparison (D46) for AT-04, AT-08, AT-09 and AT-10, and for AT-07 and AT-19, against the baseline results settled in T2.9 | SC-1, SC-2 (its slice 2 tests), QR-13, RC-05 | **Postponed until the release candidate (D55).** The gate passes, AT-12 and RC-05 included; the SC-2 results for the six recorded in evaluation.md (plugin ≥2 of 3 on the four; at least as many runs as plain Claude on AT-07 and AT-19); `SKILL.md` ≤ 4,400 tokens. On any failure, go back to T2.5–T2.8, then re-run T2.9–T2.12 in full |
-| T2.13 | **Now, ahead of T2.7d–T2.12 (D55): dogfooding.** The owner uses the plugin on real situations from now on (`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`). Feedback only, not SC-3 (D45) | Section 9 rule 10; G1–G6 as far as slice 2 reaches; SC-3 (as feedback) | Ongoing. Each requirement breach the owner sees is a one-line entry in `docs/reactions.md` (date, requirement ID, the breach; no personal reasoning or conversation content, D3), with fuller notes private in `.local/real-use-log.md`. A breach may lead to a new or changed test that cites the entry, then a skill fix (D55); progress.md records only that use happened |
+| T2.13 | **Now, ahead of T2.7d–T2.12 (D55): dogfooding.** The owner uses the plugin on real situations from now on (`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`). Feedback only, not SC-3 (D45) | Section 9 rule 10; G1–G6 as far as slice 2 reaches; SC-3 (as feedback) | Ongoing. Each real situation is an entry in `docs/reactions.md` (private, local; D56), drafted by Claude at the owner's request at the end of the session and appended only after the owner confirms. A breach may lead to a new or changed test that cites the entry, then a skill fix (D55); progress.md records only that use happened |
 | T2.14 | Slice review, after real use (T2.13): Codex compares the slice 2 diff with section 1 and the ID list (section 9 rule 11). The tasks of a later slice are written only when real use calls for it (D55) | All slice 2 IDs; prevents drift | The owner has read the review; every High finding and any critical or privacy failure is fixed before slice 2 closes; a skill change goes back to real use (T2.13), not to a gate |
 | T2.15 | **Postponed until the release candidate (D55)**: it needs T2.10's measured grading times. Re-estimate the release work from the measured times, including the owner's grading time per manual test; pilot frozen-dialogue diagnostic checks for AT-03, AT-32 and AT-34d only if they would save measured time (D52) | D47, D52; prevents planning the release on guesses | Estimate written here; the owner's choice recorded, and any change of method made through a decision entry |
 

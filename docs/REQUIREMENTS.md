@@ -437,7 +437,7 @@ think-twice/
 │                                       (validate-plugin.sh: RC-01–RC-06; sc1-gate.py: SC-1), kept unchanged
 │                                       during development and restored for the release candidate (D55)
 ├── scripts/                            history filling (development only; D47)
-├── docs/REQUIREMENTS.md, decisions.md, progress.md, evaluation.md, reactions.md (D55)
+├── docs/REQUIREMENTS.md, decisions.md, progress.md, evaluation.md (docs/reactions.md: local only, D56)
 ├── .github/pull_request_template.md    "Requirement IDs served" field
 ├── AGENTS.md, CLAUDE.md, CONTRIBUTING.md
 └── README.md, CHANGELOG.md, LICENSE
@@ -510,8 +510,9 @@ behaviour runs during SC-3 (D52).
    requirement breach the owner saw in real use (citing its `docs/reactions.md` entry), or with the owner's explicit
    approval, and before the skill change it checks. No test is weakened so that it passes (D55).
 3. **Build only what real use requires.** If real use has not shown a need for a feature (an entry in
-   `docs/reactions.md`), it waits (D55). Entries are one line each: the date, the requirement ID and the breach, with
-   no personal reasoning or conversation content; fuller notes stay private.
+   `docs/reactions.md`), it waits (D55). That file is the owner's real-use log, private and local (gitignored, never
+   committed; D56); a public test or commit that follows from an entry cites it by date and number only and uses
+   invented material, never the entry's content.
 4. **Changes of direction go to the owner first.** This covers changes to the goal, the four questions, the success
    criteria, the delivery form, privacy, or the role of the book. Each is proposed as a decision entry (old, new,
    evidence, trade-off, what it serves, and whether it touches a protected item; D40) in `docs/decisions.md`, approved by the owner, and only then reflected in this file.

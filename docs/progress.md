@@ -283,6 +283,11 @@ the FR-2.2 premise wording.
   section) brought in line.
 - 2026-10-25: D55, the archive move and the doc changes committed in three commits and pushed to `origin/main`
   (owner's request); tag `pre-reset` stays local.
+- 2026-10-25: owner approved **D56** (protected: privacy, stricter): `docs/reactions.md` is the one real-use log,
+  gitignored and never committed (untracked; replaces `.local/real-use-log.md`), with the SC-3 fields and a
+  logging prompt; an entry is drafted by Claude only on the owner's request and appended after the owner confirms.
+  AGENTS.md, CONTRIBUTING.md, REQUIREMENTS (section 8 tree, rule 3), plan.md, HANDOFF.md and this file updated;
+  committed and pushed (owner's request). The local file holds the owner's step-by-step guide and logging prompt.
 
 ## Slice 1 status
 
@@ -333,13 +338,13 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 ## Next action
 
 **T2.13, real use** (section 9 rule 10; G1–G6; D55): the owner uses the plugin on real situations
-(`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`) and records each requirement breach as a
-one-line entry in `docs/reactions.md`. Each breach is handled as [HANDOFF.md](HANDOFF.md) "What to do next time"
+(`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`) and logs each real situation in
+`docs/reactions.md` (private, local; D56), drafted by Claude on request and appended after the owner confirms. Each breach is handled as [HANDOFF.md](HANDOFF.md) "What to do next time"
 step 4 says: a test only if one is needed (citing the entry), then a skill fix, checked on the active tests once.
 
 ## Waiting on the owner
 
-- Real use, and the first entries in `docs/reactions.md` (the file does not exist yet).
+- Real use, and the first entries in `docs/reactions.md` (local; the template is in place).
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
 - At the release candidate, a requirement real use has not called for: build it for the release, or move it out of
   v1.0 (REQUIREMENTS section 8, "Still open"; D55). Not needed until then.
