@@ -136,7 +136,9 @@ docs/reactions.md.
 ## Open items to keep in view
 
 - **Real use is the check now** (D55). Every real situation goes in `docs/reactions.md` (local, D56); the first entries will
-  show what to work on next.
+  show what to work on next. **D57 sets when it ends:** at least 2 weeks and 8 situations, whichever is later (cap 4
+  weeks; earliest exit 2026-11-08), then the five exit conditions in plan.md T2.13; keep a running count of
+  situations, consecutive situations with no new breach, and valued ones.
 - **At the release candidate** (unless real use raises them sooner): AT-07 (T2.7d's calibration items under D51,
   then T2.11 in a fresh Codex thread; its baseline is re-run because D50 applies to both arms); AT-23's split-vote
   critical failure; AT-02's disputed runs (T2.11; the calibration set has no AT-02 item); SC-2's zero margin (plain

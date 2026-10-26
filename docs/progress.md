@@ -289,6 +289,10 @@ the FR-2.2 premise wording.
   AGENTS.md, CONTRIBUTING.md, REQUIREMENTS (section 8 tree, rule 3), plan.md, HANDOFF.md and this file updated;
   committed and pushed (owner's request). The local file holds the owner's step-by-step guide and logging prompt.
 - 2026-10-25: tag `pre-reset` (`3166e25`, the state before the archive move) pushed to `origin` (owner's request).
+- 2026-10-25: owner approved **D57** (workflow; section 9 rule 10, T2.13, T2.14): T2.13 runs at least 2 weeks and 8
+  real situations, whichever comes later, capped at 4 weeks, and exits on five conditions (no pushed view in the last
+  5; no open slice 2 breach; saturation over the last 4–5; at least half valued; recognition about 9 of 10); at exit,
+  logged needs are sorted by slice. plan.md updated. Not committed.
 
 ## Slice 1 status
 
@@ -331,7 +335,7 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.8 Development runs D | Development done 2026-10-25 (D5 passes); smoke check not passed: 17/18, AT-23 open |
 | T2.13 Real use (dogfooding) | **Current** (D55): started 2026-10-25, ahead of T2.7d–T2.12 |
 | T2.9–T2.12 | Postponed until the release candidate (D55) |
-| T2.14 Slice review | Not started (after real use) |
+| T2.14 Slice review | Not started (after T2.13 exits, D57) |
 | T2.15 Re-estimate | Postponed until the release candidate (D55) |
 
 [HANDOFF.md](HANDOFF.md) lists the next steps in order.
@@ -342,6 +346,8 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 (`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`) and logs each real situation in
 `docs/reactions.md` (private, local; D56), drafted by Claude on request and appended after the owner confirms. Each breach is handled as [HANDOFF.md](HANDOFF.md) "What to do next time"
 step 4 says: a test only if one is needed (citing the entry), then a skill fix, checked on the active tests once.
+**Exit (D57):** at least 2 weeks and 8 situations (cap 4 weeks), then the five exit conditions in plan.md T2.13;
+then T2.14. Started 2026-10-25, so the earliest exit is 2026-11-08.
 
 ## Waiting on the owner
 
