@@ -9,14 +9,14 @@ transcripts go here.
 
 ## Current outcome
 
-**Slice 2 is under way** (recognition, core and the quick after review). **T2.1–T2.8 are done**, with T2.7a–T2.7c
-(the AT-07 plan and gate tooling), and the skill is committed as tested (`ee428f8`). Tests are frozen at
-`tests-v1.3` (D53). Left before the gate: **T2.7d** (the judge calibration with AT-07 items, which the owner labels
-first; accepted only under D51) and **T2.8b** (all 14 baselines, SC-2 feasibility). Then T2.9–T2.15. The path to
-1.0.0 now follows D52–D54: combined gates for slices 3+4 and 5+6, the release candidate accepted before SC-3, and
-one pinned model for the release candidate and the SC-3 period. Carried to the gate: AT-07 (2/3 in its last
-development run), AT-23 (one split-vote critical failure in the last smoke check) and the FR-2.2 premise wording
-(open).
+**Slice 2: real use first (D55).** **T2.1–T2.8 are done**, with T2.7a–T2.7c, and the skill is committed as tested
+(`ee428f8`). **T2.13 (real use) is now the current task**, and dogfooding starts now. The SC-1 gate is a release
+gate only. **T2.7d, T2.8b and T2.9–T2.12 are postponed until the release candidate.** Ten tests stay active (AT-04,
+AT-05, AT-07, AT-08, AT-10, AT-19a/b, AT-20, AT-35a/c, manual AT-11 and AT-21), frozen at `tests-v1.3`. Everything else
+is in `archive/` (tag `pre-reset`). A test is added or changed only for a breach seen in real use (cited from
+`docs/reactions.md`), or with the owner's approval. D52–D54 still govern the release candidate and SC-3. Open from
+before: AT-07 (2/3 in its last development run), AT-23 (one split-vote critical failure in the last smoke check) and
+the FR-2.2 premise wording.
 
 ## Last verified state
 
@@ -259,6 +259,30 @@ development run), AT-23 (one split-vote critical failure in the last smoke check
 - 2026-10-25: all D52–D54 changes committed and pushed (`09fd37d`, `4cce1ef`); tag **`tests-v1.3`** created on
   `09fd37d` and pushed (owner's request); the freeze diff against it is empty. HANDOFF.md rewritten for resuming at
   T2.7d.
+- 2026-10-25: **test audit** (owner's request; read-only): each test, eval and script classified as CORE (needed to
+  tell whether the skill is useful now), LATER or CUT; ten CORE items. The audit also listed the doc instructions
+  that made passing the frozen tests the goal.
+- 2026-10-25: owner approved **D55** (protected: success criteria): real use (T2.13) ahead of T2.7d–T2.12; SC-1 a
+  release gate only; the ten CORE items active; everything else, `evals-calibration/` and three scripts moved
+  unchanged to `archive/`, after the local tag `pre-reset` (`3166e25`, not pushed); the calibration and self-tests
+  retired; T2.7d, T2.8b and T2.9–T2.12 postponed until release; tests added or changed only for a real-use breach or
+  with the owner's approval. Checked: `build-histories.py --check` 1/1; the active tests are unchanged against
+  `tests-v1.3`. AGENTS.md, plan.md, HANDOFF.md and this file updated; the skill is untouched. Not yet committed.
+- 2026-10-25: D55 follow-up (owner): the reactions.md privacy limit confirmed; features built only on real-use need;
+  T2.10–T2.12 with the release candidate. REQUIREMENTS amended to cite D55 (sections 5, 6, 8, 9). Open: what happens
+  at the release candidate to a requirement real use has not called for.
+- 2026-10-25: `CONTRIBUTING.md` and `evals/README.md` brought in line with D55 (owner's request): the test rule,
+  `docs/reactions.md`, active tests, archive paths, the release-only gate and calibration. `evals/README.md` was
+  part of `tests-v1.3`; its counting rules are unchanged, and the freeze check now leaves it out
+  (`git diff tests-v1.3 --stat -- $(find evals -type f ! -name history.jsonl ! -name README.md)`, empty).
+- 2026-10-25: **documentation review against D55** (owner's request): 13 findings fixed, nothing committed.
+  `docs/reactions.md` created (format and privacy rule, no entries); HANDOFF.md "Where things stand", "How to run
+  things", "Open items" and "Leftovers" rewritten; plan.md (slices as feature groups, later slices planned when real
+  use calls for them, working practices, T2.14, T2.15 postponed, the omission-pass note), README status, AGENTS.md
+  (reactions.md privacy), REQUIREMENTS (status line D0–D55; the v2 subagent trigger) and evaluation.md (a D55
+  section) brought in line.
+- 2026-10-25: D55, the archive move and the doc changes committed in three commits and pushed to `origin/main`
+  (owner's request); tag `pre-reset` stays local.
 
 ## Slice 1 status
 
@@ -296,23 +320,27 @@ The test-level gaps from the Codex review (#7, #10, #12, #13, #18) are all settl
 | T2.7a Skill fixes from the AT-07 consultation | Done 2026-10-24 (C6; premise fix did not take hold) |
 | T2.7b D50: clarify AT-07's gate grader | Done 2026-10-24 (D50 approved; `tests-v1.2`; AT-07 2/3) |
 | T2.7c Gate tooling fix | Done 2026-10-24 (self-test 44/44) |
-| T2.7d Calibration with AT-07 items | Not started (right before T2.9) |
-| T2.8b SC-2 feasibility: all 14 baselines | Not started (after T2.7d; D52) |
+| T2.7d Calibration with AT-07 items | Postponed until the release candidate (D55) |
+| T2.8b SC-2 feasibility: all 14 baselines | Postponed until the release candidate (D55) |
 | T2.8 Development runs D | Development done 2026-10-25 (D5 passes); smoke check not passed: 17/18, AT-23 open |
-| T2.9–T2.15 | Not started |
+| T2.13 Real use (dogfooding) | **Current** (D55): started 2026-10-25, ahead of T2.7d–T2.12 |
+| T2.9–T2.12 | Postponed until the release candidate (D55) |
+| T2.14 Slice review | Not started (after real use) |
+| T2.15 Re-estimate | Postponed until the release candidate (D55) |
 
 [HANDOFF.md](HANDOFF.md) lists the next steps in order.
 
 ## Next action
 
-**T2.7d** (SC-1, SC-2; D48 rule 2, D51): draft AT-07 calibration items with no labels; the owner labels them; then
-build, run and score on the CLI the gate will use. Then **T2.8b** (SC-2; D52): all 14 baselines ×3, about $10.50,
-to confirm SC-2 is still reachable. Then **T2.9**, the auto gate (about $20; tell the owner first). The steps and
-commands are in [HANDOFF.md](HANDOFF.md), "What to do next time".
+**T2.13, real use** (section 9 rule 10; G1–G6; D55): the owner uses the plugin on real situations
+(`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`) and records each requirement breach as a
+one-line entry in `docs/reactions.md`. Each breach is handled as [HANDOFF.md](HANDOFF.md) "What to do next time"
+step 4 says: a test only if one is needed (citing the entry), then a skill fix, checked on the active tests once.
 
 ## Waiting on the owner
 
+- Real use, and the first entries in `docs/reactions.md` (the file does not exist yet).
 - Whether to try once more on the FR-2.2 premise wording (T2.7a), or leave it.
-- The AT-07 calibration labels, before T2.7d runs.
-- Real use once before the gate, as feedback (`.local/real-use-log.md` has the template).
+- At the release candidate, a requirement real use has not called for: build it for the release, or move it out of
+  v1.0 (REQUIREMENTS section 8, "Still open"; D55). Not needed until then.
 - Four product rules from the drift review, to revisit at T2.13–T2.14 (evaluation.md, "Drift review and D51").

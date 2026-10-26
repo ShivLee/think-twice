@@ -6,10 +6,10 @@ A Claude Code plugin that helps you examine your own thinking before, during and
 something: Is my reasoning sound? Am I thinking independently? What am I overlooking? What other perspectives should
 I consider?
 
-**Status:** requirements approved (v1.0; see [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)). Slice 1 is done: all
-acceptance tests are written, reviewed by the owner and frozen ([evals/](evals/README.md); tag `tests-v1.1`). Slice 2
-(recognition, core and the after review) is under way: a first version of the skill exists and is being tested
-against the frozen tests. It is not ready to install yet. Progress: [docs/progress.md](docs/progress.md).
+**Status:** requirements approved (v1.0; see [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)). Slice 2 (recognition,
+the core and the after review) is in real use by the owner, and real use now decides what gets built next. Ten core
+acceptance tests are active ([evals/](evals/README.md)); the full suite is kept for the release candidate. It is not
+ready to install yet. Progress: [docs/progress.md](docs/progress.md).
 
 ## About the name
 

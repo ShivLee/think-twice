@@ -4,26 +4,27 @@ The plan that section 9 rule 9 of [REQUIREMENTS.md](REQUIREMENTS.md) requires: e
 and the tests or checks that mark it done. **What gets built** is defined in REQUIREMENTS; **where the work stands**
 is in [progress.md](progress.md). This file says **what comes next and how we know it is done**.
 
-Slice 2 is planned task by task. **After the slice 2 gate**, the tasks of slices 3–7 are written here together, each
-with its IDs and done-when, and Codex reviews them once against REQUIREMENTS (section 9 rule 9; D52); a later material
-deviation is reviewed when it happens. That plan review is separate from the review at the end of each gate (section
-9 rule 11).
+Slice 2 is planned task by task. **Later slices are planned when real use calls for them** (D55): a slice's tasks
+are written here, each with its IDs and done-when, once a recorded breach in [reactions.md](reactions.md) needs that
+slice's features, and Codex reviews them against REQUIREMENTS before the work starts (section 9 rule 9); a later
+material deviation is reviewed when it happens. That plan review is separate from the review at the end of each
+slice (section 9 rule 11).
 
 ## Slices
 
-Every gate ends with its tests passing, the owner using it once on something real (slice 1: an owner test review,
-D44), and a Codex review of the changes against section 1 and the ID list (section 9 rule 11). **Slices 3 and 4
-share one gate, and so do slices 5 and 6** (D52): they are built in order, the combined gate runs both slices' tests
-and every earlier slice's under the SC-1 rule, and one real use exercises both feature groups. Each slice ships the
-method cards and glossary entries its own tests need.
+The slices are feature groups in their order, not gates (D55). A slice ends when the owner has used it on something
+real (slice 1: an owner test review, D44) and Codex has reviewed the changes against section 1 and the ID list
+(section 9 rule 11). **Slices 3 and 4 are used together, and so are slices 5 and 6** (D52): they are built in order,
+and one real use exercises both feature groups. Each slice ships the method cards and glossary entries it needs.
 
-**The gate.** A slice passes when **its own tests and the tests of every earlier slice** pass under the SC-1 rule
-(each auto test ≥2 of 3 runs, no critical failure in any run; each manual test passes). Tests of later slices are not
-run and are reported as "not implemented", never as failures. A parent ID in the table means only the part named;
-the tests column is the gate. AT-12 (questions per turn, length) runs over every auto case in the slice. AT-26 also
-runs in any earlier slice that ships a method card.
+**The gate (D55): release only.** The SC-1 rule (each auto test ≥2 of 3 runs, no critical failure in any run; each
+manual test passes) is applied once, to the release candidate, over the active tests and the archived tests restored
+for it. During development no slice or task is closed on a pass rate; the owner's real use is the check. The tests
+column below says which tests belong to each slice at release; only the ten active tests (D55) run before then. A
+parent ID in the table means only the part named. AT-12 (questions per turn, length) runs over every auto case at the
+release gate, and AT-26 with the rest.
 
-| # | Slice | Serves | Tests in the gate |
+| # | Slice | Serves | Tests at release |
 | --- | --- | --- | --- |
 | 1 | Test feasibility probe, validation script, tests written and frozen | 5.1 (P-1–P-7), RC-06, all AT (written, not run against a skill) | Slice 1 tasks below (D44) |
 | 2 | Recognition, core and the quick after review | FR-0.1, FR-0.2 (recognising all three phases; after), FR-0.4, FR-0.5, FR-0.7, FR-0.8; FR-1.1–FR-1.5; FR-1.6 and FR-1.7 (after, without the journal offer; partly: continuing after a revision and stopping at once, AT-34c/d); FR-1.3 (Claude-written summary); FR-2.1–FR-2.4 (after); FR-2.6, FR-2.7; FR-4; QR-1–QR-5; QR-6 (after); QR-10 | AT-01, 02, 04, 05, 07, 08, 09, 10, 11, 19, 20, 21, 22, 23, 24, 25, 29, 30, 31, 34c, 34d, 35, 36, 38, 39a, 41 (AT-37 moved to slice 5) |
@@ -41,10 +42,11 @@ change that might is treated as material and restarts the period.
 
 - Every `claude plugin eval` run uses `--no-publish`; results stay in `evals/results/`, which git ignores.
 - **Development loop (D52):** while diagnosing, run the affected cases and a few guard cases once each; run 3 times
-  only for a candidate that is clean at one run, then the one-run smoke check. Change the skill only for a
+  only for a candidate that is clean at one run; the guard cases are active tests (D55). Change the skill only for a
   requirement breach read in the reply, never for a split vote alone, and check first whether an existing rule
   already covers it. After three failed rounds on a group, stop changing the skill and diagnose (grader, material or
-  requirement). At each gate, run the full gate; the full suite runs for the release candidate.
+  requirement). During development only the ten active tests run (D55); the full suite runs for the release
+  candidate.
 - **Disputed verdicts (D52):** when the judge splits or disagrees with its own case, the owner may read that reply
   and rule on it, with reasons tied to the criteria. The ruling is diagnosis: it is stored next to the original
   verdict, never replaces it, and cannot turn a failed run into a pass; a grading interpretation that changes applies
@@ -52,12 +54,14 @@ change that might is treated as material and restarts the period.
 - **Records:** progress.md one entry per task; evaluation.md one short entry per run (version, IDs, result, failure
   classification, cost, next step); HANDOFF.md rewritten at session end only. Every gate attempt, manifest,
   unresolved finding and decision stays recorded.
-- **Real use now:** the owner may use the plugin at any time as feedback (`claude --plugin-dir ~/projects/think-twice`);
-  it does not count towards SC-3 (D45). Notes go in `.local/real-use-log.md`.
-- When a slice is done, run the SC-2 paired comparison for the SC-2 cases in its gate.
+- **Real use now** (T2.13, D55): the owner uses the plugin for real (`claude --plugin-dir ~/projects/think-twice`);
+  it does not count towards SC-3 (D45). Each breach is one line in [reactions.md](reactions.md) (date, requirement
+  ID, the breach; no personal content, D3); fuller notes go in `.local/real-use-log.md`.
+- The SC-2 paired comparison runs at the release candidate only, on all 14 baselines (D52, D55).
 - Check `SKILL.md` and card sizes against QR-13 at the end of every slice (section 9 rule 11).
 - Slice reviews by Codex cover the diff, not the whole repository.
-- Real use before the SC-3 start is feedback only (D45). The real-use log stays private in `.local/`.
+- Real use before the SC-3 start is feedback only (D45). The real-use log stays private in `.local/`; only the
+  one-line entries in `docs/reactions.md` are public (D55).
 - Runs use the latest Opus as both model and judge (`opus`, D48), with the resolved ID recorded; the release
   candidate and the SC-3 period use one pinned ID (D54). The judge was chosen by a calibration set (evaluation.md,
   2026-10-20), because one false critical failure fails a test. Re-run the full calibration when the effective
@@ -127,22 +131,24 @@ table. Codex reviewed the first version of this plan (section 9 rule 9; 2026-10-
 files and fixed here. Codex's re-check (same thread): the 3 High findings fixed; 3 new Medium and 1 Low on the
 sample, manual-run and smoke-check procedures, also fixed here. **AT-37 moved to slice 5** (owner, 2026-10-22): its frozen setup declines a journal offer,
 which only slice 5 builds, so it runs there as written; FR-1.7's "no coaching after the session ends" is checked
-then. Do the tasks in this order, with two exceptions: T2.7d (the calibration) and T2.8b (the SC-2 feasibility check)
-run right before T2.9, on the CLI the gate will use; and while D50 (T2.7b) waited for the owner, T2.7c and T2.8 went
-ahead.
+then. While D50 (T2.7b) waited for the owner, T2.7c and T2.8 went ahead. **Under D55, T2.13 (real use) comes next,
+ahead of T2.7d–T2.12**, and T2.7d, T2.8b and T2.9–T2.12 are postponed until the release candidate.
 
 **Rules for the slice:**
 
-- **Tests stay frozen.** `git diff tests-v1.3 --stat -- evals evals-baseline` is empty at the end of every task
-  (`tests-v1.1` until D50, `tests-v1.2` until D53). A failing test is fixed in the skill. If a test itself looks wrong, stop and
-  bring a decision entry to the owner.
+- **Active tests stay frozen** (D55). Only the ten active tests in `evals/` run during development; everything else
+  is in `archive/`, unchanged. `git diff tests-v1.3 --stat -- $(find evals -type f ! -name history.jsonl ! -name README.md)` is empty
+  at the end of every task. A test is added or changed only for a requirement breach the owner saw in
+  real use (citing its `docs/reactions.md` entry), or with the owner's explicit approval; no test is weakened so that
+  it passes. A failing test alone is not a reason to change the skill: change it only for a requirement breach read in
+  the reply (D52 (5)). If a test itself looks wrong, stop and bring a decision entry to the owner.
 - **The skill is written from REQUIREMENTS; the tests check it.** `SKILL.md` and `standards.md` contain no names,
   numbers or wording from a case prompt, dialogue or fixture, and no instruction that applies to one case's content.
   Every change made after a failed run is noted in [evaluation.md](evaluation.md) with the general rule it
   implements and its ID. This prevents a skill tuned to the tests (SC-1, SC-2 validity).
-- **Development results are not gate results.** The one-run smoke checks in T2.6–T2.8 only catch regressions: a
-  smoke failure is fixed like any other failure. SC-1 is claimed only from T2.9–T2.12, and results from different
-  skill versions are never combined.
+- **Development results are not gate results.** A development run is read for requirement breaches, never counted;
+  SC-1 is claimed only from T2.9–T2.12 at the release candidate, and results from different skill versions are never
+  combined.
 - **Every gate attempt is kept** and recorded, pass or fail. Unchanged skill text is never re-run to get a pass. If
   SC-2's zero margin is lost, the owner hears about it; tests are not weakened.
 - **Fill-ins supply only missing evidence** (Codex review, 2026-10-25, thread `01a1734d-e06b-7e63-9368-62ca5e82e459`).
@@ -190,24 +196,25 @@ ahead.
 | T2.2 | Gate tooling, from the plan review. `scripts/sc1-gate.py`: (1) a subcase named in `--tests` (AT-39a, AT-34c) is judged on its own cases, without its later-slice siblings; (2) every run must carry **every** grader its frozen `case.yaml` defines, not just one per prefix; (3) the D49 chapter check, with an empty card set: any *Beyond Feelings* chapter a graded reply names is a critical failure; (4) a run that reads anything under `evals/` is contaminated and fails (T2.1 found that `Read` by exact path reaches the cases). Write the exact slice 2 gate command, AT-12 and RC-05 included | SC-1, QR-8, RC-05, D49 item 2; prevents a gate that passes incomplete evidence, or an invented chapter | `--self-test` passes, with new checks: a complete AT-39a passes alone; a run missing one case-specific grader fails; a chapter named with no cards is critical; a run that reads `evals/` fails; AT-34c and AT-34d count from manual lines; the 21 existing checks still pass. The gate command is written below this table |
 | T2.3 | Judge calibration on the current CLI (2.1.308; it was 2.1.307), before any graded result counts | SC-1, SC-2; D48 rule 2, evals/README.md | It passes its selection rule, recorded in evaluation.md with the CLI and resolved IDs. If it fails, the owner decides before T2.5 |
 | T2.4 | First draft of `SKILL.md` and `skills/pause/standards.md`, from REQUIREMENTS: recognition (FR-0), the core (FR-1), the after phase (FR-2), the lenses (FR-4), QR-1–QR-6 and QR-10, scoped by the rules above. `standards.md` holds the lenses, the calibration gate, the hint steps and the verdicts (section 8) | The slice 2 IDs in the slice table | `SKILL.md` ≤ 4,400 tokens, counted as [evals/README.md](../evals/README.md) says; `standards.md` loaded with `Read`, only when a check runs; a search of both files finds no wording from the slice 2 cases; no book attribution and no journal path; RC-06 passes; the freeze diff is empty |
-| T2.5 | Development runs A, recognition and opening: AT-01 (a–c), AT-02, AT-04, AT-05, AT-39a | FR-0.1, FR-0.2, FR-0.4, FR-0.5, FR-0.7, FR-1.2, FR-2.2, QR-1 | Each test passes ≥2 of 3 runs with no critical failure, and its cases pass AT-12 and RC-05 (gate tool from T2.2); each change noted as the rules say |
-| T2.6 | Development runs B, material and input: AT-29, AT-30, AT-36, AT-38. Then one run of each group A case, for regressions | FR-0.1, FR-0.8, FR-1.3 (Claude-written summary), FR-2.1 (after), QR-10 | As T2.5 for group B; a **one-run smoke check** of every group A case passes, with no critical failure |
-| T2.7 | Development runs C, verdicts and the review's shape: AT-07, AT-23, AT-24, AT-35 (a–d). Then one run of each earlier case | FR-1.1, FR-1.4, FR-2.2–FR-2.4 (after), FR-2.6, FR-2.7, QR-2, QR-6 (after) | As T2.5 for group C, plus every AT-07 reply read in full: the judge is not stricter than section 5 on the verdict; the one-run smoke check of groups A and B passes |
-| T2.7a | Skill fixes from the Codex consultation on AT-07 (2026-10-24; owner accepted), each resting on REQUIREMENTS alone, not on the judge: (1) the confidence rule in Step 3 is too broad: evidence that confirms a claim the verdict relies on can raise confidence without changing the verdict; only evidence that would change the verdict belongs elsewhere; (2) when explaining a verdict, add no facts, risk rankings or claims of Claude's own; (3) unstated premises are stated in the user's own terms, with no invented quantitative rule (a one-off loss is not a monthly figure). Rewrap the four over-long lines in `SKILL.md`. Then group C, 3 runs each, and a one-run smoke check of groups A and B. About $8 | FR-2.3, QR-3, FR-2.2; then the T2.7 IDs | Each change noted in evaluation.md with its rule and ID; the wording scan finds no new phrase from a case; group C as T2.5, with AT-07 recorded as it falls and not tuned towards the judge; the smoke check passes |
-| T2.7b | Draft **D50** for the owner: clarify AT-07's `pass-qr2-gate` with a functional boundary: neutral mapping (the required unstated premises) and genuine confidence conditions (FR-2.3's "what would raise it") are not objections merely because they appear; any allegation of a weakness in the reasoning, wherever it sits, must pass the QR-2 gate. A blanket "required sections are not notes" is not acceptable: it would let a disguised objection through. Protected item: success criteria. After approval: edit the frozen case and its baseline identically, run RC-06, tag `tests-v1.2`, and from then on check the freeze against `tests-v1.2`. Then AT-07, 3 runs | AT-07; QR-2, FR-2.2, FR-2.3; SC-1, SC-2 validity | The owner has approved or declined D50 in decisions.md with the D40 drift check; if approved, both arms carry the same wording, the tag exists, and AT-07's 3 runs are recorded |
-| T2.7c | Gate tooling fix in `scripts/sc1-gate.py`: a `critical-` (or any) grader whose judge call threw is missing evidence, so the test reads **incomplete**, not a critical failure; a case with fewer than 3 runs makes AT-12 incomplete, not failing | SC-1, SC-2 (a baseline counted as failing would inflate SC-2) | `--self-test` passes with a check for each, and every earlier check still passes |
-| T2.7d | Judge calibration on the CLI the gate will use (2.1.310 on 2026-10-24), run **immediately before T2.9**, with new AT-07 items: neutral premises, genuine confidence conditions, disguised objections and unsupported additions, labelled by the owner **before** the run, not chosen to vindicate the plugin, and at least one item whose note genuinely passes the gate (D51). About $8–10 | SC-1, SC-2; D48 rule 2; D51; evals/README.md | It passes its selection rule, including D51 (no wrong AT-07 `pass-qr2-gate` verdict), recorded in evaluation.md with the CLI and resolved IDs; if it fails, the owner decides before T2.9 |
-| T2.8 | Development runs D, lenses and lessons: AT-08, AT-09, AT-10, AT-19, AT-20, AT-25. Then one run of each earlier case | FR-4, FR-2.4 (lesson), QR-3, QR-5 | As T2.5 for group D; the one-run smoke check of groups A–C passes |
-| T2.8b | **SC-2 feasibility** (D52): right after T2.7d, run all 14 baseline cases, 3 runs each, from a copy of `evals-baseline/` with no plugin (`--ablation none`, one arm; evals/README.md), on the accepted judge, with `--keep-temp`. About $10.50 | SC-2; D46, D48 | Every baseline case has 3 complete runs; for each of the 10 SC-2 tests, plain Claude's pass count recorded in evaluation.md; if fewer than 7 of the 10 still have plain Claude at ≤1 of 3, the owner hears it before T2.9 and no test is weakened |
-| T2.9 | Auto gate: first settle baseline compatibility for the six paired tests (T2.8b's results if the resolved model, CLI and grader set are compatible; otherwise re-run those baselines, D48 rule 1), re-run the T2.1 reach probe if the CLI has changed, then fix the two samples, then run the 26 auto cases of the slice 2 tests, 3 runs each, with the manifest | All slice 2 auto tests, AT-12, RC-05; SC-1 | Every case has 3 runs carrying every frozen grader; manifest complete; time and cost per case recorded |
-| T2.10 | Manual tests on the same manifest, driven by Claude: AT-11, AT-21 (a, b), AT-22, AT-31 (a, b), AT-34 (c, d), AT-41, with the AT-31 and AT-41 preflights first. The owner grades the transcripts | QR-5, FR-1.5, QR-4, FR-1.4, QR-2, FR-0.1, FR-0.8, QR-10, FR-1.6, FR-1.7 | Each script run as written and re-run once on failure; the owner's ticks in `.local/manual-tests.md` and the results in `.local/manual-results.txt`; a critical failure in any run recorded as one |
-| T2.11 | Second grading by Codex of the two samples fixed in T2.9 | SC-1, SC-2 validity; QR-1, QR-2, QR-3 | Every sampled reply graded; agreement with the judge recorded; each disagreement explained and decided by the owner before T2.12 |
-| T2.12 | SC-1 gate and SC-2 comparison: the gate command on T2.9's results and T2.10's file. Paired comparison (D46) for AT-04, AT-08, AT-09 and AT-10, and for AT-07 and AT-19, against the baseline results settled in T2.9 | SC-1, SC-2 (its slice 2 tests), QR-13, RC-05 | The gate passes, AT-12 and RC-05 included; the SC-2 results for the six recorded in evaluation.md (plugin ≥2 of 3 on the four; at least as many runs as plain Claude on AT-07 and AT-19); `SKILL.md` ≤ 4,400 tokens. On any failure, go back to T2.5–T2.8, then re-run T2.9–T2.12 in full |
-| T2.13 | The owner uses it once on something real (section 9 rule 10). Feedback only, not SC-3 (D45) | Section 9 rule 10; G1–G6 as far as slice 2 reaches | The owner has used it once; problems logged privately in `.local/`; progress.md records only that it happened |
-| T2.14 | Slice review: Codex compares the slice 2 diff with section 1 and the ID list (section 9 rule 11); in the same session, the tasks of slices 3–7 are written here and Codex reviews them once (D52) | All slice 2 IDs; prevents drift | The owner has read the review; every High finding and any critical, privacy or gate failure is fixed before slice 2 closes; a skill change re-runs T2.9–T2.12 |
-| T2.15 | Re-estimate the remaining work from the measured times, including the owner's grading time per manual test; pilot frozen-dialogue diagnostic checks for AT-03, AT-32 and AT-34d only if they would save measured time (D52) | D47, D52; prevents planning slices 3–7 on guesses | Estimate written here; the owner's choice recorded, and any change of method made through a decision entry |
+| T2.5 | Development runs A, recognition and opening: AT-01 (a–c), AT-02, AT-04, AT-05, AT-39a | FR-0.1, FR-0.2, FR-0.4, FR-0.5, FR-0.7, FR-1.2, FR-2.2, QR-1 | **Done before D55**, under the earlier rule: Each test passes ≥2 of 3 runs with no critical failure, and its cases pass AT-12 and RC-05 (gate tool from T2.2); each change noted as the rules say |
+| T2.6 | Development runs B, material and input: AT-29, AT-30, AT-36, AT-38. Then one run of each group A case, for regressions | FR-0.1, FR-0.8, FR-1.3 (Claude-written summary), FR-2.1 (after), QR-10 | **Done before D55**, under the earlier rule: As T2.5 for group B; a **one-run smoke check** of every group A case passes, with no critical failure |
+| T2.7 | Development runs C, verdicts and the review's shape: AT-07, AT-23, AT-24, AT-35 (a–d). Then one run of each earlier case | FR-1.1, FR-1.4, FR-2.2–FR-2.4 (after), FR-2.6, FR-2.7, QR-2, QR-6 (after) | **Done before D55**, under the earlier rule: As T2.5 for group C, plus every AT-07 reply read in full: the judge is not stricter than section 5 on the verdict; the one-run smoke check of groups A and B passes |
+| T2.7a | Skill fixes from the Codex consultation on AT-07 (2026-10-24; owner accepted), each resting on REQUIREMENTS alone, not on the judge: (1) the confidence rule in Step 3 is too broad: evidence that confirms a claim the verdict relies on can raise confidence without changing the verdict; only evidence that would change the verdict belongs elsewhere; (2) when explaining a verdict, add no facts, risk rankings or claims of Claude's own; (3) unstated premises are stated in the user's own terms, with no invented quantitative rule (a one-off loss is not a monthly figure). Rewrap the four over-long lines in `SKILL.md`. Then group C, 3 runs each, and a one-run smoke check of groups A and B. About $8 | FR-2.3, QR-3, FR-2.2; then the T2.7 IDs | **Done before D55**, under the earlier rule: Each change noted in evaluation.md with its rule and ID; the wording scan finds no new phrase from a case; group C as T2.5, with AT-07 recorded as it falls and not tuned towards the judge; the smoke check passes |
+| T2.7b | Draft **D50** for the owner: clarify AT-07's `pass-qr2-gate` with a functional boundary: neutral mapping (the required unstated premises) and genuine confidence conditions (FR-2.3's "what would raise it") are not objections merely because they appear; any allegation of a weakness in the reasoning, wherever it sits, must pass the QR-2 gate. A blanket "required sections are not notes" is not acceptable: it would let a disguised objection through. Protected item: success criteria. After approval: edit the frozen case and its baseline identically, run RC-06, tag `tests-v1.2`, and from then on check the freeze against `tests-v1.2`. Then AT-07, 3 runs | AT-07; QR-2, FR-2.2, FR-2.3; SC-1, SC-2 validity | **Done before D55**, under the earlier rule: The owner has approved or declined D50 in decisions.md with the D40 drift check; if approved, both arms carry the same wording, the tag exists, and AT-07's 3 runs are recorded |
+| T2.7c | Gate tooling fix in `scripts/sc1-gate.py`: a `critical-` (or any) grader whose judge call threw is missing evidence, so the test reads **incomplete**, not a critical failure; a case with fewer than 3 runs makes AT-12 incomplete, not failing | SC-1, SC-2 (a baseline counted as failing would inflate SC-2) | **Done before D55**, under the earlier rule: `--self-test` passes with a check for each, and every earlier check still passes |
+| T2.7d | Judge calibration on the CLI the gate will use (2.1.310 on 2026-10-24), run **immediately before T2.9**, with new AT-07 items: neutral premises, genuine confidence conditions, disguised objections and unsupported additions, labelled by the owner **before** the run, not chosen to vindicate the plugin, and at least one item whose note genuinely passes the gate (D51). About $8–10 | SC-1, SC-2; D48 rule 2; D51; evals/README.md | **Postponed until the release candidate (D55).** It passes its selection rule, including D51 (no wrong AT-07 `pass-qr2-gate` verdict), recorded in evaluation.md with the CLI and resolved IDs; if it fails, the owner decides before T2.9 |
+| T2.8 | Development runs D, lenses and lessons: AT-08, AT-09, AT-10, AT-19, AT-20, AT-25. Then one run of each earlier case | FR-4, FR-2.4 (lesson), QR-3, QR-5 | **Done before D55**, under the earlier rule: As T2.5 for group D; the one-run smoke check of groups A–C passes |
+| T2.8b | **SC-2 feasibility** (D52): right after T2.7d, run all 14 baseline cases, 3 runs each, from a copy of `evals-baseline/` with no plugin (`--ablation none`, one arm; evals/README.md), on the accepted judge, with `--keep-temp`. About $10.50 | SC-2; D46, D48 | **Postponed until the release candidate (D55).** Every baseline case has 3 complete runs; for each of the 10 SC-2 tests, plain Claude's pass count recorded in evaluation.md; if fewer than 7 of the 10 still have plain Claude at ≤1 of 3, the owner hears it before T2.9 and no test is weakened |
+| T2.9 | Auto gate: first settle baseline compatibility for the six paired tests (T2.8b's results if the resolved model, CLI and grader set are compatible; otherwise re-run those baselines, D48 rule 1), re-run the T2.1 reach probe if the CLI has changed, then fix the two samples, then run the 26 auto cases of the slice 2 tests, 3 runs each, with the manifest | All slice 2 auto tests, AT-12, RC-05; SC-1 | **Postponed until the release candidate (D55).** Every case has 3 runs carrying every frozen grader; manifest complete; time and cost per case recorded |
+| T2.10 | Manual tests on the same manifest, driven by Claude: AT-11, AT-21 (a, b), AT-22, AT-31 (a, b), AT-34 (c, d), AT-41, with the AT-31 and AT-41 preflights first. The owner grades the transcripts | QR-5, FR-1.5, QR-4, FR-1.4, QR-2, FR-0.1, FR-0.8, QR-10, FR-1.6, FR-1.7 | **Postponed until the release candidate (D55)**, except AT-11 and AT-21, which stay active and may run during development. Each script run as written and re-run once on failure; the owner's ticks in `.local/manual-tests.md` and the results in `.local/manual-results.txt`; a critical failure in any run recorded as one |
+| T2.11 | Second grading by Codex of the two samples fixed in T2.9 | SC-1, SC-2 validity; QR-1, QR-2, QR-3 | **Postponed until the release candidate (D55).** Every sampled reply graded; agreement with the judge recorded; each disagreement explained and decided by the owner before T2.12 |
+| T2.12 | SC-1 gate and SC-2 comparison: the gate command on T2.9's results and T2.10's file. Paired comparison (D46) for AT-04, AT-08, AT-09 and AT-10, and for AT-07 and AT-19, against the baseline results settled in T2.9 | SC-1, SC-2 (its slice 2 tests), QR-13, RC-05 | **Postponed until the release candidate (D55).** The gate passes, AT-12 and RC-05 included; the SC-2 results for the six recorded in evaluation.md (plugin ≥2 of 3 on the four; at least as many runs as plain Claude on AT-07 and AT-19); `SKILL.md` ≤ 4,400 tokens. On any failure, go back to T2.5–T2.8, then re-run T2.9–T2.12 in full |
+| T2.13 | **Now, ahead of T2.7d–T2.12 (D55): dogfooding.** The owner uses the plugin on real situations from now on (`claude --plugin-dir ~/projects/think-twice`, then `/think-twice:pause …`). Feedback only, not SC-3 (D45) | Section 9 rule 10; G1–G6 as far as slice 2 reaches; SC-3 (as feedback) | Ongoing. Each requirement breach the owner sees is a one-line entry in `docs/reactions.md` (date, requirement ID, the breach; no personal reasoning or conversation content, D3), with fuller notes private in `.local/real-use-log.md`. A breach may lead to a new or changed test that cites the entry, then a skill fix (D55); progress.md records only that use happened |
+| T2.14 | Slice review, after real use (T2.13): Codex compares the slice 2 diff with section 1 and the ID list (section 9 rule 11). The tasks of a later slice are written only when real use calls for it (D55) | All slice 2 IDs; prevents drift | The owner has read the review; every High finding and any critical or privacy failure is fixed before slice 2 closes; a skill change goes back to real use (T2.13), not to a gate |
+| T2.15 | **Postponed until the release candidate (D55)**: it needs T2.10's measured grading times. Re-estimate the release work from the measured times, including the owner's grading time per manual test; pilot frozen-dialogue diagnostic checks for AT-03, AT-32 and AT-34d only if they would save measured time (D52) | D47, D52; prevents planning the release on guesses | Estimate written here; the owner's choice recorded, and any change of method made through a decision entry |
 
-**The slice 2 gate command** (written in T2.2). Run it with `bash`: zsh does not split the word list. The staging
+**The slice 2 gate command** (written in T2.2). **Release only (D55):** before using it, restore the archived cases
+and `scripts/sc1-gate.py` from `archive/` to their old paths. Run it with `bash`: zsh does not split the word list. The staging
 copy (T2.1) holds only the 26 slice 2 auto cases, so the eval runs exactly those. `--keep-temp` keeps each run's
 trace, which the contamination check needs.
 
@@ -237,7 +244,7 @@ are read-only: make each folder writable first, then its `sealed/` subfolder (`c
 
 ## Slice 6 note: the omission pass (section 7)
 
-Planned with slices 3–7 (T2.14), and it may run in parallel with slices 3–4 (D52): it touches no skill text. It adds
+Planned when real use calls for slice 6's cards, or when the v1.0 scope question is settled at the release candidate (D55; REQUIREMENTS section 8, "Still open"). It touches no skill text. It adds
 no card beyond those a requirement or test needs (section 7). It is one independent, chapter-by-chapter pass against
 the frozen reading map:
 "Is any method in this chapter missing from the inventory?" Its inputs are private (the 58-method inventory in

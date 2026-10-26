@@ -20,7 +20,10 @@ and ask the owner. Do not resolve the conflict yourself.
 - Do not change the goal, the four questions, the success criteria, the delivery form, privacy or the role of the
   book without an owner-approved entry in `docs/decisions.md`.
 - Freeze acceptance tests before writing or tuning skill text. Never weaken a test so that it passes.
-- Build only what a failing acceptance test or a real-use log entry requires.
+- Build only what real use shows is needed (an entry in `docs/reactions.md`). Add or change a test only for a
+  requirement breach seen in real use, citing its entry, or with the owner's explicit approval (D55).
+- This repository is public. An entry in `docs/reactions.md` is one line (date, requirement ID, the breach) with no
+  personal reasoning or conversation content; fuller real-use notes stay private in `.local/`.
 - Before adding or changing a situation, method card or acceptance test, follow `CONTRIBUTING.md`.
 
 ## Content

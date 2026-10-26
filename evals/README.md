@@ -2,20 +2,29 @@
 
 The tests in [REQUIREMENTS.md](../docs/REQUIREMENTS.md) section 5, as `claude plugin eval` cases and manual scripts.
 They are written and **frozen before any skill text** (section 9, rule 2). They were frozen on 2026-10-20 (T1.10,
-tag `tests-v1.0`). Since the freeze, a change to a
-prompt, a dialogue or a grader needs a decision entry, and a test is never weakened so that it passes.
+tag `tests-v1.0`; latest `tests-v1.3`). A test is never weakened so that it passes.
+
+**D55 (2026-10-25): active tests and real use.** During development only the **active tests** run: the auto cases
+in `evals/` (AT-04, AT-05, AT-07, AT-08, AT-10, AT-19a/b, AT-20, AT-35a/c) and the manual scripts in `evals/manual/`
+(AT-11, AT-21). Every other test, the baselines, the judge calibration and the release scripts are kept unchanged in
+`archive/`, in their old layout (tag `pre-reset`), and are restored for the release candidate. A test is added or
+changed only for a requirement breach the owner saw in real use (citing its `docs/reactions.md` entry), or with the
+owner's explicit approval. The SC-1 gate is a release gate only.
 
 | Folder | What it holds |
 | --- | --- |
-| `evals/<case>/` | Auto cases run with the plugin |
-| `evals-baseline/<case>/` | SC-2 baseline cases: the same material in the words the owner would naturally type, run as plain Claude (D39, D46) |
-| `evals/manual/` | Fixed scripts for the manual tests, and the fixtures they need |
+| `evals/<case>/` | Active auto cases, run with the plugin |
+| `evals/manual/` | Active manual scripts |
+| `archive/evals/<case>/`, `archive/evals/manual/` | The other auto cases and manual scripts, with the fixtures they need |
+| `archive/evals-baseline/<case>/` | SC-2 baseline cases: the same material in the words the owner would naturally type, run as plain Claude (D39, D46) |
+| `archive/evals-calibration/`, `archive/scripts/` | The judge calibration set and the release scripts (`sc1-gate.py`, `validate-plugin.sh`, `judge-calibration.py`) |
 
 ## A case
 
 `case.yaml` holds:
 
-- **`tags`**: the test ID first, then the IDs it covers. `scripts/validate-plugin.sh` (RC-06) checks that every
+- **`tags`**: the test ID first, then the IDs it covers. `validate-plugin.sh` (RC-06; in `archive/scripts/` until
+  the release candidate) checks that every
   ID-shaped tag exists, including subcases such as `AT-35a`. Other tags group cases: `sc2` (an SC-2 test),
   `sc2-baseline`.
 - **`description`**: the test and its IDs, the **dialogue state** (what comes before the prompt), the **graded reply**,
@@ -40,6 +49,8 @@ T1.6 against known-good and known-bad replies ([evaluation.md](../docs/evaluatio
 
 ### How results count (SC-1)
 
+These rules apply at the release candidate only (D55). During development no task is closed on a pass rate.
+
 - A case **passes a run** when all its `pass-`, `fail-` and `critical-` graders pass in that run.
 - A test with several cases (AT-01 ×3, AT-19 ×2, AT-25 a–b, AT-35 a–d, AT-39 a–b) passes a run only if **every**
   case passes in that run.
@@ -50,8 +61,8 @@ T1.6 against known-good and known-bad replies ([evaluation.md](../docs/evaluatio
   auto case. RC-05 fails if any run of any case loads more than 3 cards.
 - A manual test passes if its first run passes, or if it fails and the one re-run passes. A critical failure in any
   run fails it. A test with auto and manual parts (AT-26) passes only if both parts pass.
-- `scripts/sc1-gate.py` computes all of this from the `--json` output and a manual results file (D47); its
-  `--self-test` checks the rules, including the three examples T1.8 requires.
+- `sc1-gate.py` (in `archive/scripts/` until the release candidate) computes all of this from the `--json` output
+  and a manual results file (D47). Its `--self-test` is retired during development (D55).
 
 ## Counting rules (gap #18, settled in T1.6)
 
@@ -92,8 +103,9 @@ or local paths (D47).
 ## Running
 
 **Never run evals from the repository root** (T2.1, D53): a run there can `Read` private files by exact path. Copy
-only what a run needs into an allowlisted staging folder and run from it; the gate command in
-[plan.md](../docs/plan.md) (below the slice 2 task table) does exactly this:
+only what a run needs into an allowlisted staging folder and run from it, as the gate command in
+[plan.md](../docs/plan.md) (below the slice 2 task table) does. In development, stage only the active cases you need
+and use `--runs 1` in place of `--runs 3`:
 
 ```sh
 B=/private/tmp/think-twice-run    # staging copy: .claude-plugin, skills, the named cases, build-histories.py
@@ -104,10 +116,10 @@ B=/private/tmp/think-twice-run    # staging copy: .claude-plugin, skills, the na
 
 - `--no-publish` always (QR-9, RC-02). Results go to `evals/results/`, which git ignores.
 - `--scaffold` runs the cases' own scaffold scripts, which only write fixtures.
-- For the baseline cases, only the **without** arm counts (D46). The with arm loads the plugin, but the manual-only
-  skill is invisible to the model, so it behaves the same. Running the baseline cases from a copy of
-  `evals-baseline/` in a folder with no plugin, with `--ablation none --trust-plugin`, runs only that arm, at half the
-  cost (evaluation.md, D49 re-run).
+- For the baseline cases (release candidate only), only the **without** arm counts (D46). The with arm loads the
+  plugin, but the manual-only skill is invisible to the model, so it behaves the same. Running the baseline cases
+  from a copy of `archive/evals-baseline/` in a folder with no plugin, with `--ablation none --trust-plugin`, runs only
+  that arm, at half the cost (evaluation.md, D49 re-run).
 - `opus` is the alias for the latest Opus (D48). The eval output records only the alias, so record the resolved model
   ID and `claude --version` before and after each run session:
 
@@ -118,9 +130,11 @@ B=/private/tmp/think-twice-run    # staging copy: .claude-plugin, skills, the na
   One comparison never mixes resolved models: if the ID changes, re-run it. When the judge's ID changes, re-run the
   judge calibration before any graded result counts (D39, D47, D48). The release candidate and the SC-3 period use
   one pinned model ID, passed in full as `--model` and `--judge-model` (D54).
-- While developing, run a smoke set with `--case` or `--tag`, plus the tests a change affects. Run the full gate at
-  the end of each slice.
-- Compute the gate with the slice's test list from [plan.md](../docs/plan.md):
+- While developing, run the active cases a change affects and a few active guard cases, once each, and read the
+  replies (D52, D55); run 3 times only for a candidate that is clean at one run. The full gate runs once, at the
+  release candidate.
+- At the release candidate, restore the archived cases and scripts to their old paths, then compute the gate with the
+  test list from [plan.md](../docs/plan.md):
 
   ```sh
   scripts/sc1-gate.py evals/results/<run>/result.json --manual .local/manual-results.txt --tests "AT-01 AT-02 ..."
@@ -129,7 +143,8 @@ B=/private/tmp/think-twice-run    # staging copy: .claude-plugin, skills, the na
   `.local/manual-results.txt` (private) holds one manual test per line: `AT-03 pass`, `AT-11 fail pass`,
   `AT-21 critical`. A test in `--tests` with no results is reported as not run, and the gate fails.
 - The judge is `opus`, chosen (as `claude-opus-5-5`) by a calibration set of known-good and known-bad replies
-  (`evals-calibration/`, `scripts/judge-calibration.py`; [evaluation.md](../docs/evaluation.md)). Re-run the full
+  (`archive/evals-calibration/`, `archive/scripts/judge-calibration.py`; [evaluation.md](../docs/evaluation.md)).
+  The calibration is retired during development (D55) and runs again for the release candidate. From then on, re-run the full
   calibration when the effective judging system changes: the judge model, any grader text, a calibration label or
   the acceptance rule (D51), or the CLI's eval or judging behaviour. A CLI version change alone gets a compatibility
   check first: every AT-07 calibration item plus `at08-good`, `at08-fabricated-source` and `at08-leading-question`,
@@ -137,7 +152,7 @@ B=/private/tmp/think-twice-run    # staging copy: .claude-plugin, skills, the na
 
 ## Method names (AT-26, AT-28)
 
-No method card exists before slice 6, so these tests anchor on what REQUIREMENTS already says. AT-26's auto case
+Both tests are archived until the release candidate (D55). No method card exists before slice 6, so these tests anchor on what REQUIREMENTS already says. AT-26's auto case
 uses the S1 situation, whose method REQUIREMENTS assigns to *Beyond Feelings* chapter 1; if the card's chapter turns
 out different, the test changes through a decision entry. AT-28 checks that any method named in a Chinese reply is
 named in Chinese; whether that name matches the glossary is checked by RC-04 and in AT-26's manual part once the
@@ -145,6 +160,7 @@ glossary exists.
 
 ## Manual tests
 
-Each script in `evals/manual/` gives the setup, the exact turns to type, the graded replies and a checklist. A manual
+Each script gives the setup, the exact turns to type, the graded replies and a checklist. The active ones are in
+`evals/manual/` (AT-11, AT-21); the rest are in `archive/evals/manual/` (D55). At the release candidate, a manual
 test is run once and re-run once on failure (SC-1). Results are recorded privately in `.local/`, never in the
 repository.

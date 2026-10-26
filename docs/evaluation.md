@@ -830,3 +830,23 @@ calibration on an effective judging change, a compatibility check on a CLI chang
 from the staging copy), **D54** (one pinned model for the release candidate and the SC-3 period; development stays
 on `opus`). REQUIREMENTS cites D52 and D54 (section 5 "Model", SC-3 counting, section 8 order, section 9 rule 10);
 `evals/README.md` changes under D53, so the tests are tagged `tests-v1.3` when committed.
+
+## Test audit and D55 (2026-10-25)
+
+A read-only audit (owner's request) classified every test, eval and script: **CORE** (needed to tell whether the
+skill is useful to the owner now), **LATER** (valid, but only after real use) or **CUT** (tests the test
+infrastructure, duplicates another test, or protects no requirement). Ten CORE items: AT-04, AT-05, AT-07, AT-08,
+AT-10, AT-19 (a, b), AT-20, AT-35 (a, c), and the manual AT-11 and AT-21. CUT included the judge calibration and its
+script, the gate and validation scripts' self-tests, AT-39a (the same as AT-01c while AT-39b is not run), AT-18's two
+graders that repeat its `at12-` graders, and the `rc05-` graders while no method card exists. The audit also found
+that the next three planned steps (T2.7d, T2.8b, T2.9; about $40) tested the test system or measured SC-2, and that
+the owner had not yet used the plugin.
+
+Applied: **D55**. Real use (T2.13) comes first; SC-1 is a release gate only; the CORE items stay active and
+everything else moves unchanged to `archive/` after the local tag `pre-reset`; the calibration and self-tests are
+retired until release; T2.7d, T2.8b and T2.9–T2.12 are postponed; features are built, and tests added or changed,
+only for a breach recorded in `docs/reactions.md` (tests also with the owner's explicit approval). No graded run, no
+cost. Checked: the active tests are unchanged against `tests-v1.3` (`evals/README.md` excepted, whose counting rules
+are unchanged), and `scripts/build-histories.py --check` parses AT-05's dialogue. Two automatic checks now run only at
+release: the D49 chapter check and the contamination check (both in `sc1-gate.py`).
+
